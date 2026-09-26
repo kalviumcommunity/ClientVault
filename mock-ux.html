@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mock UX — Client Support Knowledge Assistant</title>
+<style>
+  :root{
+    --wire-grey:#d3d7df;      /* layout placeholder */
+    --wire-grey-dark:#b9bec9;
+    --ink:#1f2430;
+    --pink:#e8548a;           /* primary user actions */
+    --pink-soft:#fbe7ef;
+    --line:#c5cad4;
+    --paper:#f7f8fa;
+    --white:#fff;
+    --blue:#4a6fa5;
+    --amber:#e8a03c;
+    --green:#3fa36b;
+    --red:#d9534f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px;}
+  header.hero{
+    background:linear-gradient(135deg,#20263a,#38415e);color:#fff;border-radius:16px;
+    padding:36px 40px;margin-bottom:36px;
+  }
+  header.hero h1{margin:0 0 8px;font-size:30px;letter-spacing:.3px;}
+  header.hero p{margin:0;opacity:.9;max-width:760px;}
+  .badge{display:inline-block;background:var(--pink);color:#fff;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+  h2.section{
+    font-size:22px;margin:44px 0 6px;border-bottom:3px solid var(--ink);padding-bottom:8px;
+  }
+  h3.sub{font-size:16px;margin:22px 0 4px;color:#38415e;}
+  .muted{color:#5c6470;font-size:13px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:14px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .legend{display:flex;gap:26px;flex-wrap:wrap;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin:14px 0;}
+  .legend span{font-size:13px;}
+  .swatch{display:inline-block;width:16px;height:16px;border-radius:4px;vertical-align:-2px;margin-right:6px;}
+
+  /* ---- wireframe browser frame ---- */
+  .screenwrap{background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:18px 0;box-shadow:0 4px 14px rgba(0,0,0,.08);}
+  .browserbar{display:flex;align-items:center;gap:8px;background:#eceef2;padding:8px 12px;border-bottom:1px solid var(--line);}
+  .browserbar .dot{width:11px;height:11px;border-radius:50%;}
+  .browserbar .url{flex:1;background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 10px;font-size:12px;color:#5c6470;margin-left:8px;}
+  .screen-title{font-size:15px;font-weight:700;margin:16px 20px 2px;}
+  .screen-tag{font-size:12px;color:#5c6470;margin:0 20px 12px;}
+
+  /* ---- wireframe component vocabulary ---- */
+  .wf{
+    background:var(--wire-grey);border:1px dashed #8b93a3;border-radius:6px;color:#2a313f;
+    display:flex;align-items:center;justify-content:center;font-size:11.5px;text-align:center;
+    padding:8px 10px;min-height:34px;position:relative;font-weight:500;
+  }
+  .wf.pink{background:var(--pink-soft);border:1.5px solid var(--pink);color:#a1245a;font-weight:700;}
+  .wf .lbl{font-size:10px;color:#586078;display:block;margin-top:2px;font-weight:400;font-style:italic;}
+  .wf.pink .lbl{color:#a1245a;}
+  .wf.tall{min-height:74px;}
+  .wf.med{min-height:52px;}
+
+  .screen{display:grid;gap:10px;padding:8px 20px 20px;}
+  .grid-master{display:grid;grid-template-columns:170px 1fr;gap:12px;}
+  .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid-three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .col60{grid-column:span 1;}
+  .col2{grid-column:span 2;}
+
+  .kpi{background:var(--wire-grey);border:1px dashed #8b93a3;border-radius:8px;padding:12px;min-height:84px;display:flex;flex-direction:column;gap:4px;}
+  .kpi .m{font-size:10px;font-weight:600;color:#4a5262;text-transform:uppercase;letter-spacing:.4px;}
+  .kpi .v{font-size:18px;font-weight:700;color:#1f2430;}
+  .kpi .d{font-size:11px;}
+  .kpi .d.s{color:var(--green);} .kpi .d.n{color:var(--red);}
+  .row{display:flex;gap:8px;align-items:center;}
+  .gap{height:6px;}
+  .note{background:#eef1f6;border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 16px;margin:10px 0;font-size:13px;color:#2a313f;}
+  .note b{color:#1f2430;}
+  .warn{background:#fdf4e6;border-left:4px solid var(--amber);}
+  .err{background:#fdeef0;border-left:4px solid var(--red);}
+  .ok{background:#e9f6ef;border-left:4px solid var(--green);}
+  .insight{background:#f4f0fb;border-left:4px solid #7b5ecd;border-radius:0 8px 8px 0;padding:10px 16px;margin:10px 0;font-size:13px;}
+  .insight b{color:#4a3a9c;}
+
+  table.purpose{width:100%;border-collapse:collapse;margin:12px 0;}
+  table.purpose th,table.purpose td{border:1px solid var(--line);padding:8px 10px;font-size:13px;vertical-align:top;text-align:left;}
+  table.purpose th{background:#eceef2;font-weight:700;}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:2px 10px;font-size:11px;background:#fff;}
+  .pill.p{background:var(--pink-soft);border-color:var(--pink);color:#a1245a;font-weight:700;}
+
+  /* flow diagram */
+  .flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:16px 0;}
+  .fnode{background:#fff;border:2px solid var(--blue);border-radius:12px;padding:10px 18px;font-weight:700;font-size:13px;text-align:center;max-width:340px;}
+  .fnode.core{background:#eef4ff;}
+  .fnode.alt{border-color:var(--amber);background:#fff8ec;}
+  .fnode.state{border-color:var(--red);background:#fdeef0;}
+  .farrow{color:var(--blue);font-size:18px;margin:2px 0;font-weight:700;}
+  .flabel{font-size:11px;color:#5c6470;margin-top:-4px;margin-bottom:2px;text-align:center;}
+
+  .check li{margin-bottom:6px;font-size:13.5px;}
+  ol.check,ul.check{padding-left:22px;}
+  .tick{color:var(--green);font-weight:700;}
+
+  .footer-note{margin-top:50px;font-size:12px;color:#8a909c;border-top:1px solid var(--line);padding-top:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="badge">Mock UX · Wireframe · Planning Document</span>
+  <h1>Client Support Knowledge Assistant — Mock UX</h1>
+  <p>Low-fidelity wireframes for the 6 required product pages, a page-flow diagram, and full state coverage (empty, error, insufficient-evidence). This is a workflow-first planning document that answers <em>"how does this work?"</em> before engineering answers <em>"how do we build this?"</em> — per the Mock UX module.</p>
+  <p style="margin-top:10px;font-size:13px;opacity:.85;">Product: B2B internal RAG knowledge retrieval app · Primary user: Support Engineer · Source: PRD v1.1</p>
+</header>
+
+<!-- ============ LEGEND ============ -->
+<div class="legend">
+  <span><span class="swatch" style="background:var(--wire-grey);border:1px dashed #8b93a3;"></span> Grey boxes = layout placeholders (position &amp; proportion)</span>
+  <span><span class="swatch" style="background:var(--pink);border:1.5px solid var(--pink);"></span> Pink = primary user action (most important click)</span>
+  <span><span class="swatch" style="background:var(--blue);border:2px solid var(--blue);"></span> Blue = screen / page</span>
+  <span><span class="swatch" style="background:var(--red);"></span> Red = error / edge state</span>
+  <span><span class="swatch" style="background:var(--amber);"></span> Amber = alternate / secondary flow</span>
+</div>
+
+<!-- ============ FLOW DIAGRAM ============ -->
+<h2 class="section">Page Flow Diagram — How Users Navigate</h2>
+<p class="muted">Primary support workflow (left path) is the Monitor/Filter/Investigate flow the product exists to serve. The alt path (right) is for knowledge administrators.</p>
+
+<div class="flow">
+  <div class="fnode core">🏠 Dashboard<br><span class="muted">entry point · client picker · recent &amp; status</span></div>
+  <div class="farrow">↓</div>
+  <div class="flabel">pick or search client (1 click)</div>
+  <div class="fnode core">👥 Clients — select affected account</div>
+  <div class="farrow">↓</div>
+  <div class="flabel">"Open client knowledge" (primary CTA)</div>
+  <div class="fnode core">🔍 Client Knowledge / Procedure Search<br><span class="muted">core workflow</span></div>
+  <div class="farrow">↓ / ←→</div>
+  <div class="flabel">search → result cards → pick a result</div>
+  <div class="fnode core">📄 Result / Source Detail<br><span class="muted">verify: answer + source + passage</span></div>
+  <div class="farrow">←</div>
+  <div class="flabel">drill-down from any result card</div>
+</div>
+
+<div class="note"><b>Drill-down path (Investigate mode):</b> Dashboard → (pick client) → Knowledge Search → a result card → Source Detail. Primary workflow is reachable in <b>2–3 clicks</b>, satisfying the "≤ 2 clicks for primary workflow" navigation requirement.</div>
+
+<div class="flow">
+  <div class="fnode alt">⚙️ Knowledge Admin flow: Document Library → Document Upload &amp; Indexing</div>
+  <div class="farrow">·</div>
+  <div class="fnode alt">Reach all screens via persistent sidebar navigation</div>
+</div>
+
+<table class="purpose">
+  <thead><tr><th>#</th><th>Screen</th><th>Primary user mode served</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Dashboard</td><td>Monitor / Explore</td><td>90-second health check: recent searches, indexing status, shortcut into the core workflow.</td></tr>
+    <tr><td>2</td><td>Clients</td><td>Filter</td><td>Locate and select the affected account so retrieval is restricted.</td></tr>
+    <tr><td>3</td><td>Client Knowledge / Procedure Search</td><td>Filter / Investigate</td><td>Natural-language search within one client's approved knowledge, with evidence cards.</td></tr>
+    <tr><td>4</td><td>Document Library</td><td>Explore / Trust</td><td>See approved documents and their indexing status for a client (Support Lead trust).</td></tr>
+    <tr><td>5</td><td>Document Upload &amp; Indexing</td><td>Admin</td><td>Admins add or re-index documents with metadata.</td></tr>
+    <tr><td>6</td><td>Result / Source Detail</td><td>Investigate</td><td>Verify a retrieved procedure against its source document, page/section, passage.</td></tr>
+  </tbody>
+</table>
+
+<!-- ============ 1. DASHBOARD ============ -->
+<h2 class="section">1. Dashboard</h2>
+<p class="muted">Entry point · supports Monitor (quick status) + Explore (jump into any account).</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/dashboard</span></div>
+  <div class="screen-title">Dashboard — start with the affected client</div>
+  <div class="screen-tag">Monitor + Explore · KPI summary above the fold</div>
+  <div class="screen grid-master">
+    <!-- sidebar -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO / app name</div>
+      <div class="wf pink">🏠 Dashboard</div>
+      <div class="wf">👥 Clients</div>
+      <div class="wf">🔍 Knowledge Search</div>
+      <div class="wf">📚 Document Library</div>
+      <div class="wf">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+      <div class="wf" style="min-height:70px;">Sign out</div>
+    </div>
+    <!-- main -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="wf pink tall" style="min-height:56px;">🎯 Select affected client [Search field + dropdown] <span class="lbl">Primary CTA — the only mandatory pre-step</span></div>
+      <div class="grid-three">
+        <div class="kpi"><div class="m">Documents indexed</div><div class="v">1,284</div><div class="d s">▲ +38 this week</div></div>
+        <div class="kpi"><div class="m">Active clients</div><div class="v">142</div><div class="d">—</div></div>
+        <div class="kpi"><div class="m">Indexing in progress</div><div class="v">3</div><div class="d n">2 need attention</div></div>
+      </div>
+      <div class="grid-two">
+        <div class="wf tall">Recent searches <span class="lbl">last 5 · click to re-open client knowledge</span></div>
+        <div class="wf tall">Indexing status summary <span class="lbl">bar · per document state · link to Library</span></div>
+      </div>
+      <div class="wf tall">Shortcuts: open a saved client · support lead queue <span class="lbl">fast entry to core workflow</span></div>
+    </div>
+  </div>
+</div>
+<div class="note"><b>Why KPI cards at top:</b> the PRD's Monitor mode — support engineers check this page quickly. Health metrics (indexing state) visible without scrolling.</div>
+
+<!-- ============ 2. CLIENTS ============ -->
+<h2 class="section">2. Clients</h2>
+<p class="muted">Filter mode · locate and select the affected account → restrict retrieval.</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/clients</span></div>
+  <div class="screen-title">Clients — choose the affected account</div>
+  <div class="screen-tag">Filter · selects the account metadata boundary (Req FR-01, FR-02)</div>
+  <div class="screen grid-master">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO</div>
+      <div class="wf">🏠 Dashboard</div>
+      <div class="wf pink">👥 Clients</div>
+      <div class="wf">🔍 Knowledge Search</div>
+      <div class="wf">📚 Document Library</div>
+      <div class="wf">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="wf" style="min-height:44px;">🔍 Search clients [client name / ID] <span class="lbl">auto-apply · filters the list below</span></div>
+      <div class="wf" style="min-height:34px;">Filters: status ▾ · has documents ▾ <span class="lbl">optional refine</span></div>
+      <div class="wf tall" style="min-height:120px;flex-direction:column;gap:8px;">
+        <div style="width:100%;display:flex;justify-content:space-between;font-size:12px;">Client A · ACM-0142 · 23 docs · 100% indexed <span class="pill p" style="background:var(--pink-soft)">Open knowledge →</span></div>
+        <div style="width:100%;display:flex;justify-content:space-between;font-size:12px;">Client B · BNK-0321 · 41 docs · 2 re-indexing <span class="pill">Open knowledge →</span></div>
+        <div style="width:100%;display:flex;justify-content:space-between;font-size:12px;">Client C · RTL-0714 · 12 docs · 1 failed <span class="pill">Open knowledge →</span></div>
+        <div style="width:100%;display:flex;justify-content:space-between;font-size:12px;">… 139 more · paginated 25/page <span class="pill">Open knowledge →</span></div>
+      </div>
+      <div class="wf" style="min-height:34px;">Pagination · 1 ▾ of 6 pages <span class="lbl">sortable by name / relevance</span></div>
+    </div>
+  </div>
+</div>
+<div class="note"><b>Design reasoning:</b> table/list shows client ID, document count, and <b>indexing status</b> on every row so a support engineer can trust the knowledge base before opening it (FR-13). The primary action "Open knowledge →" is pink and on the right — the most important click.</div>
+
+<!-- ============ 3. KNOWLEDGE SEARCH ============ -->
+<h2 class="section">3. Client Knowledge / Procedure Search</h2>
+<p class="muted">Core workflow · Filter + Investigate · natural-language search restricted to the selected client.</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/knowledge?client=BNK-0321</span></div>
+  <div class="screen-title">Knowledge Search — selected client: BNK-0321</div>
+  <div class="screen-tag">Core workflow · grounded RAG retrieval + source attribution (FR-09, FR-10)</div>
+  <div class="screen grid-master">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO</div>
+      <div class="wf">🏠 Dashboard</div>
+      <div class="wf">👥 Clients</div>
+      <div class="wf pink">🔍 Knowledge Search</div>
+      <div class="wf">📚 Document Library</div>
+      <div class="wf">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="wf pink" style="min-height:48px;">💬 "What is the escalation path for a P1 outage?" <span class="lbl">natural-language query · Enter to search</span></div>
+      <div class="row">
+        <div class="wf" style="flex:1;">Client: BNK-0321 (locked) <span class="lbl">account filter applied (FR-07)</span></div>
+        <div class="wf" style="flex:1;">Filters: doc type ▾ · date ▾</div>
+        <div class="wf" style="flex:1;">Top-K: 5 ▾</div>
+        <div class="wf" style="flex:1;">Clear filters</div>
+      </div>
+      <div class="wf pink" style="min-height:36px;">🔍 Search <span class="lbl">primary CTA</span></div>
+      <div class="wf tall" style="min-height:150px;flex-direction:column;gap:8px;align-items:stretch;justify-content:flex-start;">
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;">
+          <b>Result 1 · Escalation Path — P1</b> · 92% match<br>
+          <span style="font-size:11px;">runbook_p1_outage_v3.pdf · p.4 · § "Escalation" · BNK-0321</span><br>
+          <span style="font-size:11px;" class="pill p">View source →</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;">
+          <b>Result 2 · On-call Contact List</b> · 84% match<br>
+          <span style="font-size:11px;">sla_annex_b.docx · p.2 · § "Contacts" · BNK-0321</span><br>
+          <span style="font-size:11px;" class="pill">View source →</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;">
+          <b>Result 3 · Recovery Steps — Database</b> · 71% match<br>
+          <span style="font-size:11px;">runbook_db_recovery.pdf · p.7 · § "Recovery" · BNK-0321</span><br>
+          <span style="font-size:11px;" class="pill">View source →</span>
+        </div>
+      </div>
+      <div class="wf" style="min-height:34px;">Pagination · Results 1–5 of 12</div>
+    </div>
+  </div>
+</div>
+<div class="note"><b>Design reasoning:</b> the query field is the primary action at the very top of the workflow. Each result card carries <b>relevance % + exact source metadata</b> (doc, page, section, account) so the support engineer can judge and verify before opening (FR-10). Section 6 (Result/Source Detail) is the drill-down target.</div>
+
+<!-- ============ 4. DOCUMENT LIBRARY ============ -->
+<h2 class="section">4. Document Library</h2>
+<p class="muted">Trust/Explore · see approved knowledge + indexing status for a client (Support Lead user story).</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/library?client=BNK-0321</span></div>
+  <div class="screen-title">Document Library — BNK-0321</div>
+  <div class="screen-tag">Explore + trust · indexing status transparency (FR-13)</div>
+  <div class="screen grid-master">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO</div>
+      <div class="wf">🏠 Dashboard</div>
+      <div class="wf">👥 Clients</div>
+      <div class="wf">🔍 Knowledge Search</div>
+      <div class="wf pink">📚 Document Library</div>
+      <div class="wf">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="row">
+        <div class="wf" style="flex:2;">Client: BNK-0321 ▾</div>
+        <div class="wf" style="flex:1;">Doc type ▾</div>
+        <div class="wf" style="flex:1;">Status ▾</div>
+        <div class="wf pink" style="flex:1;">⬆ Upload new</div>
+      </div>
+      <div class="wf tall" style="min-height:150px;flex-direction:column;gap:8px;align-items:stretch;justify-content:flex-start;">
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;font-size:12px;">
+          <span><b>runbook_p1_outage.pdf</b> · Runbook · v3 · 2024-05-01</span>
+          <span style="color:var(--green);"><b>✓ Indexed</b> · 47 chunks</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;font-size:12px;">
+          <span><b>sla_annex_b.docx</b> · SLA · v1 · 2023-11-20</span>
+          <span style="color:var(--amber);"><b>⏳ Re-indexing</b> · 12/40</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;font-size:12px;">
+          <span><b>onboarding_notes.txt</b> · Onboarding · v2 · 2024-01-08</span>
+          <span style="color:var(--red);"><b>✕ Failed</b> · view error</span>
+        </div>
+      </div>
+      <div class="wf" style="min-height:34px;">Sortable · Paginated · 41 docs <span class="lbl">click row → opens document / source detail</span></div>
+    </div>
+  </div>
+</div>
+<div class="note"><b>Design reasoning:</b> status column exposes <b>indexing state and failures</b> — the Support Lead's trust requirement ("see account-specific documents and their indexing status"). Failed items are red and actionable.</div>
+
+<!-- ============ 5. UPLOAD & INDEXING ============ -->
+<h2 class="section">5. Document Upload &amp; Indexing</h2>
+<p class="muted">Admin · upload / re-index documents with metadata (FR-12, FR-13).</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/upload</span></div>
+  <div class="screen-title">Document Upload &amp; Indexing</div>
+  <div class="screen-tag">Admin workflow (Knowledge Administrator)</div>
+  <div class="screen grid-master">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO</div>
+      <div class="wf">🏠 Dashboard</div>
+      <div class="wf">👥 Clients</div>
+      <div class="wf">🔍 Knowledge Search</div>
+      <div class="wf">📚 Document Library</div>
+      <div class="wf pink">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="wf" style="min-height:40px;">Client: BNK-0321 ▾ <span class="lbl">required — every doc is account-bound (FR-02)</span></div>
+      <div class="wf" style="min-height:40px;">Document type: Runbook ▾ <span class="lbl">metadata</span></div>
+      <div class="wf" style="min-height:60px;">⬆ Dropzone — PDF · DOCX · TXT <span class="lbl">accepted formats (FR-03)</span></div>
+      <div class="wf" style="min-height:34px;">Version / date (optional)</div>
+      <div class="wf pink" style="min-height:40px;">Upload &amp; Index <span class="lbl">primary CTA</span></div>
+      <div class="wf tall" style="min-height:70px;">Progress: extraction → cleaning → chunking → embedding → indexing → validation <span class="lbl">live pipeline status (FR-13)</span></div>
+      <div class="ok note"><b>Success state:</b> "runbook_v4.pdf indexed — 28 chunks for BNK-0321" with a link to view.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 6. RESULT / SOURCE DETAIL ============ -->
+<h2 class="section">6. Result / Source Detail</h2>
+<p class="muted">Investigate · verify an answer against its source document, page, section, passage (FR-10).</p>
+
+<div class="screenwrap">
+  <div class="browserbar"><span class="dot" style="background:#e8544f"></span><span class="dot" style="background:#e8a03c"></span><span class="dot" style="background:#3fa36b"></span><span class="url">client-support-assistant.internal/source/chunk-8841?client=BNK-0321</span></div>
+  <div class="screen-title">Result / Source Detail — grounded answer + evidence</div>
+  <div class="screen-tag">Investigate · citation + insufficient-evidence state</div>
+  <div class="screen grid-master">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="wf">LOGO</div>
+      <div class="wf">🏠 Dashboard</div>
+      <div class="wf">👥 Clients</div>
+      <div class="wf">🔍 Knowledge Search</div>
+      <div class="wf">📚 Document Library</div>
+      <div class="wf">📤 Upload &amp; Indexing</div>
+      <div class="wf" style="min-height:90px;">Account / user</div>
+      <div class="wf" style="min-height:34px;">← Back to results</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="wf tall" style="min-height:110px;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;gap:6px;">
+        <b>Grounded answer — Escalation Path for P1 (BNK-0321)</b>
+        <div style="font-size:11.5px;text-align:left;">1. Contact the BNK on-call lead within 5 min. 2. Escalate to Tier-2 if unresolved in 15 min. 3. File PIR within 1 hour. <span style="color:#a1245a;">[src: runbook_p1_outage_v3.pdf · p.4]</span></div>
+        <div style="font-size:10.5px;color:#586078;">Generated from retrieved evidence · grounded in source (FR-09) · distinguish answer from evidence</div>
+      </div>
+      <div class="grid-two">
+        <div class="wf tall">Source metadata: <span class="lbl">document · account · type · version · page · section · chunk ID</span></div>
+        <div class="wf tall">Matched passage (highlighted chunk) <span class="lbl">"…escalate to Tier-2…"</span></div>
+      </div>
+      <div class="wf" style="min-height:40px;">Open full source document <span class="lbl">view original</span></div>
+      <div class="wf" style="min-height:40px;">⬇ Download evidence (CSV) <span class="lbl">export action</span></div>
+      <div class="err note"><b>Insufficient-evidence state (FR-11 / FR-05 refusal):</b> if no chunk supports the answer — "⚠ We could not verify a procedure for this query from BNK-0321's approved knowledge. Refine your search or check the Document Library." — plus actions.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EMPTY & ERROR STATES ============ -->
+<h2 class="section">Empty &amp; Error States (application-wide)</h2>
+<p class="muted">A complete wireframe covers every state — not just the happy path.</p>
+
+<div class="grid-two">
+  <div class="card">
+    <h3 class="sub">📭 Empty — no matching results / no documents</h3>
+    <div class="wf" style="min-height:90px;">
+      "No results match your filters."
+      <span class="lbl">why: no evidence in this client's KB · actions: Clear filters · View Document Library · Search another client</span>
+    </div>
+    <div class="wf" style="min-height:60px;margin-top:8px;">
+      First-time client / empty dataset: "This client has no indexed documents yet — an admin can upload one."
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="sub">⚠️ Error states</h3>
+    <div class="wf" style="min-height:60px;">Connection / retrieval failed → "Data source unreachable. Retry" + Retry button</div>
+    <div class="wf" style="min-height:60px;margin-top:8px;">Upload validation error → "Unsupported file type: .exe. Accepted: PDF, DOCX, TXT"</div>
+    <div class="wf" style="min-height:60px;margin-top:8px;">Permission error → "You lack access to this client's knowledge. Contact a lead."</div>
+  </div>
+</div>
+
+<!-- ============ WRITTEN EXPLANATIONS ============ -->
+<h2 class="section">Written Screen Explanations (one paragraph each)</h2>
+<div class="card">
+  <p><b>1. Dashboard.</b> The landing screen balances <em>Monitor</em> and <em>Explore</em> modes. A support engineer arriving mid-shift does a 90-second health check before diving in: they can pick the affected client immediately (the primary action), glance at indexing health via the three KPI cards, and either resume a recent search or jump to any client. Because the PRD frames the product as account-first, this screen's first act is choosing <em>which account</em> — establishing the retrieval boundary before any search happens.</p>
+
+  <p><b>2. Clients.</b> This screen turns "select the affected client" (user story #1, FR-01) into a concrete, searchable step. Every row exposes the client ID, document count, and live indexing status so the support engineer can trust the knowledge base before opening it (FR-13). The pink "Open knowledge" action on each row is the single most important click on this screen — one click lands the user in the core search workflow.</p>
+
+  <p><b>3. Client Knowledge / Procedure Search.</b> The heart of the product's Investigate and Filter modes. A natural-language query field sits at the top; the selected client is shown as a locked, visible filter so the account isolation rule (FR-06/FR-07) is transparent. Results are evidence cards showing relevance score plus exact source metadata (document, page, section) — so a support engineer can judge correctness before opening, and every card is a drill-down entry into Source Detail. This is where "reduce time and ambiguity" is actually delivered.</p>
+
+  <p><b>4. Document Library.</b> Serves the Support Lead's trust need ("see account-specific documents and their indexing status"). It lists every approved document for a client with type, version, and a colored indexing-status indicator. Failed or re-indexing items are colored and actionable. This screen is the "source of truth" that makes the rest of the product trustworthy — it answers the PRD quality question of whether the knowledge base is complete and current.</p>
+
+  <p><b>5. Document Upload &amp; Indexing.</b> The Knowledge Administrator workflow satisfying FR-12/FR-13. Because every document must be account-bound (FR-02), client selection is the first mandatory field. The form captures document type and optional version/date metadata, then runs the visible processing pipeline (extraction → cleaning → chunking → embedding → indexing → validation). A success state confirms indexing with a chunk count; validation errors are shown inline rather than as a blank failure.</p>
+
+  <p><b>6. Result / Source Detail.</b> The verification screen for Investigate mode — where the PRD's accuracy and traceability requirements come alive. It shows the grounded RAG answer (clearly distinct from evidence), the exact source metadata, and the matched passage highlighted, so a support engineer can confirm the procedure before acting. Critically, it hosts the <b>insufficient-evidence state</b>: instead of fabricating a procedure (FR-11), the system states it could not verify the answer and offers next actions.</p>
+</div>
+
+<!-- ============ DESIGN REASONING & JUSTIFICATION ============ -->
+<h2 class="section">Design Reasoning &amp; PRD Feature-Placement Justification</h2>
+<div class="card">
+  <h3 class="sub">Non-obvious layout decisions</h3>
+  <ul class="check">
+    <li><b>Persistent left sidebar</b> on every screen — supports <em>Explore</em> mode's non-linear navigation. Users jump between Clients, Search, and Library without losing context, while a top client-scope indicator keeps the account boundary visible.</li>
+    <li><b>Client picker on the Dashboard as the primary CTA.</b> Support engineers start every incident by narrowing to the affected account; placing that as the first, pink action matches their actual morning/daily arc and enforces account isolation before search.</li>
+    <li><b>KPI cards on Dashboard but NOT screens 2–6.</b> KPIs are only meaningful where the user judges system health (Monitor mode). On the core search screen, the "KPI" is the query box and the results, so cards would be decoration-first clutter.</li>
+    <li><b>Relevance % + source metadata inline on every result card.</b> This is the decision context a support engineer needs (traceability, FR-10) — surfaced at the point of decision rather than hidden behind a click.</li>
+    <li><b>Source Detail split into "Grounded answer" vs "Matched passage."</b> The PRD demands users "distinguish retrieved evidence from generated explanation" — so answer and evidence are visually separated, never merged.</li>
+    <li><b>Filters (2) + Search CTA are separate, labelled elements.</b> Per the checklist, filters expose what they filter, auto-apply behavior, and a Clear button. The Search button is the primary pink action.</li>
+    <li><b>Error/empty states are inline, never blank.</b> Every failure (no results, connection, upload validation, permission, insufficient evidence) has a message, a reason, and an action — matching Section 2's "never show a blank screen."</li>
+  </ul>
+
+  <h3 class="sub">PRD requirement → placement map</h3>
+  <table class="purpose">
+    <thead><tr><th>PRD requirement / story</th><th>Where placed &amp; why</th></tr></thead>
+    <tbody>
+      <tr><td>FR-01 Select client before retrieval</td><td>Dashboard CTA + Clients screen + locked client filter on Search.</td></tr>
+      <tr><td>FR-02 Documents account-bound</td><td>Upload form's mandatory client field; lock icon on Search filter.</td></tr>
+      <tr><td>FR-06/07 Top-K + account filtering</td><td>Search screen "Top-K" control + "Client locked" badge.</td></tr>
+      <tr><td>FR-09 Grounded generation</td><td>Source Detail "Grounded answer" panel, labelled as evidence-based.</td></tr>
+      <tr><td>FR-10 Source + page/section display</td><td>Every result card (doc, p., §) and Source Detail metadata panel.</td></tr>
+      <tr><td>FR-11 Insufficient evidence</td><td>Source Detail error state with refusal + next actions.</td></tr>
+      <tr><td>FR-12/13 Upload, indexing status, errors</td><td>Upload screen pipeline + Library status column + Dashboard KPI "indexing in progress."</td></tr>
+      <tr><td>Support Lead trust story</td><td>Document Library (status) + Dashboard indexing summary.</td></tr>
+      <tr><td>No generic chatbot page</td><td>Explicitly no chat screen; search is grounded + source-bound only.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ ACCEPTANCE CHECKLIST ============ -->
+<h2 class="section">Mock UX Acceptance Checklist (7 questions)</h2>
+<div class="card">
+  <ol class="check">
+    <li><span class="tick">✓</span> <b>Understandable without verbal explanation:</b> every grey box and pink action carries a label (component purpose / behavior). Source Detail, filters, and states are self-describing.</li>
+    <li><span class="tick">✓</span> <b>KPI metrics above the fold:</b> Dashboard has 3 KPI cards immediately under the header; nothing scrolls to see indexing health.</li>
+    <li><span class="tick">✓</span> <b>Filters labelled with interaction model:</b> Search &amp; Clients show what they filter, auto-apply, and a Clear button; the Search CTA is explicit.</li>
+    <li><span class="tick">✓</span> <b>Navigation understandable, ≤2 clicks:</b> Dashboard → client → Search (2 clicks); Drill-down → Source Detail (1 more). Sidebar reaches every screen.</li>
+    <li><span class="tick">✓</span> <b>Error + empty states represented:</b> no-results, empty client, connection failure, upload validation, permission, insufficient-evidence — all shown with actions.</li>
+    <li><span class="tick">✓</span> <b>Insights readable (decision from each chart/result):</b> each result card is annotated with what it answers and its evidence; no decorative charts on the core screens.</li>
+    <li><span class="tick">✓</span> <b>Solves the PRD problem:</b> support engineer → select client → natural-language search → verify grounded source → act. Fewest steps (2–3 clicks) for the primary incident workflow.</li>
+  </ol>
+</div>
+
+<div class="footer-note">
+  Mock UX · Client Support Knowledge Assistant · Built from PRD v1.1 (pages: Dashboard, Clients, Knowledge Search, Document Library, Upload &amp; Indexing, Result/Source Detail). Low-fidelity planning artifact — not a final design. Submit as the completed Mock UX for the core module.
+</div>
+
+</div>
+</body>
+</html>

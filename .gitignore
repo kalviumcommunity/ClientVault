@@ -1,0 +1,123 @@
+# =====================================================================
+# ClientVault — .gitignore
+# Based on workflow security baseline: never commit .env / secrets,
+# never commit build output, dependency caches, or generated files.
+# =====================================================================
+
+# ---------- Secrets & local config (never commit) ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account.json
+secrets/
+secret.*
+*.local
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+.python-version
+
+# PyInstaller / packaging
+*.manifest
+*.spec
+
+# ---------- Node.js / Next.js / React (UI layer) ----------
+node_modules/
+.pnp/
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+.next/
+out/
+build/
+dist/
+coverage/
+.vercel
+.turbo/
+
+# ---------- Test / coverage / quality ----------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+.mypy_cache/
+.pytype/
+.hypothesis/
+.cache/
+
+# ---------- Vector DB / data (do not commit corpora) ----------
+# Embeddings/vector data, indexed chunks, and raw client documents
+# are regenerable and account-sensitive. Never commit.
+data/
+vector_store/
+qdrant/
+*.db
+*.sqlite
+*.sqlite3
+corpus/
+chunks/
+embeddings/
+/uploads/
+*.pkl
+*.parquet
+*.npy
+*.npz
+
+# ---------- Docs & generated artifacts ----------
+# Keep human-authored docs; ignore generated/exported docs.
+*.pdf
+*.docx~
+*~
+
+# ---------- IDE / editor ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
