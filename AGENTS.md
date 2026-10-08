@@ -226,22 +226,22 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Workspace foundation established (virtual environment, requirements.txt, directory isolation for data/src/prompts/outputs, .gitignore exclusion rules, .env.example, src/main.py verification entrypoint, clean-run proof).
+**Last change:** Team GitHub workflow established (WORKFLOW.md documentation, conventional commit enforcement, data validation module, sprint Issues #4, #5, #6 tracked).
 
-**Date / iteration:** Foundation sprint (Sprint Day 1).
+**Date / iteration:** GitHub Workflow Setup Sprint.
 
-**Current phase (workflow doc):** Phase 5 — Repository Constitution & Foundation Setup.
-**Last change:** Mock UX updated to PRD v1.2 (top navigation, quantified
-KPIs, synthetic corpus, §18.4 empty/error states).
+**Current phase (workflow doc):** Phase 5 — Repository Constitution & Collaboration Workflows.
 
-**Date / iteration:** PRD v1.2 review update.
-
-**Current phase (workflow doc):** Phase 5 — Repository Constitution +
-Mock UX (PRD v1.2). The app under `src/` is not yet scaffolded.
-
-**Current branch:** `feat/workspace-foundation`
+**Current branch:** `feature/github-workflow-setup` (and alias `feature/data-ingestion`)
 
 **What exists right now:**
+- `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
+- `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
+- **Active Pull Request:** PR [#7](https://github.com/kalviumcommunity/ClientVault/pull/7) opened from `feature/github-workflow-setup` to `main` (open for peer review).
+- GitHub Issues tracked on `kalviumcommunity/ClientVault`:
+  - [#4](https://github.com/kalviumcommunity/ClientVault/issues/4): "Ingest customer transaction data into pipeline"
+  - [#5](https://github.com/kalviumcommunity/ClientVault/issues/5): "Create data quality report for incoming datasets"
+  - [#6](https://github.com/kalviumcommunity/ClientVault/issues/6): "Document data dictionary for team reference"
 - `README.md` — Setup instructions (venv → install → .env → run) and clean-run confirmation proof.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`).
 - Workspace folders with tracked placeholders:
