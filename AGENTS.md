@@ -86,6 +86,10 @@ UX at `mock-ux.html`, plus repo-constitution files; the app under
 `src/` is not yet created):
 
 ```bash
+# Foundation verification & environment health check
+source .venv/bin/activate
+python src/main.py
+
 # UI (Next.js / React) — once the app lands
 npm install
 npm run dev
@@ -222,6 +226,11 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
+**Last change:** Workspace foundation established (virtual environment, requirements.txt, directory isolation for data/src/prompts/outputs, .gitignore exclusion rules, .env.example, src/main.py verification entrypoint, clean-run proof).
+
+**Date / iteration:** Foundation sprint (Sprint Day 1).
+
+**Current phase (workflow doc):** Phase 5 — Repository Constitution & Foundation Setup.
 **Last change:** Mock UX updated to PRD v1.2 (top navigation, quantified
 KPIs, synthetic corpus, §18.4 empty/error states).
 
@@ -230,9 +239,32 @@ KPIs, synthetic corpus, §18.4 empty/error states).
 **Current phase (workflow doc):** Phase 5 — Repository Constitution +
 Mock UX (PRD v1.2). The app under `src/` is not yet scaffolded.
 
-**Current branch:** `main` (no feature work started).
+**Current branch:** `feat/workspace-foundation`
 
 **What exists right now:**
+- `README.md` — Setup instructions (venv → install → .env → run) and clean-run confirmation proof.
+- `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`).
+- Workspace folders with tracked placeholders:
+  - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).
+  - `src/` (`__init__.py`, `main.py`) — Source code and verification script.
+  - `prompts/` (`.gitkeep`, `system_prompt.txt`) — Grounding prompts and templates.
+  - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
+- `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
+- `.gitignore` — Protects repository against committing `.venv/`, `node_modules/`, `.env`, `data/*`, `outputs/*`, secrets, and build caches.
+- `mock-ux.html` — Completed Mock UX wireframes (6 screens) for the Client Support Knowledge Assistant PRD.
+- `RULES.md` — Full engineering/product rules for humans and agents.
+- `AGENTS.md` — Live AI contract and single source of truth.
+
+**What does NOT yet exist (next work):**
+- Application full stack under `src/` or `backend/` (FastAPI endpoints, ingestion chunker, Qdrant/Chroma client integration, RAG pipeline, Next.js UI).
+- Synthetic 3-client corpus (15 documents) and 30 evaluation questions.
+- Remaining Phase 5 baseline files: `CONTRIBUTING.md`, `SECURITY.md`, `.editorconfig`, `.gitattributes`, `.github/` templates, `docs/agent/STATE.md`.
+
+**Known decisions / gotchas:**
+- Product is account-isolated retrieval; no generic chatbot page.
+- `.env` and `.venv` are strictly gitignored.
+- `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
+- System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
 - `README.md` — minimal ("ClientVault"), placeholder.
 - `mock-ux.html` — **updated Mock UX for PRD v1.2.** Changes include:
   - **Top navigation** across all 6 screens (CLIENTVAULT brand per §18.4),
@@ -275,6 +307,4 @@ Mock UX (PRD v1.2). The app under `src/` is not yet scaffolded.
 - `.env`/secrets and vector/corpus artifacts are gitignored.
 - Mock UX lives in root as static HTML until the real UI replaces it.
 
-**Next action (if continuing):** Generate remaining Phase 5 baseline files
-(`CONTRIBUTING.md`, `SECURITY.md`, `.env.example`, `.editorconfig`,
-`.gitattributes`, `.github/*`), then scaffold the app skeleton.
+**Next action (if continuing):** Commit changes on `feat/workspace-foundation`, then proceed to synthetic corpus creation or backend RAG scaffolding.
