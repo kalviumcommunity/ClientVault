@@ -92,7 +92,13 @@ dmypy.json
 # ---------- Vector DB / data (do not commit corpora) ----------
 # Embeddings/vector data, indexed chunks, and raw client documents
 # are regenerable and account-sensitive. Never commit.
-data/
+# Local raw data & documents (never commit documents/corpora)
+data/*
+!data/.gitkeep
+
+# Generated outputs & local vector persistence
+outputs/*
+!outputs/.gitkeep
 vector_store/
 qdrant/
 *.db
