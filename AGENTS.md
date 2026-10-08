@@ -54,28 +54,35 @@ Before any change:
 ## 2. Project identity & scope
 
 This is a **B2B internal account-specific retrieval app** (Client Support
-Knowledge Assistant), not a chatbot. Retrieve the correct client-specific
-procedure and verify it against its source.
+Knowledge Assistant), branded **CLIENTVAULT**, not a chatbot. Retrieve the
+correct client-specific procedure and verify it against its source.
 
-Non-negotiable product rules (from the PRD):
+Non-negotiable product rules (from the PRD v1.2):
 
 - **Account isolation** — retrieval is filtered to the selected
   client/account; never mix another account's docs into evidence.
+  Target: ≥95% no-wrong-client evidence.
 - **Grounding** — answers come from retrieved evidence; if evidence is
   insufficient, return an explicit insufficient-evidence response, never
-  fabricate.
+  fabricate. Target: 100% unsupported-query safety.
 - **Traceability** — every result shows source document, page/section,
-  and matched passage.
+  and matched passage. Target: ≥95% source traceability.
 - **Out of scope:** generic open-domain ChatGPT, unrestricted generative
   Q&A, auto-execution of procedures, production changes, replacing
   approved runbooks/SLAs, predictive resolution, external web search.
+
+Key v1.2 quantified KPIs (PRD §18.1):
+Top-5 retrieval recall ≥85%, account isolation ≥95%, procedure
+search-to-source median ≤60s (30 queries), source traceability ≥95%,
+unsupported-query safety 100%, metadata completeness 100%, manual lookup
+reduction ≥30%.
 
 ---
 
 ## 3. How to run the project
 
-Fill these in as the project is built (currently the artifacts are the
-Mock UX at `mock-ux.html`, plus repo-constitution files; the app under
+Fill these in as the project is built (currently the artifact is the Mock
+UX at `mock-ux.html`, plus repo-constitution files; the app under
 `src/` is not yet created):
 
 ```bash
@@ -215,20 +222,34 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Repository constitution established.
+**Last change:** Mock UX updated to PRD v1.2 (top navigation, quantified
+KPIs, synthetic corpus, §18.4 empty/error states).
 
-**Date / iteration:** Initial setup.
+**Date / iteration:** PRD v1.2 review update.
 
-**Current phase (workflow doc):** Phase 5 — Repository Constitution
-(baseline files being created).
+**Current phase (workflow doc):** Phase 5 — Repository Constitution +
+Mock UX (PRD v1.2). The app under `src/` is not yet scaffolded.
 
 **Current branch:** `main` (no feature work started).
 
 **What exists right now:**
 - `README.md` — minimal ("ClientVault"), placeholder.
-- `mock-ux.html` — completed Mock UX wireframes (6 screens) for the
-  Client Support Knowledge Assistant PRD. Open via `python3 -m http.server`
-  from the repo root.
+- `mock-ux.html` — **updated Mock UX for PRD v1.2.** Changes include:
+  - **Top navigation** across all 6 screens (CLIENTVAULT brand per §18.4),
+    replacing the former left sidebar.
+  - **v1.2 quantified KPI target cards** on the Dashboard (§18.1: Top-5
+    recall ≥85%, account isolation ≥95%, search-to-source ≤60s,
+    unsupported-query safety 100%).
+  - **Synthetic corpus** reflected: 3 clients (ACME-001, BNK-0321,
+    RTL-0714) × 5 docs each, per-client mix 2 onboarding / 1 SLA /
+    2 runbooks (§18.2), in Clients and Document Library screens.
+  - **New "PRD v1.2 §18.4 Visual Wireframes" section** reproducing the
+    empty-search, insufficient-evidence, upload-error, and search-error
+    states verbatim-style, plus additional empty/error coverage.
+  - Source Detail updated with v1.2 isolation and traceability KPIs;
+    written explanations, design-reasoning map, and acceptance checklist
+    refreshed for v1.2.
+  - Open via `python3 -m http.server` from the repo root.
 - `.gitignore` — blocks secrets, Python/Node artifacts, vector/DB/corpus
   data.
 - `RULES.md` — full engineering/product rules for humans and agents.
@@ -242,9 +263,15 @@ Update durable records:
 - Remaining Phase 5 baseline files: `CONTRIBUTING.md`, `SECURITY.md`,
   `.env.example`, `.editorconfig`, `.gitattributes`, `.github/` templates.
 - Git branch protection/rulesets on `main` (server-side), CI workflow.
+- The synthetic corpus itself (15 docs), evaluation set (30 questions) per
+  §18.2, and ingestion/retrieval code.
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
+- Mock UX uses CLIENTVAULT **top navigation** (not sidebar) per v1.2 §18.4.
+- Dashboard surfaces v1.2 quantified KPI targets.
+- Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2
+  runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 - `.env`/secrets and vector/corpus artifacts are gitignored.
 - Mock UX lives in root as static HTML until the real UI replaces it.
 
