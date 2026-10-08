@@ -235,8 +235,9 @@ Update durable records:
 **Current branch:** `feature/github-workflow-setup` (and alias `feature/data-ingestion`)
 
 **What exists right now:**
-- `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, and issue tracking lifecycle.
+- `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
+- **Active Pull Request:** PR [#7](https://github.com/kalviumcommunity/ClientVault/pull/7) opened from `feature/github-workflow-setup` to `main` (open for peer review).
 - GitHub Issues tracked on `kalviumcommunity/ClientVault`:
   - [#4](https://github.com/kalviumcommunity/ClientVault/issues/4): "Ingest customer transaction data into pipeline"
   - [#5](https://github.com/kalviumcommunity/ClientVault/issues/5): "Create data quality report for incoming datasets"

@@ -98,3 +98,12 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 | [#4](https://github.com/kalviumcommunity/ClientVault/issues/4) | Ingest customer transaction data into pipeline | `feature`, `data-pipeline` | @Abhinavv15 | Active |
 | [#5](https://github.com/kalviumcommunity/ClientVault/issues/5) | Create data quality report for incoming datasets | `data-pipeline` | @Abhinavv15 | Active |
 | [#6](https://github.com/kalviumcommunity/ClientVault/issues/6) | Document data dictionary for team reference | `documentation` | @Abhinavv15 | Active |
+
+---
+
+## 6. Active Pull Request
+
+- **PR #7**: [Add data validation workflow and team branching guidelines](https://github.com/kalviumcommunity/ClientVault/pull/7)
+- **Base Branch**: `main`
+- **Head Branch**: `feature/github-workflow-setup` (and alias `feature/data-ingestion`)
+- **Review Status**: Open for peer review (not merged)
