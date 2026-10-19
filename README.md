@@ -82,12 +82,29 @@ Verify that the environment, dependencies, directories, and vector database init
 python src/main.py
 ```
 
+### 6. Run Chat Completion Client
+
+Execute a first successful chat completion call against an OpenAI-compatible API with payload logging and error resilience:
+
+```bash
+# Run against live configured endpoint in .env:
+python src/chat_completion.py
+
+# Run in self-contained mock mode (offline verification + token usage):
+python src/chat_completion.py --mock
+
+# Run in mock mode demonstrating 401 and 429 error resilience:
+python src/chat_completion.py --mock --test-errors
+
+# Run automated unit test suite:
+python -m unittest discover tests
+```
+
 ---
 
 ## Clean-Run Proof Confirmation
 
-The workspace setup has been verified from a fresh installation using the steps above. Output:
-
+### 1. Workspace Health Check
 ```
 =================================================================
   ClientVault — Foundation Health Check & Run Proof
@@ -115,6 +132,75 @@ The workspace setup has been verified from a fresh installation using the steps 
 =================================================================
   STATUS: ALL CHECKS PASSED - WORKSPACE READY
 =================================================================
+```
+
+### 2. Chat Completion Single Call & Error Handling Proof
+The sample execution output of `python src/chat_completion.py --mock --test-errors` is recorded in [`sample_output.log`](file:///Users/abhinavv/Documents/ClientVault/sample_output.log):
+
+```text
+=================================================================
+  ClientVault — Chat Completion Verification (Mock Mode)
+  Target Endpoint: http://127.0.0.1:50123/v1 (Local OpenAI-compatible mock)
+  Selected Model:  gpt-4o-mini
+=================================================================
+
+[INFO] ClientVault.ChatCompletion: ---------- OUTGOING LLM REQUEST ----------
+[INFO] ClientVault.ChatCompletion: Target Endpoint: http://127.0.0.1:50123/v1
+[INFO] ClientVault.ChatCompletion: Selected Model:  gpt-4o-mini
+[INFO] ClientVault.ChatCompletion: Messages Payload:
+[
+  {
+    "role": "system",
+    "content": "You are the Client Support Knowledge Assistant..."
+  },
+  {
+    "role": "user",
+    "content": "Explain the standard client onboarding verification procedure."
+  }
+]
+[INFO] ClientVault.ChatCompletion: ------------------------------------------
+[INFO] ClientVault.ChatCompletion: ---------- INCOMING LLM RESPONSE ----------
+[INFO] ClientVault.ChatCompletion: Response ID:     chatcmpl-localmock-1792390556
+[INFO] ClientVault.ChatCompletion: Reported Model:  gpt-4o-mini
+[INFO] ClientVault.ChatCompletion: Finish Reason:   stop
+[INFO] ClientVault.ChatCompletion: Role:            assistant
+[INFO] ClientVault.ChatCompletion: Response Content:
+Standard Client Onboarding Verification (KB-ONB-001 §3.2, p.4):
+1. Verify authorized client sponsor identity via verified primary domain email.
+2. Enforce strict dual-operator approval before credential provisioning.
+3. Restrict initial IAM role to staging sandbox with audit trail enabled.
+[INFO] ClientVault.ChatCompletion: Token Usage:
+[INFO] ClientVault.ChatCompletion:   Prompt Tokens:     38
+[INFO] ClientVault.ChatCompletion:   Completion Tokens: 54
+[INFO] ClientVault.ChatCompletion:   Total Tokens:      92
+[INFO] ClientVault.ChatCompletion: -------------------------------------------
+
+=================================================================
+  STATUS: CALL SUCCESSFUL (200 OK)
+=================================================================
+
+--- MODEL REPLY ---
+Standard Client Onboarding Verification (KB-ONB-001 §3.2, p.4):
+1. Verify authorized client sponsor identity via verified primary domain email.
+2. Enforce strict dual-operator approval before credential provisioning.
+3. Restrict initial IAM role to staging sandbox with audit trail enabled.
+-------------------
+
+Tokens Used: 92 (Prompt: 38, Completion: 54)
+
+=================================================================
+  Demonstrating Error Handling (Task 4 Resilience)
+=================================================================
+
+[Scenario A: HTTP 401 Authentication Error Simulation]
+[ERROR] ClientVault.ChatCompletion: [AUTHENTICATION FAILED (HTTP 401)] The provided API key is invalid or unauthorized.
+  Server Message: Error code: 401 - {'error': {'message': 'Incorrect API key provided.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  Action Required: Check 'OPENAI_API_KEY' in your .env file and ensure it is valid.
+
+[Scenario B: HTTP 429 Rate Limit Error Simulation]
+[ERROR] ClientVault.ChatCompletion: [RATE LIMIT EXCEEDED (HTTP 429)] Request limit or account quota has been exceeded.
+  Server Message: Error code: 429 - {'error': {'message': 'Rate limit reached for requests (quota exceeded).', 'type': 'requests', 'param': None, 'code': 'rate_limit_exceeded'}}
+  Action Required: Verify account quota/billing at your provider or back off and retry later.
 ```
 
 ---

@@ -1,0 +1,94 @@
+
+=================================================================
+  ClientVault — Chat Completion Verification (Mock Mode)
+  Target Endpoint: http://127.0.0.1:50123/v1 (Local OpenAI-compatible mock)
+  Selected Model:  gpt-4o-mini
+=================================================================
+
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ---------- OUTGOING LLM REQUEST ----------
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Target Endpoint: http://127.0.0.1:50123/v1
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Selected Model:  gpt-4o-mini
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Messages Payload:
+[
+  {
+    "role": "system",
+    "content": "You are the Client Support Knowledge Assistant.\nYour role is to retrieve and explain client-specific operational procedures strictly based on the provided evidence.\n\nRules:\n1. Account Isolation: Only answer using evidence for the selected client/account.\n2. Grounding: Rely strictly on the provided context. If the context does not contain sufficient information to answer the inquiry, state explicitly: \"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure.\"\n3. Traceability: Cite the source document, page, and section for all procedural steps.\n4. Do not speculate or extrapolate beyond the provided text."
+  },
+  {
+    "role": "user",
+    "content": "Explain the standard client onboarding verification procedure."
+  }
+]
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ------------------------------------------
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ---------- INCOMING LLM RESPONSE ----------
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Response ID:     chatcmpl-localmock-1792390556
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Reported Model:  gpt-4o-mini
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Finish Reason:   stop
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Role:            assistant
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Response Content:
+Standard Client Onboarding Verification (KB-ONB-001 §3.2, p.4):
+1. Verify authorized client sponsor identity via verified primary domain email.
+2. Enforce strict dual-operator approval before credential provisioning.
+3. Restrict initial IAM role to staging sandbox with audit trail enabled.
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Token Usage:
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion:   Prompt Tokens:     38
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion:   Completion Tokens: 54
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion:   Total Tokens:      92
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: -------------------------------------------
+
+=================================================================
+  STATUS: CALL SUCCESSFUL (200 OK)
+=================================================================
+
+--- MODEL REPLY ---
+Standard Client Onboarding Verification (KB-ONB-001 §3.2, p.4):
+1. Verify authorized client sponsor identity via verified primary domain email.
+2. Enforce strict dual-operator approval before credential provisioning.
+3. Restrict initial IAM role to staging sandbox with audit trail enabled.
+-------------------
+
+Tokens Used: 92 (Prompt: 38, Completion: 54)
+
+=================================================================
+  Demonstrating Error Handling (Task 4 Resilience)
+=================================================================
+
+[Scenario A: HTTP 401 Authentication Error Simulation]
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ---------- OUTGOING LLM REQUEST ----------
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Target Endpoint: http://127.0.0.1:50123/v1
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Selected Model:  gpt-4o-mini
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Messages Payload:
+[
+  {
+    "role": "system",
+    "content": "You are the Client Support Knowledge Assistant.\nYour role is to retrieve and explain client-specific operational procedures strictly based on the provided evidence.\n\nRules:\n1. Account Isolation: Only answer using evidence for the selected client/account.\n2. Grounding: Rely strictly on the provided context. If the context does not contain sufficient information to answer the inquiry, state explicitly: \"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure.\"\n3. Traceability: Cite the source document, page, and section for all procedural steps.\n4. Do not speculate or extrapolate beyond the provided text."
+  },
+  {
+    "role": "user",
+    "content": "Explain the standard client onboarding verification procedure."
+  }
+]
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ------------------------------------------
+2026-10-19 11:45:56 [ERROR] ClientVault.ChatCompletion: [AUTHENTICATION FAILED (HTTP 401)] The provided API key is invalid or unauthorized.
+  Server Message: Error code: 401 - {'error': {'message': 'Incorrect API key provided.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+  Action Required: Check 'OPENAI_API_KEY' in your .env file and ensure it is valid.
+
+[Scenario B: HTTP 429 Rate Limit Error Simulation]
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ---------- OUTGOING LLM REQUEST ----------
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Target Endpoint: http://127.0.0.1:50123/v1
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Selected Model:  gpt-4o-mini
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: Messages Payload:
+[
+  {
+    "role": "system",
+    "content": "You are the Client Support Knowledge Assistant.\nYour role is to retrieve and explain client-specific operational procedures strictly based on the provided evidence.\n\nRules:\n1. Account Isolation: Only answer using evidence for the selected client/account.\n2. Grounding: Rely strictly on the provided context. If the context does not contain sufficient information to answer the inquiry, state explicitly: \"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure.\"\n3. Traceability: Cite the source document, page, and section for all procedural steps.\n4. Do not speculate or extrapolate beyond the provided text."
+  },
+  {
+    "role": "user",
+    "content": "Explain the standard client onboarding verification procedure."
+  }
+]
+2026-10-19 11:45:56 [INFO] ClientVault.ChatCompletion: ------------------------------------------
+2026-10-19 11:45:56 [ERROR] ClientVault.ChatCompletion: [RATE LIMIT EXCEEDED (HTTP 429)] Request limit or account quota has been exceeded.
+  Server Message: Error code: 429 - {'error': {'message': 'Rate limit reached for requests (quota exceeded).', 'type': 'requests', 'param': None, 'code': 'rate_limit_exceeded'}}
+  Action Required: Verify account quota/billing at your provider or back off and retry later.
