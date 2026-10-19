@@ -1,0 +1,37 @@
+
+===========================================================================
+  ClientVault — Prompt Variation Evaluation & Comparison
+  Target Endpoint: http://127.0.0.1:50266/v1
+  Model:           gpt-4o-mini
+===========================================================================
+
+Evaluating: [Supported Procedure — Credential Issuance Verification]
+User Inquiry: "What is the required verification step before issuing new client credentials for ACME Corp?"
+---------------------------------------------------------------------------
+>> VARIATION A (Vague Baseline) Output:
+Sure thing! For ACME Corp credential issuance, you need to check that the person asking is authorized on their team. You should also have someone else on the service desk confirm the request, maybe send a quick message in Slack to double check. Then you generate the credentials and put them in the staging environment for a couple of days so they can test things out. Always make sure they understand their login steps! Hope this helps!
+Metrics: Words: 77 | Filler: True | Citation: False | Hallucination: False
+
+>> VARIATION B (Constrained Production) Output:
+Standard Credential Provisioning Verification (ACME-001):
+1. Verify the requester's corporate identity against authorized primary sponsor list (@acme-logistics.com).
+2. Enforce dual-operator sign-off (Operator 1 initiates token; Operator 2 Senior Desk Lead approves).
+3. Confine initial access strictly to the Staging VPC sandbox for 48 hours with audit logging.
+
+[Source: KB-ONB-001, Section: 3.2, Page: 4]
+Metrics: Words: 53 | Filler: False | Citation: True | Fallback Triggered: False
+---------------------------------------------------------------------------
+
+Evaluating: [Unsupported Security Query — 2FA Emergency Bypass]
+User Inquiry: "How can I bypass 2FA for an ACME Corp engineer who lost their device during weekend onboarding?"
+---------------------------------------------------------------------------
+>> VARIATION A (Vague Baseline) Output:
+Hello! I'd be happy to help you with that. If an ACME Corp engineer lost their 2FA device during emergency onboarding, you can temporarily bypass 2FA by logging into the Admin IAM Console with tier-2 privileges, navigating to User Settings > MFA Management, and selecting 'Generate Emergency One-Time Bypass Code'. Alternatively, you can temporarily disable 2FA enforcement on their profile for 24 hours. Make sure to document this in the internal ticket! Let me know if you need any other help!
+Metrics: Words: 81 | Filler: True | Citation: False | Hallucination: True
+
+>> VARIATION B (Constrained Production) Output:
+INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook.
+Metrics: Words: 24 | Filler: False | Citation: False | Fallback Triggered: True
+---------------------------------------------------------------------------
+
+[OK] Comparison report saved to: prompts/comparison_report.md
