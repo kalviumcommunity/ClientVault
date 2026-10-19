@@ -226,15 +226,18 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented multi-turn conversation history and token budget manager (`src/history_manager.py`), maintaining turn sequencing, counting total tokens before calls, trimming/summarizing older messages under budget while preserving root system prompt, generated audit trace (`history_trimming_output.log`), and validated with automated tests (`tests/test_history_manager.py`).
+**Last change:** Implemented LLM parameter tuning and grounding experiments harness (`src/parameter_tuning.py`), demonstrating effects of `temperature` (0.0 vs 0.7 vs 1.2), `max_tokens` (35 vs 150), and extra parameters (`stop` and `top_p`), generated side-by-side comparison output trace (`parameter_comparison_output.log`), documented factual assistant settings, updated `src/chat_completion.py`, and verified with automated test suite (`tests/test_parameter_tuning.py`).
 
-**Date / iteration:** Multi-Turn History & Token Budget Management Sprint.
+**Date / iteration:** LLM Parameter Tuning & Grounding Experiments Sprint.
 
-**Current phase (workflow doc):** Phase 9 — Multi-Turn Dialogue Management & Context Window Bounding.
+**Current phase (workflow doc):** Phase 10 — Inference Parameter Calibration & Output Grounding.
 
-**Current branch:** `feat/multi-turn-history-management`
+**Current branch:** `feat/llm-parameter-tuning-and-grounding`
 
 **What exists right now:**
+- `src/parameter_tuning.py` — Experiment harness comparing `temperature`, `max_tokens`, `stop`, and `top_p`, with production recommendation generator for factual grounding.
+- `tests/test_parameter_tuning.py` — Automated `unittest` suite validating parameter sensitivity, length truncation, and stop sequence mechanics.
+- `parameter_comparison_output.log` — Terminal capture and trace log of side-by-side parameter experiments.
 - `src/history_manager.py` — Multi-turn conversation manager supporting sliding-window trimming, context summarization, token accounting with message protocol overhead, and root system prompt preservation.
 - `tests/test_history_manager.py` — Automated `unittest` suite validating turn tracking, token measurement, budget trimming, and overflowing dialogue recovery.
 - `history_trimming_output.log` — Trace log demonstrating an overflowing 8-turn conversation successfully constrained within a 350-token budget.
@@ -248,20 +251,19 @@ Update durable records:
 - `prompts/comparison_report.md` — Committed markdown comparison report with scenario inputs, outputs, word counts, and safety metrics.
 - `prompt_comparison_output.log` — Terminal execution capture of the prompt evaluation suite.
 - `tests/test_prompt_eval.py` — Automated `unittest` suite validating role boundaries, length/formatting rules, citations, and fallback safety.
-- `src/chat_completion.py` — Production chat completion runner reading from `.env` (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_CHAT_MODEL`), logging outgoing/incoming payloads and token usage, and catching HTTP 401 and 429 with actionable messages. Includes built-in `--mock` and `--test-errors` modes.
+- `src/chat_completion.py` — Production chat completion runner reading from `.env` (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_CHAT_MODEL`), supporting `max_tokens`, `stop`, `top_p`, logging outgoing/incoming payloads and token usage, and catching HTTP 401 and 429 with actionable messages. Includes built-in `--mock` and `--test-errors` modes.
 - `tests/mock_endpoint.py` — Zero-dependency local mock OpenAI server supporting 200 OK, 401 Unauthorized, and 429 Too Many Requests response simulation.
 - `tests/test_chat_completion.py` — Automated `unittest` suite testing configuration loading, request execution, token parsing, and 401/429/connection error handling.
 - `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
-- **Active Pull Request:** PR [#12](https://github.com/kalviumcommunity/ClientVault/pull/12) opened from `feat/multi-turn-history-management` to `main` (open for peer review).
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
-- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, unit test commands, and clean-run confirmation proofs.
+- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, parameter tuning guide, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`, `tiktoken>=0.7.0`).
 
 
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).
-  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`) — Source code and verification scripts.
+  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`, `parameter_tuning.py`) — Source code and verification scripts.
   - `prompts/` (`.gitkeep`, `system_prompt.txt`, `v1_vague_prompt.txt`, `v2_production_prompt.txt`, `PROMPT_RATIONALE.md`, `comparison_report.md`) — Grounding prompts and evaluation reports.
   - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
 - `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
@@ -279,11 +281,12 @@ Update durable records:
 - Product is account-isolated retrieval; no generic chatbot page.
 - In multi-turn history management, the root system prompt is inviolable and never trimmed.
 - History trimming operates on oldest turns first to maximize recent operational context.
+- For grounded, factual retrieval tasks, configure: `temperature=0.0` (greedy decoding), `max_tokens=150–250` (budget capping), `top_p=1.0` (do not alter alongside temp 0), and optional `stop=["\n\n\n", "User:"]` to guard boundary leaks.
 - `gpt-4o-mini` pricing is $0.150/1M input tokens and $0.600/1M output tokens (o200k_base tokenizer).
 - Code, punctuation, and dense UUIDs consume significantly more tokens per character (~1.8–2.9 chars/token) compared to standard English prose (~4.5–7.4 chars/token).
 - Chosen system prompt mandates exact fallback: `"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook."`
 - System prompt forces structured citation: `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
-- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, and `src/history_manager.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
+- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, `src/history_manager.py`, and `src/parameter_tuning.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
 - `.env` and `.venv` are strictly gitignored.
 - `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
 - System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
@@ -291,4 +294,4 @@ Update durable records:
 - Dashboard surfaces v1.2 quantified KPI targets.
 - Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Open PR for `feat/multi-turn-history-management`, merge to `main`, then proceed to synthetic corpus creation or vector ingestion pipeline.
+**Next action (if continuing):** Open PR for `feat/llm-parameter-tuning-and-grounding`, merge to `main`, then proceed to synthetic corpus creation or vector ingestion pipeline.

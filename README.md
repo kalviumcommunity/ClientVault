@@ -143,12 +143,25 @@ python src/history_manager.py --budget 350 --strategy summarize
 # Run automated unit tests:
 python -m unittest discover tests
 ```
-Execution trace is recorded in [`history_trimming_output.log`](file:///Users/abhinavv/Documents/ClientVault/history_trimming_output.log).
+### 10. Run LLM Parameter Tuning & Grounding Experiments
 
+Analyze how model inference hyperparameters (`temperature`, `max_tokens`, `stop`, `top_p`) affect output stability, length bounding, and hallucination risk in grounded enterprise retrieval:
 
+```bash
+# Run full parameter suite in self-contained mock mode:
+python src/parameter_tuning.py --mock
 
+# Run against live configured endpoint in .env:
+python src/parameter_tuning.py
 
----
+# Save results directly to log file:
+python src/parameter_tuning.py --mock --output-file parameter_comparison_output.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Comprehensive comparison logs and grounding recommendations are captured in [`parameter_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/parameter_comparison_output.log).
+
 
 ## Clean-Run Proof Confirmation
 

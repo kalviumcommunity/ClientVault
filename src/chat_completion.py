@@ -153,6 +153,9 @@ def send_chat_completion(
     config: Optional[Dict[str, Any]] = None,
     client: Optional[OpenAI] = None,
     temperature: float = 0.0,
+    max_tokens: Optional[int] = None,
+    stop: Optional[List[str]] = None,
+    top_p: Optional[float] = None,
 ) -> Dict[str, Any]:
     """
     Executes a chat completion call against the configured OpenAI-compatible API.
@@ -194,13 +197,23 @@ def send_chat_completion(
     # Task 3: Log outgoing request payload
     log_request_payload(model=model, messages=messages, base_url=base_url)
 
+    # Build kwargs
+    call_kwargs: Dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+    }
+    if max_tokens is not None:
+        call_kwargs["max_tokens"] = max_tokens
+    if stop is not None:
+        call_kwargs["stop"] = stop
+    if top_p is not None:
+        call_kwargs["top_p"] = top_p
+
     try:
         # Task 2: Send request
-        response = active_client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-        )
+        response = active_client.chat.completions.create(**call_kwargs)
+
 
         # Task 3: Log incoming response payload
         log_response_payload(response)
