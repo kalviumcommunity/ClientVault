@@ -192,6 +192,22 @@ python -m unittest discover tests
 ```
 Example renders across interactive chat and batch compliance features are captured in [`prompt_template_renders.log`](file:///Users/abhinavv/Documents/ClientVault/prompt_template_renders.log).
 
+### 13. Run Multi-Format Document Loader & Intake Confirmation
+
+Ingest client knowledge documents across formats (`.md`, `.txt`, `.html`, `.pdf`) into a standardized plain-text representation with granular source identity and non-crashing error resilience:
+
+```bash
+# Run multi-format intake demonstration over sample corpus:
+python src/document_loader.py
+
+# Save intake report to log file:
+python src/document_loader.py --output-file document_intake_output.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Sample corpus intake verification and skipped-file logs are captured in [`document_intake_output.log`](file:///Users/abhinavv/Documents/ClientVault/document_intake_output.log).
+
 
 ### 1. Workspace Health Check
 ```

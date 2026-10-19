@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vertex Health — Disaster Recovery Runbook</title>
+</head>
+<body>
+  <header>
+    <h1>Vertex Health Operations: Disaster Recovery & Failover Protocol</h1>
+    <p><strong>Document ID:</strong> SOP-DB-007 | <strong>Client:</strong> VERTEX-003</p>
+  </header>
+  <main>
+    <section id="trigger-criteria">
+      <h2>1. Trigger Criteria</h2>
+      <p>Failover to secondary replica region (us-east-2) must initiate only when the primary cluster experiences unrecoverable latency exceeding 5000ms or 3 consecutive heartbeat timeouts.</p>
+    </section>
+    <section id="execution-steps">
+      <h2>2. Execution Sequence</h2>
+      <ol>
+        <li>Notify Incident Commander and open war-room bridge.</li>
+        <li>Execute database promoter script: <code>vertex-cli db failover --cluster prd-vtx-01 --force-replica</code>.</li>
+        <li>Update Route53 health check DNS pointers to secondary cluster target.</li>
+        <li>Confirm integrity of encrypted patient data volumes before restoring application traffic.</li>
+      </ol>
+    </section>
+  </main>
+  <footer>
+    <p>Compliance Notice: HIPAA / HITECH cryptographic validation required post-failover.</p>
+  </footer>
+</body>
+</html>

@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR #17**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/17)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/document-loader-and-intake`
+  - **Review Status**: Open for peer review
 - **PR #15**: [feat: implement decoupled prompt templates and dynamic injection](https://github.com/kalviumcommunity/ClientVault/pull/15)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/prompt-templates-and-injection`

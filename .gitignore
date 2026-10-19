@@ -95,6 +95,8 @@ dmypy.json
 # Local raw data & documents (never commit documents/corpora)
 data/*
 !data/.gitkeep
+!data/sample_corpus/
+!data/sample_corpus/**
 
 # Generated outputs & local vector persistence
 outputs/*
