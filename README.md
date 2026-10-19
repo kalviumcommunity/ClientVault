@@ -127,8 +127,24 @@ python src/token_cost_estimator.py --output-file token_cost_output.log
 
 # Evaluate alternative models (e.g., gpt-4o):
 python src/token_cost_estimator.py --model gpt-4o
-```
 Sample benchmark metrics are recorded in [`token_cost_output.log`](file:///Users/abhinavv/Documents/ClientVault/token_cost_output.log).
+
+### 9. Run Multi-Turn History Management & Token Trimming
+
+Maintain conversational context across multi-turn interactions while enforcing token budgets:
+
+```bash
+# Run multi-turn overflow demo with sliding window trimming:
+python src/history_manager.py --budget 350 --strategy trim
+
+# Run multi-turn demo with conversational summarization:
+python src/history_manager.py --budget 350 --strategy summarize
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Execution trace is recorded in [`history_trimming_output.log`](file:///Users/abhinavv/Documents/ClientVault/history_trimming_output.log).
+
 
 
 

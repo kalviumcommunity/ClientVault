@@ -1,0 +1,76 @@
+================================================================================
+  ClientVault — Multi-Turn History Management & Token Trimming Demo
+  Token Budget Limit: 350 tokens | Strategy: TRIM
+  System Message Overhead: 19 tokens
+================================================================================
+
+Turn 1: Added [USER] message (55 tokens)
+  -> Naive Accumulated Total: 83 tokens
+  [STATUS] Within budget (83/350 tokens)
+--------------------------------------------------------------------------------
+Turn 2: Added [ASSISTANT] message (48 tokens)
+  -> Naive Accumulated Total: 134 tokens
+  [STATUS] Within budget (134/350 tokens)
+--------------------------------------------------------------------------------
+Turn 3: Added [USER] message (63 tokens)
+  -> Naive Accumulated Total: 200 tokens
+  [STATUS] Within budget (200/350 tokens)
+--------------------------------------------------------------------------------
+Turn 4: Added [ASSISTANT] message (49 tokens)
+  -> Naive Accumulated Total: 252 tokens
+  [STATUS] Within budget (252/350 tokens)
+--------------------------------------------------------------------------------
+Turn 5: Added [USER] message (65 tokens)
+  -> Naive Accumulated Total: 320 tokens
+  [STATUS] Within budget (320/350 tokens)
+--------------------------------------------------------------------------------
+Turn 6: Added [ASSISTANT] message (54 tokens)
+  -> Naive Accumulated Total: 377 tokens
+  [ALERT] Token count (377) EXCEEDS budget limit (350)!
+  [ACTION] Applied TRIM strategy: 377 -> 319 tokens
+  -> Active Turns Remaining in History: 5
+  -> System Prompt Preserved: True (Root message retained)
+--------------------------------------------------------------------------------
+Turn 7: Added [USER] message (66 tokens)
+  -> Naive Accumulated Total: 388 tokens
+  [ALERT] Token count (388) EXCEEDS budget limit (350)!
+  [ACTION] Applied TRIM strategy: 388 -> 337 tokens
+  -> Active Turns Remaining in History: 5
+  -> System Prompt Preserved: True (Root message retained)
+--------------------------------------------------------------------------------
+Turn 8: Added [ASSISTANT] message (47 tokens)
+  -> Naive Accumulated Total: 387 tokens
+  [ALERT] Token count (387) EXCEEDS budget limit (350)!
+  [ACTION] Applied TRIM strategy: 387 -> 321 tokens
+  -> Active Turns Remaining in History: 5
+  -> System Prompt Preserved: True (Root message retained)
+--------------------------------------------------------------------------------
+
+================================================================================
+  FINAL CONVERSATION PAYLOAD SENT TO MODEL
+  Final Total Tokens: 321 (Budget: 350)
+================================================================================
+[0] SYSTEM (19 tokens):
+    You are the ClientVault Support Knowledge Assistant. Explain client-specific procedures strictly based on verified evidence.
+
+[1] ASSISTANT (49 tokens):
+    Credential issuance requires dual-operator sign-off: Operator 1 initiates the provisioning token, and Operator 2 (Senior Desk Lead) must validate sponsor headers and authorize issuance.
+[Source: KB-ONB-001 §3.2]
+
+[2] USER (65 tokens):
+    What are the network sandbox restrictions for the new credentials?
+
+[Retrieved Context: KB-ONB-001 §3.3: Newly provisioned accounts inherit StagingSandboxRestrictedAccess limiting network transit to Staging VPC CIDR 10.240.0.0/16 for 48 hours with full audit logging.]
+
+[3] ASSISTANT (54 tokens):
+    New credentials inherit StagingSandboxRestrictedAccess, restricting network transit strictly to Staging VPC CIDR 10.240.0.0/16 for 48 hours with comprehensive audit logging enabled.
+[Source: KB-ONB-001 §3.3]
+
+[4] USER (66 tokens):
+    Can 2FA be bypassed if the user loses their hardware key during onboarding?
+
+[Retrieved Context: KB-ONB-001 §3.4: Hardware FIDO2 keys or TOTP registration is mandatory upon login. NO BYPASS OR EXEMPTION is permitted under any circumstances. Revoke and restart provisioning.]
+
+[5] ASSISTANT (47 tokens):
+    INSUFFICIENT EVIDENCE for bypass. 2FA is strictly mandatory with NO exemptions permitted. If lost, the token must be revoked and provisioning restarted.
+[Source: KB-ONB-001 §3.4]
