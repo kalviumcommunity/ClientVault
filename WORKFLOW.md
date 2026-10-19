@@ -103,7 +103,7 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Request
 
-- **PR #7**: [Add data validation workflow and team branching guidelines](https://github.com/kalviumcommunity/ClientVault/pull/7)
+- **PR #10**: [feat: implement system prompt engineering and comparative evaluation suite](https://github.com/kalviumcommunity/ClientVault/pull/10)
 - **Base Branch**: `main`
-- **Head Branch**: `feature/github-workflow-setup` (and alias `feature/data-ingestion`)
-- **Review Status**: Open for peer review (not merged)
+- **Head Branch**: `feat/prompt-engineering`
+- **Review Status**: Open for peer review
