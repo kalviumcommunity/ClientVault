@@ -103,10 +103,14 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR #15**: [feat: implement decoupled prompt templates and dynamic injection](https://github.com/kalviumcommunity/ClientVault/pull/15)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/prompt-templates-and-injection`
+  - **Review Status**: Merged into `main`
 - **PR #14**: [feat: implement structured JSON output parsing and schema validation](https://github.com/kalviumcommunity/ClientVault/pull/14)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/structured-json-output-and-validation`
-  - **Review Status**: Open for peer review
+  - **Review Status**: Merged into `main`
 - **PR #13**: [feat: implement LLM parameter tuning and grounding experiments](https://github.com/kalviumcommunity/ClientVault/pull/13)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/llm-parameter-tuning-and-grounding`
