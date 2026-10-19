@@ -260,6 +260,7 @@ Update durable records:
 - `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - **Active Pull Requests:**
+  - PR [#14](https://github.com/kalviumcommunity/ClientVault/pull/14): `feat/structured-json-output-and-validation` (open for peer review).
   - PR [#13](https://github.com/kalviumcommunity/ClientVault/pull/13): `feat/llm-parameter-tuning-and-grounding` (merged or open for review).
   - PR [#12](https://github.com/kalviumcommunity/ClientVault/pull/12): `feat/multi-turn-history-management` (open for peer review).
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
