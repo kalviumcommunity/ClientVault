@@ -226,27 +226,34 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented OpenAI-compatible chat completion client (`src/chat_completion.py`) with environment config loading, request/response payload logging, human-readable 401/429 error handling, full automated unit tests (`tests/test_chat_completion.py`), and verified sample execution output (`sample_output.log`).
+**Last change:** Implemented system prompt engineering and evaluation suite (`src/prompt_eval.py`), compared Variation A (vague baseline `prompts/v1_vague_prompt.txt`) vs Variation B (constrained production `prompts/v2_production_prompt.txt` / `prompts/system_prompt.txt`), documented selection rationale (`prompts/PROMPT_RATIONALE.md`), generated side-by-side comparison report (`prompts/comparison_report.md`), captured terminal proof (`prompt_comparison_output.log`), and validated with automated tests (`tests/test_prompt_eval.py`).
 
-**Date / iteration:** LLM Chat Completion Setup Sprint.
+**Date / iteration:** System Prompt Engineering & Comparative Evaluation Sprint.
 
-**Current phase (workflow doc):** Phase 6 — LLM Completion Baseline & Error Resilience.
+**Current phase (workflow doc):** Phase 7 — System Prompt Engineering & Grounding Constraints.
 
-**Current branch:** `feat/llm-chat-completion`
+**Current branch:** `feat/prompt-engineering`
 
 **What exists right now:**
-- `src/chat_completion.py` — Production chat completion runner reading from `.env` (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_CHAT_MODEL`), logging outgoing/incoming payloads and token usage, and cleanly catching HTTP 401 (auth) and 429 (rate limits) with actionable messages. Includes built-in `--mock` and `--test-errors` modes.
+- `prompts/v1_vague_prompt.txt` — Variation A: Permissive, unconstrained baseline prompt illustrating hallucination and conversational latency.
+- `prompts/v2_production_prompt.txt` / `prompts/system_prompt.txt` — Variation B: Production system prompt defining role, scope (do/don't), length/tone constraints, source citations, and deterministic fallback string.
+- `prompts/PROMPT_RATIONALE.md` — In-depth architectural design note and comparison matrix detailing why Variation B was chosen.
+- `src/prompt_eval.py` — Benchmark evaluation harness running distinct system/user messages against supported vs unsupported security scenarios, logging metrics and generating reports.
+- `prompts/comparison_report.md` — Committed markdown comparison report with scenario inputs, outputs, word counts, and safety metrics.
+- `prompt_comparison_output.log` — Terminal execution capture of the prompt evaluation suite.
+- `tests/test_prompt_eval.py` — Automated `unittest` suite validating role boundaries, length/formatting rules, citations, and fallback safety.
+- `src/chat_completion.py` — Production chat completion runner reading from `.env` (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_CHAT_MODEL`), logging outgoing/incoming payloads and token usage, and catching HTTP 401 and 429 with actionable messages. Includes built-in `--mock` and `--test-errors` modes.
 - `tests/mock_endpoint.py` — Zero-dependency local mock OpenAI server supporting 200 OK, 401 Unauthorized, and 429 Too Many Requests response simulation.
 - `tests/test_chat_completion.py` — Automated `unittest` suite testing configuration loading, request execution, token parsing, and 401/429/connection error handling.
-- `sample_output.log` — Verifiable terminal capture of successful call and error resilience scenarios committed for reviewer inspection.
+- `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
-- `README.md` — Setup instructions, chat completion CLI documentation, unit test commands, and clean-run confirmation proofs.
+- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`).
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).
-  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`) — Source code and verification scripts.
-  - `prompts/` (`.gitkeep`, `system_prompt.txt`) — Grounding prompts and templates.
+  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`) — Source code and verification scripts.
+  - `prompts/` (`.gitkeep`, `system_prompt.txt`, `v1_vague_prompt.txt`, `v2_production_prompt.txt`, `PROMPT_RATIONALE.md`, `comparison_report.md`) — Grounding prompts and evaluation reports.
   - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
 - `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
 - `.gitignore` — Protects repository against committing `.venv/`, `node_modules/`, `.env`, `data/*`, `outputs/*`, secrets, and build caches.
@@ -261,7 +268,9 @@ Update durable records:
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
-- `src/chat_completion.py` reads credentials safely from `.env` or system environment; never hardcoded.
+- Chosen system prompt mandates exact fallback: `"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook."`
+- System prompt forces structured citation: `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
+- `src/chat_completion.py` and `src/prompt_eval.py` read credentials safely from `.env` or system environment; never hardcoded.
 - `.env` and `.venv` are strictly gitignored.
 - `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
 - System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
@@ -269,4 +278,4 @@ Update durable records:
 - Dashboard surfaces v1.2 quantified KPI targets.
 - Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Open PR for `feat/llm-chat-completion`, then proceed to synthetic corpus creation or vector ingestion pipeline.
+**Next action (if continuing):** Open PR for `feat/prompt-engineering`, merge to `main`, then proceed to synthetic corpus creation or vector ingestion pipeline.

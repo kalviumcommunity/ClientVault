@@ -95,10 +95,25 @@ python src/chat_completion.py --mock
 
 # Run in mock mode demonstrating 401 and 429 error resilience:
 python src/chat_completion.py --mock --test-errors
+```
 
-# Run automated unit test suite:
+### 7. Run Prompt Evaluation & Comparison Suite
+
+Evaluate and compare the baseline prompt (Variation A) against the production-constrained prompt (Variation B) on supported vs unsupported security scenarios:
+
+```bash
+# Run prompt evaluation in self-contained mock mode:
+python src/prompt_eval.py --mock
+
+# Run prompt evaluation against live configured endpoint in .env:
+python src/prompt_eval.py
+
+# Run automated test suite (all chat completion and prompt evaluation tests):
 python -m unittest discover tests
 ```
+
+Detailed design decisions and side-by-side matrices are documented in [`prompts/PROMPT_RATIONALE.md`](file:///Users/abhinavv/Documents/ClientVault/prompts/PROMPT_RATIONALE.md) and [`prompts/comparison_report.md`](file:///Users/abhinavv/Documents/ClientVault/prompts/comparison_report.md).
+
 
 ---
 
