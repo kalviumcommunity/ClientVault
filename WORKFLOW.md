@@ -103,7 +103,7 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Request
 
-- **PR #10**: [feat: implement system prompt engineering and comparative evaluation suite](https://github.com/kalviumcommunity/ClientVault/pull/10)
+- **PR #11**: [feat: implement token measurement and cost estimation utility](https://github.com/kalviumcommunity/ClientVault/pull/11)
 - **Base Branch**: `main`
-- **Head Branch**: `feat/prompt-engineering`
+- **Head Branch**: `feat/token-counting-and-cost-estimation`
 - **Review Status**: Open for peer review
