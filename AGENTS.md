@@ -226,15 +226,22 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented structured JSON output, parsing, error recovery, and Pydantic schema validation module (`src/structured_output.py`), added `response_format` support to `src/chat_completion.py`, generated comparison traces across 5 golden/malformed/missing-field test scenarios (`structured_output_results.log`), and verified with 24 automated unit tests (`tests/test_structured_output.py`).
+**Last change:** Implemented decoupled prompt template management and dynamic injection engine (`src/prompt_template.py`), externalized prompt templates to `prompts/templates/` (`system_prompt.template`, `user_retrieval.template`, `batch_audit.template`), demonstrated dynamic runtime injection across Interactive Chat and Batch CLI Audit features, generated example render traces (`prompt_template_renders.log`), and verified with 30 automated unit tests (`tests/test_prompt_template.py`).
 
-**Date / iteration:** Structured Output & Schema Validation Sprint.
+**Date / iteration:** Reusable Prompt Templates & Dynamic Injection Sprint.
 
-**Current phase (workflow doc):** Phase 11 — Structured JSON Output & Response Schema Validation.
+**Current phase (workflow doc):** Phase 12 — Reusable Prompt Templates & Dynamic Placeholder Injection.
 
-**Current branch:** `feat/structured-json-output-and-validation`
+**Current branch:** `feat/prompt-templates-and-injection`
 
 **What exists right now:**
+- `src/prompt_template.py` — PromptTemplate abstraction with named placeholder parsing (`{context}`, `{question}`, `{client_id}`), strict runtime missing placeholder validation, caching TemplateRegistry, and multi-feature renderers for chat and batch CLI.
+- `prompts/templates/` — Decoupled prompt text files:
+  - `system_prompt.template` — System grounding prompt with `{client_id}` and `{clearance_level}` placeholders.
+  - `user_retrieval.template` — Support retrieval prompt with `{client_id}`, `{document_id}`, `{section}`, `{page}`, `{context}`, and `{question}`.
+  - `batch_audit.template` — Offline compliance prompt with `{client_id}`, `{batch_id}`, `{document_id}`, `{context}`, and `{question}`.
+- `tests/test_prompt_template.py` — Automated `unittest` suite validating placeholder extraction, strict rendering, missing placeholder handling, and feature re-use.
+- `prompt_template_renders.log` — Terminal execution capture and rendered prompt examples.
 - `src/structured_output.py` — Production structured output processor with system prompt JSON schema constraints, markdown fence extractor, heuristic syntax repair (trailing comma & cutoff brace recovery), Pydantic validation (`AssistantStructuredResponse`), and deterministic fallback handler.
 - `tests/test_structured_output.py` — Automated `unittest` suite validating clean JSON parsing, markdown fence extraction, trailing comma repairs, required field enforcement, and corrupted string recovery.
 - `structured_output_results.log` — Trace log capturing end-to-end execution of all 5 test scenarios.
@@ -260,18 +267,18 @@ Update durable records:
 - `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - **Active Pull Requests:**
-  - PR [#14](https://github.com/kalviumcommunity/ClientVault/pull/14): `feat/structured-json-output-and-validation` (open for peer review).
+  - PR [#14](https://github.com/kalviumcommunity/ClientVault/pull/14): `feat/structured-json-output-and-validation` (merged or open for review).
   - PR [#13](https://github.com/kalviumcommunity/ClientVault/pull/13): `feat/llm-parameter-tuning-and-grounding` (merged or open for review).
   - PR [#12](https://github.com/kalviumcommunity/ClientVault/pull/12): `feat/multi-turn-history-management` (open for peer review).
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
-- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, parameter tuning guide, structured output guide, unit test commands, and clean-run confirmation proofs.
+- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, parameter tuning guide, structured output guide, prompt template guide, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`, `tiktoken>=0.7.0`).
 
 
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).
-  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`, `parameter_tuning.py`, `structured_output.py`) — Source code and verification scripts.
-  - `prompts/` (`.gitkeep`, `system_prompt.txt`, `v1_vague_prompt.txt`, `v2_production_prompt.txt`, `PROMPT_RATIONALE.md`, `comparison_report.md`) — Grounding prompts and evaluation reports.
+  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`, `parameter_tuning.py`, `structured_output.py`, `prompt_template.py`) — Source code and verification scripts.
+  - `prompts/` (`.gitkeep`, `system_prompt.txt`, `v1_vague_prompt.txt`, `v2_production_prompt.txt`, `PROMPT_RATIONALE.md`, `comparison_report.md`, `templates/`) — Grounding prompts and templates.
   - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
 - `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
 - `.gitignore` — Protects repository against committing `.venv/`, `node_modules/`, `.env`, `data/*`, `outputs/*`, secrets, and build caches.
@@ -286,6 +293,8 @@ Update durable records:
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
+- Templates are stored strictly in `prompts/templates/` with `.template` extension; decoupled from business logic code.
+- Dynamic placeholder injection performs strict checking by default (`MissingPlaceholderError` on omitted variables).
 - Structured JSON output mandates strict schema: `client_id`, `answer`, `source` (`document_id`, `section`, `page`), `confidence`, and `status`.
 - Malformed JSON undergoes a 2-stage resilience cycle: Markdown code fence stripping, followed by heuristic regex repair (trailing commas, closing braces). If unrepairable or fields are missing, safe `INSUFFICIENT_EVIDENCE` fallback is returned without crashing.
 - In multi-turn history management, the root system prompt is inviolable and never trimmed.
@@ -295,7 +304,7 @@ Update durable records:
 - Code, punctuation, and dense UUIDs consume significantly more tokens per character (~1.8–2.9 chars/token) compared to standard English prose (~4.5–7.4 chars/token).
 - Chosen system prompt mandates exact fallback: `"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook."`
 - System prompt forces structured citation: `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
-- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, `src/history_manager.py`, `src/parameter_tuning.py`, and `src/structured_output.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
+- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, `src/history_manager.py`, `src/parameter_tuning.py`, `src/structured_output.py`, and `src/prompt_template.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
 - `.env` and `.venv` are strictly gitignored.
 - `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
 - System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
@@ -303,4 +312,4 @@ Update durable records:
 - Dashboard surfaces v1.2 quantified KPI targets.
 - Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Open PR for `feat/structured-json-output-and-validation`, merge to `main`, then proceed to synthetic corpus creation or vector ingestion pipeline.
+**Next action (if continuing):** Open PR for `feat/prompt-templates-and-injection`, merge to `main`, then proceed to synthetic corpus creation or vector ingestion pipeline.

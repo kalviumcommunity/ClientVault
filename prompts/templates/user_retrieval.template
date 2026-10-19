@@ -1,0 +1,15 @@
+### APPROVED KNOWLEDGE BASE CONTEXT
+Client Account: {client_id}
+Document Reference: {document_id} (Section: {section}, Page: {page})
+
+Context Passages:
+\"\"\"
+{context}
+\"\"\"
+
+### USER INQUIRY
+Support Engineer Request:
+"{question}"
+
+### INSTRUCTION
+Provide the exact procedural instructions verifying the user inquiry above. Strictly rely on the context provided. Include structured citation [Source: {document_id}, Section: {section}, Page: {page}]. If the context is insufficient, reply with the mandatory fallback response.

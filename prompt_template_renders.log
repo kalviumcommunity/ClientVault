@@ -1,0 +1,71 @@
+===========================================================================
+  ClientVault — Reusable Prompt Templates & Dynamic Injection Demo
+===========================================================================
+
+---------------------------------------------------------------------------
+>> FEATURE 1: Interactive Support Chat Path (Dynamic Injection)
+---------------------------------------------------------------------------
+System Message Rendered (2111 chars):
+   | You are the ClientVault Client Support Knowledge Assistant — an enterprise procedure verification engine for internal IT support engineers and service desk personnel.
+   | 
+   | ROLE & PURPOSE:
+   | Retrieve, summarize, and explain client-specific operational procedures strictly based on verified evidence provided in the prompt context.
+   | 
+   | CURRENT OPERATING CONTEXT:
+   | - Target Client Account: ACME-001
+   | - Security Clearance Tier: Tier-2 Service Desk Lead
+   | 
+   | SCOPE:
+   | What you MUST do:
+   | - Formulate answers using ONLY information present in the approved client knowledge base excerpt provided in the user request.
+   | - Cite the source document identifier, section, and page number for every procedural instruction.
+   | - Explicitly identify pre-requisites and required approvals before executing any procedure.
+   | 
+   | ... [Full system prompt truncated for display] ...
+
+User Message Rendered (689 chars):
+   | ### APPROVED KNOWLEDGE BASE CONTEXT
+   | Client Account: ACME-001
+   | Document Reference: KB-ONB-001 (Section: Section 3.2, Page: 4)
+   | 
+   | Context Passages:
+   | \"\"\"
+   | All onboarding credentials require dual-operator verification before activation. Staging sandbox restricted to 48 hours.
+   | \"\"\"
+   | 
+   | ### USER INQUIRY
+   | Support Engineer Request:
+   | "How do I verify and activate credentials for ACME Corp onboarding engineers?"
+   | 
+   | ### INSTRUCTION
+   | Provide the exact procedural instructions verifying the user inquiry above. Strictly rely on the context provided. Include structured citation [Source: KB-ONB-001, Section: Section 3.2, Page: 4]. If the context is insufficient, reply with the mandatory fallback response.
+
+---------------------------------------------------------------------------
+>> FEATURE 2: Batch CLI Compliance Audit Path (Reused Engine)
+---------------------------------------------------------------------------
+Audit Payload Rendered (633 chars):
+   | ### BATCH AUDIT VERIFICATION JOB
+   | Client Account: NEXUS-002
+   | Batch Run ID: BATCH-2026-10-Q4-089
+   | Document Reference: SOP-SEC-009
+   | 
+   | Context:
+   | \"\"\"
+   | Quarterly secret key rotation must be performed within 72 hours of notification using the vault KMS console.
+   | \"\"\"
+   | 
+   | Question Under Verification:
+   | "Was the KMS secret key rotated within the mandatory 72-hour compliance window?"
+   | 
+   | Instruction:
+   | Verify whether the procedure described in "Was the KMS secret key rotated within the mandatory 72-hour compliance window?" complies with the approved runbook SOP-SEC-009. State explicit compliance (PASS/FAIL) followed by sequential procedural steps.
+
+---------------------------------------------------------------------------
+>> ERROR HANDLING: Missing Placeholder Guard Demonstration
+---------------------------------------------------------------------------
+Attempting to render user_retrieval without 'context' placeholder...
+Successfully caught expected error: Cannot render template 'user_retrieval': Missing required placeholder(s): ['context']
+
+===========================================================================
+  SUMMARY: All prompt templates verified separate from logic and safely reusable.
+===========================================================================

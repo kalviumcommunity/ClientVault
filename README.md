@@ -176,6 +176,21 @@ python -m unittest discover tests
 ```
 Comprehensive comparison traces and error recovery logs are captured in [`structured_output_results.log`](file:///Users/abhinavv/Documents/ClientVault/structured_output_results.log).
 
+### 12. Run Reusable Prompt Templates & Dynamic Injection
+
+Manage prompt structures separately from business logic using template files (`prompts/templates/*.template`) with named placeholders (`{context}`, `{question}`, `{client_id}`), dynamic runtime injection, and multi-feature reuse:
+
+```bash
+# Run template demonstration rendering chat and batch audit prompts:
+python src/prompt_template.py
+
+# Save results directly to log file:
+python src/prompt_template.py --output-file prompt_template_renders.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Example renders across interactive chat and batch compliance features are captured in [`prompt_template_renders.log`](file:///Users/abhinavv/Documents/ClientVault/prompt_template_renders.log).
 
 
 ### 1. Workspace Health Check
