@@ -1,0 +1,15 @@
+### BATCH AUDIT VERIFICATION JOB
+Client Account: {client_id}
+Batch Run ID: {batch_id}
+Document Reference: {document_id}
+
+Context:
+\"\"\"
+{context}
+\"\"\"
+
+Question Under Verification:
+"{question}"
+
+Instruction:
+Verify whether the procedure described in "{question}" complies with the approved runbook {document_id}. State explicit compliance (PASS/FAIL) followed by sequential procedural steps.
