@@ -226,27 +226,26 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Team GitHub workflow established (WORKFLOW.md documentation, conventional commit enforcement, data validation module, sprint Issues #4, #5, #6 tracked).
+**Last change:** Implemented OpenAI-compatible chat completion client (`src/chat_completion.py`) with environment config loading, request/response payload logging, human-readable 401/429 error handling, full automated unit tests (`tests/test_chat_completion.py`), and verified sample execution output (`sample_output.log`).
 
-**Date / iteration:** GitHub Workflow Setup Sprint.
+**Date / iteration:** LLM Chat Completion Setup Sprint.
 
-**Current phase (workflow doc):** Phase 5 — Repository Constitution & Collaboration Workflows.
+**Current phase (workflow doc):** Phase 6 — LLM Completion Baseline & Error Resilience.
 
-**Current branch:** `feature/github-workflow-setup` (and alias `feature/data-ingestion`)
+**Current branch:** `feat/llm-chat-completion`
 
 **What exists right now:**
+- `src/chat_completion.py` — Production chat completion runner reading from `.env` (`OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_CHAT_MODEL`), logging outgoing/incoming payloads and token usage, and cleanly catching HTTP 401 (auth) and 429 (rate limits) with actionable messages. Includes built-in `--mock` and `--test-errors` modes.
+- `tests/mock_endpoint.py` — Zero-dependency local mock OpenAI server supporting 200 OK, 401 Unauthorized, and 429 Too Many Requests response simulation.
+- `tests/test_chat_completion.py` — Automated `unittest` suite testing configuration loading, request execution, token parsing, and 401/429/connection error handling.
+- `sample_output.log` — Verifiable terminal capture of successful call and error resilience scenarios committed for reviewer inspection.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
-- **Active Pull Request:** PR [#7](https://github.com/kalviumcommunity/ClientVault/pull/7) opened from `feature/github-workflow-setup` to `main` (open for peer review).
-- GitHub Issues tracked on `kalviumcommunity/ClientVault`:
-  - [#4](https://github.com/kalviumcommunity/ClientVault/issues/4): "Ingest customer transaction data into pipeline"
-  - [#5](https://github.com/kalviumcommunity/ClientVault/issues/5): "Create data quality report for incoming datasets"
-  - [#6](https://github.com/kalviumcommunity/ClientVault/issues/6): "Document data dictionary for team reference"
-- `README.md` — Setup instructions (venv → install → .env → run) and clean-run confirmation proof.
+- `README.md` — Setup instructions, chat completion CLI documentation, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`).
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).
-  - `src/` (`__init__.py`, `main.py`) — Source code and verification script.
+  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`) — Source code and verification scripts.
   - `prompts/` (`.gitkeep`, `system_prompt.txt`) — Grounding prompts and templates.
   - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
 - `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
@@ -262,49 +261,12 @@ Update durable records:
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
+- `src/chat_completion.py` reads credentials safely from `.env` or system environment; never hardcoded.
 - `.env` and `.venv` are strictly gitignored.
 - `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
 - System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
-- `README.md` — minimal ("ClientVault"), placeholder.
-- `mock-ux.html` — **updated Mock UX for PRD v1.2.** Changes include:
-  - **Top navigation** across all 6 screens (CLIENTVAULT brand per §18.4),
-    replacing the former left sidebar.
-  - **v1.2 quantified KPI target cards** on the Dashboard (§18.1: Top-5
-    recall ≥85%, account isolation ≥95%, search-to-source ≤60s,
-    unsupported-query safety 100%).
-  - **Synthetic corpus** reflected: 3 clients (ACME-001, BNK-0321,
-    RTL-0714) × 5 docs each, per-client mix 2 onboarding / 1 SLA /
-    2 runbooks (§18.2), in Clients and Document Library screens.
-  - **New "PRD v1.2 §18.4 Visual Wireframes" section** reproducing the
-    empty-search, insufficient-evidence, upload-error, and search-error
-    states verbatim-style, plus additional empty/error coverage.
-  - Source Detail updated with v1.2 isolation and traceability KPIs;
-    written explanations, design-reasoning map, and acceptance checklist
-    refreshed for v1.2.
-  - Open via `python3 -m http.server` from the repo root.
-- `.gitignore` — blocks secrets, Python/Node artifacts, vector/DB/corpus
-  data.
-- `RULES.md` — full engineering/product rules for humans and agents.
-- `AGENTS.md` — this AI contract (live document).
-
-**What does NOT yet exist (next work):**
-- The application itself under `src/` (UI, backend, ingestion, retrieval,
-  RAG). Stack per PRD: Next.js/React + Tailwind, Python/FastAPI, OpenAI
-  API, Qdrant, PostgreSQL.
-- `docs/agent/STATE.md`, `docs/agent/REPO_BASELINE.md`.
-- Remaining Phase 5 baseline files: `CONTRIBUTING.md`, `SECURITY.md`,
-  `.env.example`, `.editorconfig`, `.gitattributes`, `.github/` templates.
-- Git branch protection/rulesets on `main` (server-side), CI workflow.
-- The synthetic corpus itself (15 docs), evaluation set (30 questions) per
-  §18.2, and ingestion/retrieval code.
-
-**Known decisions / gotchas:**
-- Product is account-isolated retrieval; no generic chatbot page.
 - Mock UX uses CLIENTVAULT **top navigation** (not sidebar) per v1.2 §18.4.
 - Dashboard surfaces v1.2 quantified KPI targets.
-- Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2
-  runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
-- `.env`/secrets and vector/corpus artifacts are gitignored.
-- Mock UX lives in root as static HTML until the real UI replaces it.
+- Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Commit changes on `feat/workspace-foundation`, then proceed to synthetic corpus creation or backend RAG scaffolding.
+**Next action (if continuing):** Open PR for `feat/llm-chat-completion`, then proceed to synthetic corpus creation or vector ingestion pipeline.
