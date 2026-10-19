@@ -156,6 +156,7 @@ def send_chat_completion(
     max_tokens: Optional[int] = None,
     stop: Optional[List[str]] = None,
     top_p: Optional[float] = None,
+    response_format: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Executes a chat completion call against the configured OpenAI-compatible API.
@@ -209,6 +210,8 @@ def send_chat_completion(
         call_kwargs["stop"] = stop
     if top_p is not None:
         call_kwargs["top_p"] = top_p
+    if response_format is not None:
+        call_kwargs["response_format"] = response_format
 
     try:
         # Task 2: Send request
