@@ -253,9 +253,11 @@ Update durable records:
 - `tests/test_chat_completion.py` — Automated `unittest` suite testing configuration loading, request execution, token parsing, and 401/429/connection error handling.
 - `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
+- **Active Pull Request:** PR [#12](https://github.com/kalviumcommunity/ClientVault/pull/12) opened from `feat/multi-turn-history-management` to `main` (open for peer review).
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
 - `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`, `tiktoken>=0.7.0`).
+
 
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`) — Raw client documents & knowledge base (local data excluded by `.gitignore`).

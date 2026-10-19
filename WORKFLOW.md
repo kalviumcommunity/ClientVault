@@ -103,7 +103,7 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Request
 
-- **PR #10**: [feat: implement system prompt engineering and comparative evaluation suite](https://github.com/kalviumcommunity/ClientVault/pull/10)
+- **PR #12**: [feat: implement multi-turn history management and token budget trimming](https://github.com/kalviumcommunity/ClientVault/pull/12)
 - **Base Branch**: `main`
-- **Head Branch**: `feat/prompt-engineering`
+- **Head Branch**: `feat/multi-turn-history-management`
 - **Review Status**: Open for peer review
