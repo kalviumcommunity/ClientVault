@@ -1,0 +1,57 @@
+===========================================================================
+  ClientVault — Multi-Format Document Loader & Intake Confirmation
+  Target Corpus: /Users/abhinavv/Documents/ClientVault/data/sample_corpus
+===========================================================================
+
+Intake Summary: Loaded 4 document(s) | Skipped 1 file(s)
+
+---------------------------------------------------------------------------
+>> CONFIRMED INTAKE DOCUMENTS (Task 3 & 4 Verification)
+---------------------------------------------------------------------------
+[1] Document Source ID: 'acme_emergency'
+    File Path:         data/sample_corpus/acme_emergency.pdf
+    Format:            PDF
+    Length:            330 characters
+    Sample Preview:
+      | %PDF-1.4 Mock Binary Header
+      | ACME Logistics Emergency Runbook — Root Password Reset Protocol
+      | Document Reference: SEC-EMERG-001 (Section 2.1, Page 1)
+
+[2] Document Source ID: 'acme_onboarding'
+    File Path:         data/sample_corpus/acme_onboarding.md
+    Format:            MD
+    Length:            1181 characters
+    Sample Preview:
+      | # ACME Logistics — Client Onboarding & Authentication Runbook
+      | Document ID: KB-ONB-001
+      | Revision: 3.2
+
+[3] Document Source ID: 'nexus_sla'
+    File Path:         data/sample_corpus/nexus_sla.txt
+    Format:            TXT
+    Length:            986 characters
+    Sample Preview:
+      | CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX
+      | Client Identifier: NEXUS-002 (Nexus Financial Technologies)
+      | Document Code: SLA-NEX-2026
+
+[4] Document Source ID: 'vertex_dr'
+    File Path:         data/sample_corpus/vertex_dr.html
+    Format:            HTML
+    Length:            785 characters
+    Sample Preview:
+      | Vertex Health — Disaster Recovery Runbook
+      | Vertex Health Operations: Disaster Recovery & Failover Protocol
+      | Document ID: SOP-DB-007 | Client: VERTEX-003
+
+---------------------------------------------------------------------------
+>> RESILIENCE & SKIPPED FILES REPORT (Task 2 Verification)
+---------------------------------------------------------------------------
+  [SKIPPED SAFELY] corrupt_unsupported.bin (Non-crashing skip of unsupported/corrupted format)
+
+>> MISSING FILE TEST:
+  Load result for 'non_existent_file.txt': None (Handled gracefully without crash)
+
+===========================================================================
+  STATUS: All formats loaded into common plain text with source attribution.
+===========================================================================
