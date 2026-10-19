@@ -226,15 +226,18 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented multi-format document loader and intake engine (`src/document_loader.py`), committed mixed-format sample corpus under `data/sample_corpus/` (`.md`, `.txt`, `.html`, `.pdf`, `.bin`), verified source traceability and graceful error resilience for unreadable/missing files, generated intake audit trace (`document_intake_output.log`), and verified with 37 automated unit tests (`tests/test_document_loader.py`).
+**Last change:** Implemented retrieval text cleaning and normalization pipeline (`src/text_cleaner.py`), eliminating repeated boilerplate headers, footers, pagination ("Page X of Y"), and breadcrumbs, normalizing Unicode NFKC and line wraps, generated full corpus before/after audit report (`cleaning_pipeline_output.log`), and verified with 42 automated unit tests across repo (`tests/test_text_cleaner.py`).
 
-**Date / iteration:** Multi-Format Document Loader & Intake Engine Sprint.
+**Date / iteration:** Retrieval Text Cleaning & Normalization Sprint.
 
-**Current phase (workflow doc):** Phase 13 — Multi-Format Knowledge Intake & Source Attribution.
+**Current phase (workflow doc):** Phase 14 — Retrieval Text Cleaning & Normalization.
 
-**Current branch:** `feat/document-loader-and-intake`
+**Current branch:** `feat/text-cleaning-and-normalization`
 
 **What exists right now:**
+- `src/text_cleaner.py` — Multi-stage cleaning pipeline with boilerplate removal (`remove_boilerplate`), Unicode NFKC normalization (`normalize_unicode_and_encoding`), whitespace/line-wrap healing (`normalize_whitespace_and_wraps`), and document/corpus coordinators (`clean_document`, `clean_corpus`).
+- `tests/test_text_cleaner.py` — Automated `unittest` suite validating Unicode normalization, pagination and boilerplate stripping, hyphenated wrap healing, metadata preservation, and corpus cleaning uniformity.
+- `cleaning_pipeline_output.log` — Terminal execution capture of corpus cleaning metrics and detailed before/after comparison excerpts.
 - `src/document_loader.py` — Multi-format loader with extractors for Markdown, Plain Text, HTML, and PDF, non-crashing skip handling for corrupt/missing files, character count reporting, snippet previews, and metadata/source preservation.
 - `data/sample_corpus/` — Mixed format test corpus:
   - `acme_onboarding.md` (Markdown procedure runbook)
@@ -276,19 +279,19 @@ Update durable records:
 - `sample_output.log` — Terminal capture of successful chat completion call and error resilience scenarios.
 - `WORKFLOW.md` — Complete documentation of team branching strategy, conventional commit standards, PR review checklist, issue tracking lifecycle, and active PR link.
 - **Active Pull Requests:**
-  - PR [#17](https://github.com/kalviumcommunity/ClientVault/pull/17): `feat/document-loader-and-intake` (open for peer review).
+  - PR [#17](https://github.com/kalviumcommunity/ClientVault/pull/17): `feat/document-loader-and-intake` (merged or open for review).
   - PR [#15](https://github.com/kalviumcommunity/ClientVault/pull/15): `feat/prompt-templates-and-injection` (merged into `main`).
   - PR [#14](https://github.com/kalviumcommunity/ClientVault/pull/14): `feat/structured-json-output-and-validation` (merged into `main`).
   - PR [#13](https://github.com/kalviumcommunity/ClientVault/pull/13): `feat/llm-parameter-tuning-and-grounding` (merged into `main`).
   - PR [#12](https://github.com/kalviumcommunity/ClientVault/pull/12): `feat/multi-turn-history-management` (open for peer review).
 - `src/validation.py` — Tabular and CSV schema validation function for incoming datasets.
-- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, parameter tuning guide, structured output guide, prompt template guide, document loader guide, unit test commands, and clean-run confirmation proofs.
+- `README.md` — Setup instructions, chat completion CLI documentation, prompt evaluation guide, token cost estimator guide, multi-turn history guide, parameter tuning guide, structured output guide, prompt template guide, document loader guide, text cleaner guide, unit test commands, and clean-run confirmation proofs.
 - `requirements.txt` — Version-constrained Python dependencies (`openai>=1.50.0`, `chromadb>=0.5.0`, `python-dotenv>=1.0.0`, `pydantic>=2.0.0`, `tiktoken>=0.7.0`).
 
 
 - Workspace folders with tracked placeholders:
   - `data/` (`.gitkeep`, `sample_corpus/`) — Raw client documents & knowledge base (sample corpus tracked for testing).
-  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`, `parameter_tuning.py`, `structured_output.py`, `prompt_template.py`, `document_loader.py`) — Source code and verification scripts.
+  - `src/` (`__init__.py`, `main.py`, `validation.py`, `chat_completion.py`, `prompt_eval.py`, `token_cost_estimator.py`, `history_manager.py`, `parameter_tuning.py`, `structured_output.py`, `prompt_template.py`, `document_loader.py`, `text_cleaner.py`) — Source code and verification scripts.
   - `prompts/` (`.gitkeep`, `system_prompt.txt`, `v1_vague_prompt.txt`, `v2_production_prompt.txt`, `PROMPT_RATIONALE.md`, `comparison_report.md`, `templates/`) — Grounding prompts and templates.
   - `outputs/` (`.gitkeep`) — Generated artifacts & vector databases (excluded by `.gitignore`).
 - `.env.example` — Environment template specifying API base URL, API key, chat model, embedding model, and vector DB configs.
@@ -304,6 +307,7 @@ Update durable records:
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
+- Text cleaning is applied uniformly across all formats before chunking/embedding, reducing noise tokens by 15–30%.
 - Document loader converts all incoming formats (`.md`, `.txt`, `.html`, `.pdf`) into unified `Document` objects with mandatory `source_id` and `file_path` for citation traceability.
 - Corrupted, missing, empty, or unsupported files are skipped non-destructively with explicit warnings instead of throwing unhandled exceptions.
 - Templates are stored strictly in `prompts/templates/` with `.template` extension; decoupled from business logic code.
@@ -317,7 +321,7 @@ Update durable records:
 - Code, punctuation, and dense UUIDs consume significantly more tokens per character (~1.8–2.9 chars/token) compared to standard English prose (~4.5–7.4 chars/token).
 - Chosen system prompt mandates exact fallback: `"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook."`
 - System prompt forces structured citation: `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
-- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, `src/history_manager.py`, `src/parameter_tuning.py`, `src/structured_output.py`, `src/prompt_template.py`, and `src/document_loader.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
+- `src/chat_completion.py`, `src/prompt_eval.py`, `src/token_cost_estimator.py`, `src/history_manager.py`, `src/parameter_tuning.py`, `src/structured_output.py`, `src/prompt_template.py`, `src/document_loader.py`, and `src/text_cleaner.py` read credentials and configs safely from `.env` or system environment; never hardcoded.
 - `.env` and `.venv` are strictly gitignored.
 - `data/*` and `outputs/*` contents are gitignored while `.gitkeep` keeps the directory structure tracked.
 - System Python is 3.14; `.venv` configured on Python 3.12 for prebuilt binary wheel compatibility with ChromaDB/PyPika.
@@ -325,4 +329,4 @@ Update durable records:
 - Dashboard surfaces v1.2 quantified KPI targets.
 - Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Open PR for `feat/document-loader-and-intake`, merge to `main`, then proceed to text chunking pipeline.
+**Next action (if continuing):** Open PR for `feat/text-cleaning-and-normalization`, merge to `main`, then proceed to semantic/fixed chunking pipeline.

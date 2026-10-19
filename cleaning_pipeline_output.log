@@ -1,0 +1,153 @@
+===========================================================================
+  ClientVault — Retrieval Text Cleaning & Normalization Pipeline
+  Target Corpus: /Users/abhinavv/Documents/ClientVault/data/sample_corpus
+===========================================================================
+
+---------------------------------------------------------------------------
+>> CORPUS CLEANING METRICS SUMMARY (Task 3 & 4 Verification)
+---------------------------------------------------------------------------
+Source ID          | Orig Chars | Clean Chars | Reduction | Lines (Pre->Post) | Boilerplate Items
+----------------------------------------------------------------------------------------
+acme_emergency     | 330        | 330         | -0 (0.0%) | 7 -> 7           | 0 removed
+acme_onboarding    | 1650       | 1183        | -467 (28.3%) | 38 -> 26         | 8 removed
+nexus_sla          | 1228       | 988         | -240 (19.54%) | 25 -> 19         | 4 removed
+vertex_dr          | 785        | 774         | -11 (1.4%) | 21 -> 21         | 0 removed
+
+===========================================================================
+>> DETAILED BEFORE & AFTER EVIDENCE (Task 4)
+===========================================================================
+---------------------------------------------------------------------------
+>> DOCUMENT: acme_emergency (data/sample_corpus/acme_emergency.pdf)
+   Boilerplate Patterns Stripped: 0
+   Length: 330 chars -> 330 chars (-0.0%)
+---------------------------------------------------------------------------
+
+   [BEFORE CLEANING - RAW EXTRACTED EXCERPT]
+     | %PDF-1.4 Mock Binary Header
+     | ACME Logistics Emergency Runbook — Root Password Reset Protocol
+     | Document Reference: SEC-EMERG-001 (Section 2.1, Page 1)
+     | 
+     | 1. Emergency Root Passwords can only be rotated after Tier-3 Executive Authorization.
+     | 2. Store ephemeral token in HSM partition vault.
+     | 3. Terminate active session within 15 minutes.
+
+   [AFTER CLEANING - RETRIEVAL READY EXCERPT]
+     | %PDF-1.4 Mock Binary Header
+     | ACME Logistics Emergency Runbook - Root Password Reset Protocol
+     | Document Reference: SEC-EMERG-001 (Section 2.1, Page 1)
+     | 
+     | 1. Emergency Root Passwords can only be rotated after Tier-3 Executive Authorization.
+     | 2. Store ephemeral token in HSM partition vault.
+     | 3. Terminate active session within 15 minutes.
+
+---------------------------------------------------------------------------
+>> DOCUMENT: acme_onboarding (data/sample_corpus/acme_onboarding.md)
+   Boilerplate Patterns Stripped: 8
+   Length: 1650 chars -> 1183 chars (-28.3%)
+---------------------------------------------------------------------------
+
+   [BEFORE CLEANING - RAW EXTRACTED EXCERPT]
+     | # ACME Logistics — Client Onboarding & Authentication Runbook
+     | Document ID: KB-ONB-001 | Revision: 3.2
+     | Classification: Internal Client Support Only
+     | Page 1 of 4 — CONFIDENTIAL — ACME LOGISTICS INC.
+     | [Home] > [Client Portal] > [Knowledge Base] > [Onboarding]
+     | 
+     | ## 1. Overview
+     | This procedure governs onboarding verification, sponsor authorization,
+     | and initial credential provisioning for ACME Logistics (Client ID: ACME-001).
+     | 
+     | Page 1 of 4 — CONFIDENTIAL — ACME LOGISTICS INC.
+     | ========================================================================
+     | ... [remaining raw lines omitted for brevity] ...
+
+   [AFTER CLEANING - RETRIEVAL READY EXCERPT]
+     | # ACME Logistics - Client Onboarding & Authentication Runbook
+     | Document ID: KB-ONB-001 | Revision: 3.2
+     | Classification: Internal Client Support Only
+     | 
+     | ## 1. Overview
+     | This procedure governs onboarding verification, sponsor authorization,
+     | and initial credential provisioning for ACME Logistics (Client ID: ACME-001).
+     | 
+     | ## 2. Pre-Requisites
+     | 1. Requester email domain must strictly match `@acme-logistics.com`.
+     | 2. Valid ticket reference in ServiceNow queue `SEC-ONB`.
+     | 3. Identity confirmation verified via primary sponsor directory.
+     | ... [clean content continues] ...
+
+---------------------------------------------------------------------------
+>> DOCUMENT: nexus_sla (data/sample_corpus/nexus_sla.txt)
+   Boilerplate Patterns Stripped: 4
+   Length: 1228 chars -> 988 chars (-19.54%)
+---------------------------------------------------------------------------
+
+   [BEFORE CLEANING - RAW EXTRACTED EXCERPT]
+     | [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002]
+     | CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX
+     | Client Identifier: NEXUS-002 (Nexus Financial Technologies)
+     | Document Code: SLA-NEX-2026 | Effective Date: 2026-01-01
+     | --- Document Header: Nexus Internal SLA Confidential ---
+     | 
+     | 1. INCIDENT SEVERITY CLASSIFICATIONS
+     | - Severity 1 (Critical Outage): Core transaction settlement system down.
+     |   Initial response time <= 15 minutes. Update cadence every 30 minutes.
+     | - Severity 2 (Major Degradation): Non-critical service unavailable or redundant pipeline degraded.
+     |   Initial response time <= 1 hour.
+     | - Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks.
+     | ... [remaining raw lines omitted for brevity] ...
+
+   [AFTER CLEANING - RETRIEVAL READY EXCERPT]
+     | CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX
+     | Client Identifier: NEXUS-002 (Nexus Financial Technologies)
+     | Document Code: SLA-NEX-2026 | Effective Date: 2026-01-01
+     | 
+     | 1. INCIDENT SEVERITY CLASSIFICATIONS
+     | - Severity 1 (Critical Outage): Core transaction settlement system down.
+     | Initial response time <= 15 minutes. Update cadence every 30 minutes.
+     | - Severity 2 (Major Degradation): Non-critical service unavailable or redundant pipeline degraded.
+     | Initial response time <= 1 hour.
+     | - Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks.
+     | Initial response time <= 4 business hours.
+     | 
+     | ... [clean content continues] ...
+
+---------------------------------------------------------------------------
+>> DOCUMENT: vertex_dr (data/sample_corpus/vertex_dr.html)
+   Boilerplate Patterns Stripped: 0
+   Length: 785 chars -> 774 chars (-1.4%)
+---------------------------------------------------------------------------
+
+   [BEFORE CLEANING - RAW EXTRACTED EXCERPT]
+     | Vertex Health — Disaster Recovery Runbook 
+     | 
+     | Vertex Health Operations: Disaster Recovery & Failover Protocol 
+     | 
+     |  Document ID: SOP-DB-007 | Client: VERTEX-003 
+     | 
+     | 1. Trigger Criteria 
+     | 
+     | Failover to secondary replica region (us-east-2) must initiate only when the primary cluster experiences unrecoverable latency exceeding 5000ms or 3 consecutive heartbeat timeouts. 
+     | 
+     | 2. Execution Sequence 
+     | 
+     | ... [remaining raw lines omitted for brevity] ...
+
+   [AFTER CLEANING - RETRIEVAL READY EXCERPT]
+     | Vertex Health - Disaster Recovery Runbook
+     | 
+     | Vertex Health Operations: Disaster Recovery & Failover Protocol
+     | 
+     | Document ID: SOP-DB-007 | Client: VERTEX-003
+     | 
+     | 1. Trigger Criteria
+     | 
+     | Failover to secondary replica region (us-east-2) must initiate only when the primary cluster experiences unrecoverable latency exceeding 5000ms or 3 consecutive heartbeat timeouts.
+     | 
+     | 2. Execution Sequence
+     | 
+     | ... [clean content continues] ...
+
+===========================================================================
+  STATUS: All corpus documents cleaned and normalized consistently.
+===========================================================================
