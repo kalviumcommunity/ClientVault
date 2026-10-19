@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR #14**: [feat: implement structured JSON output parsing and schema validation](https://github.com/kalviumcommunity/ClientVault/pull/14)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/structured-json-output-and-validation`
+  - **Review Status**: Open for peer review
 - **PR #13**: [feat: implement LLM parameter tuning and grounding experiments](https://github.com/kalviumcommunity/ClientVault/pull/13)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/llm-parameter-tuning-and-grounding`

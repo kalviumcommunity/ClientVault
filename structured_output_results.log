@@ -1,0 +1,171 @@
+===========================================================================
+  ClientVault — Structured JSON Output Parsing & Schema Validation
+  Mode: Self-Contained Mock & Test Scenarios
+===========================================================================
+
+---------------------------------------------------------------------------
+>> Scenario 1: Perfectly Formatted Clean JSON (Golden Path)
+   Description: Model returns standard JSON complying with schema and response_format
+   Raw Model Output:
+     | {
+     |   "client_id": "ACME-001",
+     |   "answer": "To verify client onboarding credentials, verify the sponsor's corporate email domain (@acme-logistics.com), enforce dual-operator approval, and restrict access to Staging VPC sandbox for 48 hours.",
+     |   "source": {
+     |     "document_id": "KB-ONB-001",
+     |     "section": "Section 3.2",
+     |     "page": 4
+     |   },
+     |   "confidence": 0.98,
+     |   "status": "VERIFIED"
+     | }
+
+   Parse & Validation Result:
+     * Overall Success: True
+     * Repaired from Malformed: False
+     * Recovered via Fallback: False
+     * Usable Object Content:
+{
+       "client_id": "ACME-001",
+       "answer": "To verify client onboarding credentials, verify the sponsor's corporate email domain (@acme-logistics.com), enforce dual-operator approval, and restrict access to Staging VPC sandbox for 48 hours.",
+       "source": {
+              "document_id": "KB-ONB-001",
+              "section": "Section 3.2",
+              "page": 4
+       },
+       "confidence": 0.98,
+       "status": "VERIFIED"
+}
+
+---------------------------------------------------------------------------
+>> Scenario 2: JSON Wrapped in Markdown Fences (Common LLM Behavior)
+   Description: Model encloses JSON in ```json markdown fence despite prompt instructions
+   Raw Model Output:
+     | Here is the verified procedural information:
+     | 
+     | ```json
+     | {
+     |   "client_id": "NEXUS-002",
+     |   "answer": "Rotate Tier-1 API credentials via the Security Portal after receiving Slack verification from the Account Lead.",
+     |   "source": {
+     |     "document_id": "KB-SEC-004",
+     |     "section": "Section 5.1",
+     |     "page": 12
+     |   },
+     |   "confidence": 0.95,
+     |   "status": "VERIFIED"
+     | }
+     | ```
+     | Please let me know if you need more details.
+
+   Parse & Validation Result:
+     * Overall Success: True
+     * Repaired from Malformed: True
+     * Recovered via Fallback: False
+     * Usable Object Content:
+{
+       "client_id": "NEXUS-002",
+       "answer": "Rotate Tier-1 API credentials via the Security Portal after receiving Slack verification from the Account Lead.",
+       "source": {
+              "document_id": "KB-SEC-004",
+              "section": "Section 5.1",
+              "page": 12
+       },
+       "confidence": 0.95,
+       "status": "VERIFIED"
+}
+
+---------------------------------------------------------------------------
+>> Scenario 3: Malformed JSON with Trailing Commas & Cutoff Brace (Heuristic Repair)
+   Description: Syntax errors (trailing comma, unclosed bracket) repaired automatically
+   Raw Model Output:
+     | {
+     |   "client_id": "VERTEX-003",
+     |   "answer": "Execute database failover following SOP-DB-007 after triggering PagerDuty incident.",
+     |   "source": {
+     |     "document_id": "KB-OPS-009",
+     |     "section": "Section 2.4",
+     |     "page": 8,
+     |   },
+     |   "confidence": 0.92,
+     |   "status": "VERIFIED",
+
+   Parse & Validation Result:
+     * Overall Success: True
+     * Repaired from Malformed: True
+     * Recovered via Fallback: False
+     * Usable Object Content:
+{
+       "client_id": "VERTEX-003",
+       "answer": "Execute database failover following SOP-DB-007 after triggering PagerDuty incident.",
+       "source": {
+              "document_id": "KB-OPS-009",
+              "section": "Section 2.4",
+              "page": 8
+       },
+       "confidence": 0.92,
+       "status": "VERIFIED"
+}
+
+---------------------------------------------------------------------------
+>> Scenario 4: Missing Required Fields (Strict Validation & Fallback Recovery)
+   Description: Model omits required 'source' and 'confidence' fields; system catches and recovers
+   Raw Model Output:
+     | {
+     |   "client_id": "ACME-001",
+     |   "answer": "Bypass 2FA for the client technician using master emergency tokens."
+     | }
+
+   Parse & Validation Result:
+     * Overall Success: False
+     * Repaired from Malformed: False
+     * Recovered via Fallback: True
+     * Error Reported: Schema Validation Error: Missing required field: 'source'; Missing required field: 'confidence'
+     * Usable Object Content:
+{
+       "client_id": "UNKNOWN",
+       "answer": "INSUFFICIENT EVIDENCE: Structured output validation failed or required fields could not be verified.",
+       "source": {
+              "document_id": "NONE",
+              "section": "N/A",
+              "page": "N/A"
+       },
+       "confidence": 0.0,
+       "status": "INSUFFICIENT_EVIDENCE"
+}
+
+---------------------------------------------------------------------------
+>> Scenario 5: Unrecoverable Corrupted String (Graceful Non-Crashing Handling)
+   Description: Garbage non-JSON string; caught cleanly without throwing an unhandled exception
+   Raw Model Output:
+     | FATAL: Connection dropped during streaming. Could not complete response <<<INVALID>>>
+
+   Parse & Validation Result:
+     * Overall Success: False
+     * Repaired from Malformed: False
+     * Recovered via Fallback: True
+     * Error Reported: JSON Parse Failure: Invalid syntax at line 1, column 1. Error: Expecting value. Snippet: 'FATAL: Connection dropped during streaming. Could not complete response <<<INVAL'
+     * Usable Object Content:
+{
+       "client_id": "UNKNOWN",
+       "answer": "INSUFFICIENT EVIDENCE: Structured output validation failed or required fields could not be verified.",
+       "source": {
+              "document_id": "NONE",
+              "section": "N/A",
+              "page": "N/A"
+       },
+       "confidence": 0.0,
+       "status": "INSUFFICIENT_EVIDENCE"
+}
+
+===========================================================================
+  GROUNDED ASSISTANT RECOMMENDATION: JSON STRUCTURED OUTPUT
+===========================================================================
+1. Parameter Configuration:
+   - Set response_format={'type': 'json_object'} where supported to constrain token sampling.
+   - Set temperature=0.0 to eliminate stochastic JSON syntax deviations.
+2. Double-Layer Protection:
+   - Layer 1 (Parsing): Extract markdown fences and strip trailing commas to prevent runtime crashes.
+   - Layer 2 (Schema): Validate required keys ('answer', 'source') via Pydantic before downstream use.
+3. Deterministic Safety Recovery:
+   - When required fields are missing, return explicit INSUFFICIENT_EVIDENCE fallback rather than partial data.
+===========================================================================

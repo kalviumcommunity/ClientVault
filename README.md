@@ -160,10 +160,23 @@ python src/parameter_tuning.py --mock --output-file parameter_comparison_output.
 # Run automated unit tests:
 python -m unittest discover tests
 ```
-Comprehensive comparison logs and grounding recommendations are captured in [`parameter_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/parameter_comparison_output.log).
+### 11. Run Structured JSON Output & Schema Validation
+
+Enforce machine-readable JSON schemas on model outputs with Pydantic validation, markdown extraction, heuristic syntax repair, and non-crashing fallback recovery:
+
+```bash
+# Run full structured output suite in self-contained mock mode:
+python src/structured_output.py --mock
+
+# Save results directly to log file:
+python src/structured_output.py --mock --output-file structured_output_results.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Comprehensive comparison traces and error recovery logs are captured in [`structured_output_results.log`](file:///Users/abhinavv/Documents/ClientVault/structured_output_results.log).
 
 
-## Clean-Run Proof Confirmation
 
 ### 1. Workspace Health Check
 ```
