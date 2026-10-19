@@ -114,6 +114,23 @@ python -m unittest discover tests
 
 Detailed design decisions and side-by-side matrices are documented in [`prompts/PROMPT_RATIONALE.md`](file:///Users/abhinavv/Documents/ClientVault/prompts/PROMPT_RATIONALE.md) and [`prompts/comparison_report.md`](file:///Users/abhinavv/Documents/ClientVault/prompts/comparison_report.md).
 
+### 8. Run Token Counting & Cost Estimation Utility
+
+Measure corpus subword tokens with `tiktoken` and project production RAG inference billing:
+
+```bash
+# Run full token count, cost estimation, and length-token analysis:
+python src/token_cost_estimator.py
+
+# Save results directly to log file:
+python src/token_cost_estimator.py --output-file token_cost_output.log
+
+# Evaluate alternative models (e.g., gpt-4o):
+python src/token_cost_estimator.py --model gpt-4o
+```
+Sample benchmark metrics are recorded in [`token_cost_output.log`](file:///Users/abhinavv/Documents/ClientVault/token_cost_output.log).
+
+
 
 ---
 
