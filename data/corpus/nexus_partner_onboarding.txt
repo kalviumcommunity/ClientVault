@@ -1,0 +1,25 @@
+[NAVIGATION: Knowledge Base / Partner Onboarding / Financial Services / NEXUS-002]
+NEXUS FINANCIAL TECHNOLOGIES — INSTITUTIONAL PARTNER ONBOARDING GUIDE
+Client Identifier: NEXUS-002 (Nexus Financial Technologies)
+Document Code: KB-NEX-001 | Revision: 5.1
+--- Document Header: Nexus Banking Partner Confidential ---
+
+1. INSTITUTIONAL INTAKE VERIFICATION
+Before granting programmatic access to the Nexus clearing ledger, financial institution partners must complete identity verification:
+1. Valid Legal Entity Identifier (LEI) registered with the Global LEI Foundation.
+2. Verified SWIFT / BIC institutional routing profile.
+3. Written sign-off from designated Compliance Officer approving AML/KYC profile.
+
+--- Page 1 of 3 --- NEXUS FINANCIAL TECH ---
+
+2. ENVIRONMENT PROVISIONING PHASES
+- Phase 1: Staging Sandbox Simulation. Partners execute 500 test micro-settlements across all currency pairs.
+- Phase 2: Dual Cryptographic Key Exchange. Mutual TLS 1.3 certificates and mTLS client certs signed by approved CA.
+- Phase 3: Controlled Production Ramp. Initial 30-day transaction volume capped at $250,000 USD daily clearing value.
+
+--- Page 2 of 3 --- NEXUS FINANCIAL TECH ---
+
+3. ADMINISTRATIVE CONTROLS
+Programmatic API credentials must be rotated every 90 calendar days. Failure to rotate triggers automated account throttling to 10% baseline throughput until renewed.
+
+--- Page 3 of 3 --- All rights reserved. NEXUS TECH (c) 2026 ---

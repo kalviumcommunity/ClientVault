@@ -1,0 +1,31 @@
+[NAVIGATION: Knowledge Base / SLAs / Logistics Tier / ACME-001]
+ACME LOGISTICS — ENTERPRISE SERVICE LEVEL AGREEMENT
+Client Identifier: ACME-001 (ACME Logistics Inc.)
+Document Code: SLA-ACM-2026 | Effective Date: 2026-01-01
+--- Document Header: ACME Enterprise SLA Confidential ---
+
+1. SERVICE AVAILABILITY COMMITMENT
+The ClientVault support platform guarantees 99.9% uptime for the ACME Freight API gateway and dispatch integration systems during each calendar month, excluding scheduled maintenance windows.
+
+2. INCIDENT SEVERITY AND RESPONSE TIME MATRIX
+- Severity 1 (Critical Dispatch Outage): Total inability to track shipments or submit customs manifest.
+  Initial response time <= 30 minutes. Status updates every 45 minutes until resolution.
+- Severity 2 (Major Impairment): Key reporting dashboards or bulk EDI transmission delayed.
+  Initial response time <= 2 hours.
+- Severity 3 (Minor Operational Issue): Individual user login failure or documentation clarification.
+  Initial response time <= 8 business hours.
+
+--- Page 1 of 2 --- ACME LOGISTICS INC. ---
+
+3. OUTAGE PENALTIES & SERVICE CREDITS
+If monthly availability drops below 99.9%, ACME Logistics receives billing credits according to the following schedule:
+- 99.0% to 99.89%: 10% monthly service credit.
+- 95.0% to 98.99%: 25% monthly service credit.
+- Below 95.0%: 50% monthly service credit and executive review within 5 business days.
+
+4. ESCALATION CONTACTS
+Level 1: Dispatch Desk Support (ops@acme-logistics.com)
+Level 2: Principal Logistics Systems Engineer (oncall@acme-logistics.com)
+Level 3: VP of Supply Chain Infrastructure
+
+--- Page 2 of 2 --- All rights reserved. ACME LOGISTICS (c) 2026 ---

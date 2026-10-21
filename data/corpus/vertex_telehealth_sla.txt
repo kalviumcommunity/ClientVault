@@ -1,0 +1,30 @@
+[NAVIGATION: Knowledge Base / SLAs / Healthcare Tier / VERTEX-003]
+VERTEX HEALTH SYSTEMS — TELEHEALTH & CLINICAL INFRASTRUCTURE SLA
+Client Identifier: VERTEX-003 (Vertex Health Systems)
+Document Code: SLA-VTX-2026 | Effective Date: 2026-01-01
+--- Document Header: Vertex Health Telehealth SLA Confidential ---
+
+1. SYSTEM AVAILABILITY & SERVICE METRICS
+Vertex Health Systems requires 99.95% monthly operational uptime across the core Telehealth WebRTC video routing infrastructure and Electronic Health Record integration gateway.
+
+2. INCIDENT SEVERITY AND EMERGENCY RESPONSE COMMITMENTS
+- Severity 1 (Emergency Clinical Impact): Hospital EHR offline or live emergency telehealth consultations failing.
+  Initial response time <= 30 minutes. Incident bridge manned continuously by Principal Clinical Systems Engineer.
+- Severity 2 (Significant Clinical Impairment): Patient scheduling portal unavailable or digital lab results delayed.
+  Initial response time <= 2 hours.
+- Severity 3 (Minor Operational Inquiry): Non-urgent provider credentialing ticket or static report discrepancy.
+  Initial response time <= 6 business hours.
+
+--- Page 1 of 2 --- VERTEX HEALTH SYSTEMS ---
+
+3. REGULATORY BREACH NOTIFICATION WINDOW
+In the event of an confirmed data exposure or unencrypted PHI transmission incident:
+- Incident Commander must notify Vertex Chief Information Security Officer (CISO) within 60 minutes.
+- Formal regulatory notification to HHS Office for Civil Rights must be coordinated within 24 hours.
+
+4. ESCALATION CONTACT DIRECTORY
+Level 1: 24/7 Clinical Service Desk (clinical-support@vertex-health.org)
+Level 2: Hospital Reliability Operations Team (lead-oncall@vertex-health.org)
+Level 3: VP of Medical Informatics & Chief Medical Officer
+
+--- Page 2 of 2 --- All rights reserved. VERTEX HEALTH SYSTEMS (c) 2026 ---

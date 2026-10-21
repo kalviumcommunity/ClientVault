@@ -226,16 +226,29 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented `TokenAwareChunker` sizing chunks strictly by token count with controlled token overlap (`tiktoken` cl100k_base / o200k_base), boundary context preservation demonstration (`demonstrate_boundary_context_preservation`), model budget justification for GPT-4o-mini (`get_model_budget_justification`), and sample terminal output report committed to `token_chunking_output.log`, verified with 58 passing automated unit tests (`tests/test_chunker.py`).
+**Last change:** Implemented `IngestionPipeline` (`src/ingestion_pipeline.py`) executing end-to-end corpus ingestion (loading, cleaning, token-aware chunking, granular tagging) across the entire synthetic 3-client corpus (`data/corpus/`), validating complete mathematical reconciliation (17 source files = 15 ingested + 2 recorded skips, 0 unaccounted drops), generating multi-client inspection reports in `ingestion_summary.log`, verified with 66 passing automated unit tests (`tests/test_ingestion_pipeline.py`).
 
-**Date / iteration:** Token-Aware Chunking & Controlled Overlap Sprint.
+**Date / iteration:** Full Corpus Ingestion & Completeness Validation Sprint.
 
-**Current phase (workflow doc):** Phase 17 — Token-Aware Chunking & Controlled Overlap.
+**Current phase (workflow doc):** Phase 18 — Full Corpus Ingestion & Completeness Validation.
 
-**Current branch:** `feat/token-aware-chunking-and-overlap`
+**Current branch:** `feat/full-corpus-ingestion-and-validation`
 
 **What exists right now:**
-- `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine:
+- `src/ingestion_pipeline.py` — End-to-end full corpus ingestion coordinator:
+  - Task 1: Runs discovery, loading, cleaning, token-aware chunking, and tagging over the whole corpus directory.
+  - Task 2: Emits quantitative summaries with per-client and per-format breakdowns, average chunks/doc, and average tokens/chunk.
+  - Task 3: Strict completeness validation and mathematical reconciliation: Candidate Source Files == Ingested Documents + Recorded Failures with 0 unaccounted drops.
+  - Task 4: Sample chunk inspector displaying cleaned text, sensible boundaries, client ID tags, document codes, character spans, token counts, and PRD citations.
+  - Task 5: Audit report generation persisted to `ingestion_summary.log`.
+- `data/corpus/` — Full 3-client synthetic corpus (17 files):
+  - ACME Logistics (`ACME-001`): `acme_onboarding_guide.md`, `acme_contractor_access.md`, `acme_service_level_agreement.txt`, `acme_warehouse_api_runbook.md`, `acme_incident_escalation.txt`.
+  - Nexus Financial Technologies (`NEXUS-002`): `nexus_partner_onboarding.txt`, `nexus_compliance_guide.md`, `nexus_service_level_agreement.txt`, `nexus_payment_gateway_runbook.html`, `nexus_database_failover_runbook.md`.
+  - Vertex Health Systems (`VERTEX-003`): `vertex_clinician_onboarding.html`, `vertex_hipaa_security_policy.md`, `vertex_telehealth_sla.txt`, `vertex_ehr_disaster_recovery.html`, `vertex_telehealth_outage_runbook.md`.
+  - Edge cases: `corrupt_unsupported.bin` (unsupported format), `empty_draft_memo.txt` (0-byte empty file).
+- `tests/test_ingestion_pipeline.py` — Automated `unittest` suite (8 tests) testing full pipeline run, client/format breakdown, mathematical reconciliation, skipped file audit, sample chunk inspection, and dropped file detection.
+- `ingestion_summary.log` — Verifiable terminal report recording full corpus ingestion metrics, client account tables, failure logs, and sample chunk inspections.
+- `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine.
   - Task 1: `TokenAwareChunker` measuring and setting chunk size strictly in tokens using BPE tokenizer (`tiktoken` cl100k_base / o200k_base).
   - Task 2: Controlled token overlap repeating exact last N tokens of previous chunk into the next chunk.
   - Task 3: Boundary context preservation demonstration (`demonstrate_boundary_context_preservation`) proving conditional rules spanning boundaries stay intact with overlap.

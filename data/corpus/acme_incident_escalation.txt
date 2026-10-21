@@ -1,0 +1,26 @@
+[NAVIGATION: Knowledge Base / Incident Management / ACME-001]
+ACME LOGISTICS — INCIDENT RESPONSE & SEV-1 ESCALATION RUNBOOK
+Client Identifier: ACME-001 (ACME Logistics)
+Document Code: SOP-ESC-004 | Effective Date: 2026-02-15
+--- Document Header: ACME Internal Incident Response Confidential ---
+
+1. INCIDENT TRIAGE & NOTIFICATION WORKFLOW
+When monitoring alarms detect warehouse dispatch stoppage or EDI gateway failure:
+- Step 1: Open bridge conference line #acme-ops-incident on Slack and dial-in bridge 1-800-555-ACME.
+- Step 2: Page the primary on-call Freight Systems Engineer via PagerDuty policy `ACME-HIGH-SEV`.
+- Step 3: Broadcast client status notice within 15 minutes of triage confirmation.
+
+--- Page 1 of 2 --- ACME LOGISTICS INC. ---
+
+2. ROLES & RESPONSIBILITIES
+- Incident Commander: Directs technical investigation and authorizes rollback actions.
+- Communications Lead: Publishes hourly status updates to client stakeholders.
+- Scribe: Records chronological timeline of telemetry events and terminal commands.
+
+3. POST-INCIDENT REVIEW REQUIREMENTS
+Within 48 hours of Sev-1 mitigation, a root cause analysis (RCA) document must be submitted to the ACME Technical Oversight Committee containing:
+1. Executive summary of business impact.
+2. Comprehensive timeline of root cause inception and mitigation milestones.
+3. Corrective action items assigned with Jira ticket IDs and target delivery sprints.
+
+--- Page 2 of 2 --- All rights reserved. ACME LOGISTICS (c) 2026 ---

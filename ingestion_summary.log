@@ -1,0 +1,97 @@
+==================================================================================
+CLIENTVAULT — FULL CORPUS INGESTION RUN & COMPLETENESS AUDIT REPORT
+==================================================================================
+Target Corpus Directory : /Users/fibafathima/ClientVault/data/corpus
+Total Source Files Found: 17
+Ingested Documents Count: 15
+Total Chunks Created    : 25
+Total Corpus Characters : 18,208 chars
+Total Corpus Tokens     : 4,479 tokens (tiktoken BPE)
+Average Chunks / Doc    : 1.67
+Average Tokens / Chunk  : 179.16 tokens
+----------------------------------------------------------------------------------
+TASK 2 — INGESTION BREAKDOWN BY CLIENT ACCOUNT:
+Client Identifier  | Documents  | Chunks   | Total Tokens
+----------------------------------------------------------------------------------
+ACME-001           | 5          | 9        | 1,634       
+NEXUS-002          | 5          | 8        | 1,415       
+VERTEX-003         | 5          | 8        | 1,430       
+----------------------------------------------------------------------------------
+INGESTION BREAKDOWN BY SOURCE FORMAT:
+  • HTML  : 3 documents
+  • MD    : 7 documents
+  • TXT   : 5 documents
+----------------------------------------------------------------------------------
+TASK 2 — SKIPPED & RECORDED FAILED FILES (2):
+  1. File: 'corrupt_unsupported.bin' (12 bytes)
+     Path  : data/corpus/corrupt_unsupported.bin
+     Reason: UNSUPPORTED_FORMAT: Extension '.bin' is not supported by loaders
+  2. File: 'empty_draft_memo.txt' (0 bytes)
+     Path  : data/corpus/empty_draft_memo.txt
+     Reason: EMPTY_FILE: Document is 0 bytes with no extractable text
+----------------------------------------------------------------------------------
+TASK 3 — COMPLETENESS VALIDATION & RECONCILIATION AUDIT:
+  • Candidate Source Files Scanned : 17
+  • Successfully Ingested Docs    : 15
+  • Recorded Skipped/Failed Files : 2
+  • Reconciled Total (Ing + Skip) : 17
+  • Unaccounted / Dropped Files   : 0
+  [✓] Mathematical Reconciliation : PASSED (Source Files == Ingested + Skipped)
+  [✓] Overall Completeness Status : 100% VERIFIED — No documents silently dropped!
+----------------------------------------------------------------------------------
+TASK 4 — SAMPLE CHUNKS INSPECTION (Inspecting 3 representative chunks):
+----------------------------------------------------------------------------------
+[Chunk Sample #1]
+  Chunk ID         : acme_contractor_access#tok_000
+  Source Document  : acme_contractor_access
+  Client ID Tag    : ACME-001
+  Document Code    : KB-ONB-002
+  Section Heading  : ACME Logistics - Contractor & Vendor ...
+  Page & Position  : Page 1 (1 of 1)
+  Character Span   : [0:1137] (1137 chars, 248 tokens)
+  Citation Label   : [Source: acme_contractor_access, Section: ACME Logistics - Contractor & Vendor ..., Page: 1]
+  Cleaned Content  :
+    "# ACME Logistics - Contractor & Vendor Access Policy
+Document ID: KB-ONB-002 | Revision: 2.1
+Client ID: ACME-001 | Security Tier: Level-2
+
+## 1. Scope and Eligibility
+This document..."
+  Inspection Check : [✓] Cleaned text (no boilerplate) | [✓] Sensible boundaries | [✓] Complete metadata
+
+[Chunk Sample #2]
+  Chunk ID         : nexus_compliance_guide#tok_000
+  Source Document  : nexus_compliance_guide
+  Client ID Tag    : NEXUS-002
+  Document Code    : KB-CMP-002
+  Section Heading  : Nexus Financial Technologies - Regula...
+  Page & Position  : Page 1 (1 of 2)
+  Character Span   : [0:1169] (1169 chars, 250 tokens)
+  Citation Label   : [Source: nexus_compliance_guide, Section: Nexus Financial Technologies - Regula..., Page: 1]
+  Cleaned Content  :
+    "# Nexus Financial Technologies - Regulatory Compliance & PCI-DSS Guide
+Document ID: KB-CMP-002 | Revision: 3.0
+Client Identifier: NEXUS-002 | Classification: Strictly Confidential
+..."
+  Inspection Check : [✓] Cleaned text (no boilerplate) | [✓] Sensible boundaries | [✓] Complete metadata
+
+[Chunk Sample #3]
+  Chunk ID         : vertex_clinician_onboarding#tok_000
+  Source Document  : vertex_clinician_onboarding
+  Client ID Tag    : VERTEX-003
+  Document Code    : KB-VTX-001
+  Section Heading  : Clinician Identity & Credential Verif...
+  Page & Position  : Page 1 (1 of 1)
+  Character Span   : [0:1101] (1101 chars, 200 tokens)
+  Citation Label   : [Source: vertex_clinician_onboarding, Section: Clinician Identity & Credential Verif..., Page: 1]
+  Cleaned Content  :
+    "Vertex Health - Clinician Onboarding Runbook
+
+Vertex Health Systems: Medical Staff & Clinician Onboarding Protocol
+
+Document ID: KB-VTX-001 | Client Identifier: VERTEX-003
+
+1. Clin..."
+  Inspection Check : [✓] Cleaned text (no boilerplate) | [✓] Sensible boundaries | [✓] Complete metadata
+
+==================================================================================
