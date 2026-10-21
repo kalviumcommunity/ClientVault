@@ -226,19 +226,22 @@ Complete before/after comparison tables and line reduction metrics are captured 
 
 ### 15. Run Document Chunking, Metadata Tagging & Provenance Suite
 
-Split cleaned documents into retrieval units using multiple chunking strategies (Fixed-Size with Overlap, Paragraph/Semantic, Sentence-Boundary), attach consistent metadata (`source_id`, `document_id`, `section`, `page`, `chunk_index`, `total_chunks`, `char_span`, `client_id`, `document_code`), and verify 100% deterministic source traceability:
+Split cleaned documents into retrieval units using multiple chunking strategies (Token-Aware with Controlled Overlap, Fixed-Size with Overlap, Paragraph/Semantic, Sentence-Boundary), attach consistent metadata (`source_id`, `document_id`, `section`, `page`, `chunk_index`, `total_chunks`, `char_span`, `client_id`, `document_code`, `extra`), and verify 100% deterministic source traceability:
 
 ```bash
-# Run multi-strategy evaluation & traceability check:
+# Run multi-strategy evaluation & token-aware chunking:
 python src/chunker.py
 
 # Save evaluation report, sample chunks + metadata, and provenance trace to log:
-python src/chunker.py --output-file chunking_comparison_output.log
+python src/chunker.py --output-file token_chunking_output.log
+
+# Run standalone boundary context preservation demonstration:
+python src/chunker.py --demo-boundary
 
 # Run automated unit tests:
 python -m unittest discover tests
 ```
-Comparative chunk count, average sizes, metadata schema serialization, and exact source traceability proofs are captured in [`chunking_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/chunking_comparison_output.log).
+Comparative chunk count, average sizes, metadata schema serialization, boundary context preservation proofs, model budget justification (GPT-4o-mini), and exact source traceability proofs are captured in [`token_chunking_output.log`](file:///Users/fibafathima/ClientVault/token_chunking_output.log) and [`chunking_comparison_output.log`](file:///Users/fibafathima/ClientVault/chunking_comparison_output.log).
 
 
 
