@@ -7,9 +7,13 @@ from src.chunker import (
     FixedSizeChunker,
     ParagraphSemanticChunker,
     SentenceChunker,
+    TokenAwareChunker,
     compute_chunk_stats,
     compare_strategies_on_document,
     count_tokens,
+    demonstrate_boundary_context_preservation,
+    get_model_budget_justification,
+    trace_chunk_to_source,
 )
 from src.document_loader import Document, DocumentLoader
 
@@ -170,6 +174,105 @@ class TestChunker(unittest.TestCase):
         self.assertTrue(trace["is_contained_in_source"])
         self.assertTrue(trace["is_exact_span_match"])
         self.assertIn("Section:", trace["citation"])
+
+    def test_token_aware_chunking_size_and_bounds(self):
+        """Task 1: Test token-aware chunker sizes chunks strictly in tokens."""
+        chunk_size_tokens = 30
+        chunk_overlap_tokens = 5
+        chunker = TokenAwareChunker(
+            chunk_size_tokens=chunk_size_tokens,
+            chunk_overlap_tokens=chunk_overlap_tokens,
+            model_encoding="cl100k_base"
+        )
+        chunks = chunker.split_text(self.sample_text, document_id="doc_tok", source_id="onb.md")
+
+        self.assertGreater(len(chunks), 1)
+        for c in chunks:
+            self.assertLessEqual(c.token_count, chunk_size_tokens)
+            self.assertIn("doc_tok", c.chunk_id)
+            self.assertEqual(c.source_id, "onb.md")
+            self.assertGreater(c.char_count, 0)
+            self.assertEqual(c.strategy, "token_aware_overlap")
+
+    def test_token_aware_chunking_invalid_parameters(self):
+        """Task 1 & 2: Test invalid token parameters raise ValueError."""
+        with self.assertRaises(ValueError):
+            TokenAwareChunker(chunk_size_tokens=0)
+        with self.assertRaises(ValueError):
+            TokenAwareChunker(chunk_size_tokens=50, chunk_overlap_tokens=-1)
+        with self.assertRaises(ValueError):
+            TokenAwareChunker(chunk_size_tokens=50, chunk_overlap_tokens=60)
+        with self.assertRaises(ValueError):
+            TokenAwareChunker(chunk_size_tokens=50, chunk_overlap_tokens=50)
+
+    def test_token_aware_controlled_overlap(self):
+        """Task 2: Test adjacent chunks repeat exactly the last N tokens of the previous chunk."""
+        chunk_size_tokens = 20
+        chunk_overlap_tokens = 6
+        chunker = TokenAwareChunker(
+            chunk_size_tokens=chunk_size_tokens,
+            chunk_overlap_tokens=chunk_overlap_tokens
+        )
+        chunks = chunker.split_text(self.sample_text)
+        self.assertGreater(len(chunks), 1)
+
+        for i in range(len(chunks) - 1):
+            toks_current = chunker.encode(chunks[i].content)
+            toks_next = chunker.encode(chunks[i + 1].content)
+
+            overlap_tail = toks_current[-chunk_overlap_tokens:]
+            overlap_head = toks_next[:chunk_overlap_tokens]
+
+            self.assertEqual(overlap_tail, overlap_head)
+            decoded_tail = chunker.decode(overlap_tail)
+            decoded_head = chunker.decode(overlap_head)
+            self.assertEqual(decoded_tail, decoded_head)
+
+    def test_token_aware_boundary_context_preservation(self):
+        """Task 3: Demonstrate overlap preserves operational condition/action across chunk boundary."""
+        demo = demonstrate_boundary_context_preservation(
+            chunk_size_tokens=25,
+            chunk_overlap_tokens=8
+        )
+        self.assertTrue(demo["without_overlap"]["condition_fractured"])
+        self.assertTrue(demo["with_overlap"]["tokens_match_exactly"])
+        self.assertTrue(demo["with_overlap"]["preserved_intact"])
+        self.assertEqual(demo["with_overlap"]["shared_boundary_tokens"], 8)
+        self.assertIn("exceeds 500ms for three consecutive", demo["with_overlap"]["shared_boundary_text"])
+
+    def test_model_budget_justification_structure(self):
+        """Task 4: Test architectural justification properties for target model."""
+        just = get_model_budget_justification()
+        self.assertEqual(just["target_model"], "gpt-4o-mini")
+        self.assertEqual(just["context_window_tokens"], 128000)
+        self.assertEqual(just["recommended_chunk_size_tokens"], 250)
+        self.assertEqual(just["recommended_chunk_overlap_tokens"], 50)
+        self.assertEqual(just["overlap_percentage"], 20.0)
+        self.assertEqual(just["top_k_retrieval_chunks"], 5)
+        self.assertLess(just["retrieved_context_tokens_budget"], 2000)
+        self.assertGreaterEqual(len(just["justification_points"]), 4)
+
+    def test_token_aware_traceability_and_metadata(self):
+        """Task 5: Test token-aware chunks attach rich extra metadata and verify traceability."""
+        chunker = TokenAwareChunker(chunk_size_tokens=35, chunk_overlap_tokens=10)
+        chunks = chunker.split_document(self.doc)
+        self.assertGreater(len(chunks), 0)
+
+        c = chunks[0]
+        self.assertIn("chunk_size_tokens", c.metadata.extra)
+        self.assertIn("chunk_overlap_tokens", c.metadata.extra)
+        self.assertIn("token_start_index", c.metadata.extra)
+        self.assertIn("token_end_index", c.metadata.extra)
+
+        trace = trace_chunk_to_source(c, self.sample_text)
+        self.assertTrue(trace["is_exact_span_match"])
+        self.assertTrue(trace["is_contained_in_source"])
+
+    def test_token_aware_empty_text(self):
+        """Test TokenAwareChunker returns empty list on empty or whitespace string."""
+        chunker = TokenAwareChunker()
+        self.assertEqual(chunker.split_text(""), [])
+        self.assertEqual(chunker.split_text("   \n\n  "), [])
 
 
 if __name__ == "__main__":

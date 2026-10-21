@@ -226,23 +226,27 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented granular chunk metadata tagging (`ChunkMetadata`) and deterministic retrieval provenance verification (`trace_chunk_to_source`) in `src/chunker.py`, attaching source document identifiers, sections, page numbers, corpus positions (`chunk_index of total_chunks`), character spans, client IDs, and document codes consistently across all chunks, verified via `chunking_comparison_output.log` and 51 passing automated unit tests (`tests/test_chunker.py`).
+**Last change:** Implemented `TokenAwareChunker` sizing chunks strictly by token count with controlled token overlap (`tiktoken` cl100k_base / o200k_base), boundary context preservation demonstration (`demonstrate_boundary_context_preservation`), model budget justification for GPT-4o-mini (`get_model_budget_justification`), and sample terminal output report committed to `token_chunking_output.log`, verified with 58 passing automated unit tests (`tests/test_chunker.py`).
 
-**Date / iteration:** Chunk Metadata Tagging & Provenance Verification Sprint.
+**Date / iteration:** Token-Aware Chunking & Controlled Overlap Sprint.
 
-**Current phase (workflow doc):** Phase 16 — Chunk Metadata Tagging & Source Provenance.
+**Current phase (workflow doc):** Phase 17 — Token-Aware Chunking & Controlled Overlap.
 
-**Current branch:** `feat/chunk-metadata-and-provenance`
+**Current branch:** `feat/token-aware-chunking-and-overlap`
 
 **What exists right now:**
-- `src/chunker.py` — Multi-strategy document chunking and metadata provenance engine:
-  - Task 1 & 2: `ChunkMetadata` schema storing `source_id`, `document_id`, `file_path`, `file_format`, `section`, `page`, `chunk_index`, `total_chunks`, `start_char`, `end_char`, `char_count`, `token_count`, `client_id`, `document_code`, and `strategy`.
-  - Task 3: Uniform `Chunk.to_dict()` and `ChunkMetadata.to_dict()` structure guaranteeing consistent fields across all corpus chunks.
-  - Task 4: `trace_chunk_to_source(chunk, original_text)` function demonstrating 100% deterministic mapping of retrieved chunks to exact source documents and character offsets.
-  - Task 5: Terminal evaluation runner emitting side-by-side chunk boundary comparisons, metadata dumps, and provenance proofs to `chunking_comparison_output.log`.
-  - Strategies: Fixed-Size with Overlap (`FixedSizeChunker`), Paragraph/Semantic Boundary (`ParagraphSemanticChunker`), Sentence Boundary (`SentenceChunker`).
-- `tests/test_chunker.py` — Automated `unittest` suite testing windowing, overlap, paragraph breaks, metadata schema consistency, and end-to-end source traceability verification.
-- `chunking_comparison_output.log` — Verifiable terminal report recording comparative chunk statistics, sample chunks with full metadata, and source traceability proofs.
+- `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine:
+  - Task 1: `TokenAwareChunker` measuring and setting chunk size strictly in tokens using BPE tokenizer (`tiktoken` cl100k_base / o200k_base).
+  - Task 2: Controlled token overlap repeating exact last N tokens of previous chunk into the next chunk.
+  - Task 3: Boundary context preservation demonstration (`demonstrate_boundary_context_preservation`) proving conditional rules spanning boundaries stay intact with overlap.
+  - Task 4: Target model budget & overlap justification (`get_model_budget_justification`) for `gpt-4o-mini` (128k window, 250 token chunks, 50 token / 20% overlap, Top-K=5 budget).
+  - Task 5: Sample output evaluation report (`token_chunking_output.log`) logging quantitative chunk stats, boundary preservation proofs, and sample token-aware chunks with full metadata.
+  - Granular `ChunkMetadata` schema storing `source_id`, `document_id`, `file_path`, `file_format`, `section`, `page`, `chunk_index`, `total_chunks`, `start_char`, `end_char`, `char_count`, `token_count`, `client_id`, `document_code`, `strategy`, and `extra` (with token ranges, overlap counts, and encoding).
+  - `trace_chunk_to_source(chunk, original_text)` demonstrating 100% deterministic mapping of retrieved chunks to exact source documents and character offsets.
+  - Multi-strategy suite: Token-Aware (`TokenAwareChunker`), Fixed-Size (`FixedSizeChunker`), Paragraph/Semantic (`ParagraphSemanticChunker`), Sentence (`SentenceChunker`).
+- `tests/test_chunker.py` — Automated `unittest` suite (21 tests in suite) testing token sizing, parameter validation, controlled overlap equality, boundary context preservation, metadata schema consistency, and end-to-end source traceability verification.
+- `token_chunking_output.log` — Verifiable terminal report recording token chunk statistics, sample chunks with full metadata, boundary preservation proof, and source traceability.
+- `chunking_comparison_output.log` — Baseline comparative chunk statistics across strategies.
 - `src/text_cleaner.py` — Multi-stage cleaning pipeline with boilerplate removal (`remove_boilerplate`), Unicode NFKC normalization (`normalize_unicode_and_encoding`), whitespace/line-wrap healing (`normalize_whitespace_and_wraps`), and document/corpus coordinators (`clean_document`, `clean_corpus`).
 - `tests/test_text_cleaner.py` — Automated `unittest` suite validating Unicode normalization, pagination and boilerplate stripping, hyphenated wrap healing, metadata preservation, and corpus cleaning uniformity.
 - `cleaning_pipeline_output.log` — Terminal execution capture of corpus cleaning metrics and detailed before/after comparison excerpts.
