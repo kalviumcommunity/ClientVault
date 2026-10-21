@@ -224,6 +224,23 @@ python -m unittest discover tests
 ```
 Complete before/after comparison tables and line reduction metrics are captured in [`cleaning_pipeline_output.log`](file:///Users/abhinavv/Documents/ClientVault/cleaning_pipeline_output.log).
 
+### 15. Run Document Chunking & Strategy Comparison Suite
+
+Split cleaned documents into retrieval units using multiple chunking strategies (Fixed-Size with Overlap, Paragraph/Semantic, Sentence-Boundary), compare chunk boundaries and statistics, and output justification for runbook retrieval:
+
+```bash
+# Run multi-strategy evaluation on sample document:
+python src/chunker.py
+
+# Save evaluation report and chunk samples to log:
+python src/chunker.py --output-file chunking_comparison_output.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Comparative chunk count, average sizes, sample boundaries, and architectural justifications are captured in [`chunking_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/chunking_comparison_output.log).
+
+
 
 ### 1. Workspace Health Check
 ```
