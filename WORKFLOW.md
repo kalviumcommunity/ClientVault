@@ -103,14 +103,18 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
-- **PR (Chunking Pipeline)**: [feat: implement document chunking strategies and comparison harness](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/document-chunking-and-evaluation)
+- **PR (Chunk Metadata & Provenance)**: [feat: implement chunk metadata tagging and source provenance verification](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/chunk-metadata-and-provenance)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/chunk-metadata-and-provenance`
+  - **Review Status**: Pushed and ready for peer review / merge
+- **PR #19**: [feat: implement document chunking strategies and comparison harness](https://github.com/kalviumcommunity/ClientVault/pull/19)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/document-chunking-and-evaluation`
-  - **Review Status**: Pushed and ready for peer review / merge
+  - **Review Status**: Merged into `main`
 - **PR #18**: [feat: implement retrieval text cleaning and normalization pipeline](https://github.com/kalviumcommunity/ClientVault/pull/18)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/text-cleaning-and-normalization`
-  - **Review Status**: Open for peer review
+  - **Review Status**: Merged into `main`
 - **PR #17**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/17)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/document-loader-and-intake`
