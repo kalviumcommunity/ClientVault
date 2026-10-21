@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Chunking Pipeline)**: [feat: implement document chunking strategies and comparison harness](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/document-chunking-and-evaluation)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/document-chunking-and-evaluation`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR #18**: [feat: implement retrieval text cleaning and normalization pipeline](https://github.com/kalviumcommunity/ClientVault/pull/18)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/text-cleaning-and-normalization`

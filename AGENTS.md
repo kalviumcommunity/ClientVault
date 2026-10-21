@@ -226,15 +226,23 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented retrieval text cleaning and normalization pipeline (`src/text_cleaner.py`), eliminating repeated boilerplate headers, footers, pagination ("Page X of Y"), and breadcrumbs, normalizing Unicode NFKC and line wraps, generated full corpus before/after audit report (`cleaning_pipeline_output.log`), and verified with 42 automated unit tests across repo (`tests/test_text_cleaner.py`).
+**Last change:** Implemented multi-strategy document chunking engine (`src/chunker.py`) supporting Fixed-Size with sliding overlap, Paragraph/Semantic boundary chunking, and Sentence grouping, accompanied by quantitative comparison report (`chunking_comparison_output.log`), architectural runbook justification, and verified with 49 automated unit tests across repo (`tests/test_chunker.py`).
 
-**Date / iteration:** Retrieval Text Cleaning & Normalization Sprint.
+**Date / iteration:** Document Chunking & Retrieval Precision Sprint.
 
-**Current phase (workflow doc):** Phase 14 — Retrieval Text Cleaning & Normalization.
+**Current phase (workflow doc):** Phase 15 — Document Chunking Strategies & Boundary Evaluation.
 
-**Current branch:** `feat/text-cleaning-and-normalization`
+**Current branch:** `feat/document-chunking-and-evaluation`
 
 **What exists right now:**
+- `src/chunker.py` — Multi-strategy document chunking engine implementing:
+  - Strategy 1: Fixed-Size Chunking with configurable sliding overlap (`FixedSizeChunker`).
+  - Strategy 2: Paragraph / Semantic Boundary Chunking (`ParagraphSemanticChunker`), breaking on headings and runbook steps.
+  - Strategy 3: Sentence-Boundary Chunking (`SentenceChunker`), grouping sentences up to target counts.
+  - Citation Metadata: Preserves `chunk_id`, `document_id`, `source_id`, `section`, `start_char`, `end_char`, and PRD-compliant citations `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
+  - Statistical Comparison & Justification Generator: Quantifies chunk counts, average/min/max token and character counts, and documents why Semantic chunking is optimal for runbook retrieval.
+- `tests/test_chunker.py` — Automated `unittest` suite validating window bounds, sliding overlap, Markdown heading extraction, empty-text resilience, and multi-strategy comparisons.
+- `chunking_comparison_output.log` — Verifiable terminal report recording comparative chunk statistics, sample boundary comparisons, and justification.
 - `src/text_cleaner.py` — Multi-stage cleaning pipeline with boilerplate removal (`remove_boilerplate`), Unicode NFKC normalization (`normalize_unicode_and_encoding`), whitespace/line-wrap healing (`normalize_whitespace_and_wraps`), and document/corpus coordinators (`clean_document`, `clean_corpus`).
 - `tests/test_text_cleaner.py` — Automated `unittest` suite validating Unicode normalization, pagination and boilerplate stripping, hyphenated wrap healing, metadata preservation, and corpus cleaning uniformity.
 - `cleaning_pipeline_output.log` — Terminal execution capture of corpus cleaning metrics and detailed before/after comparison excerpts.
