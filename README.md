@@ -224,21 +224,21 @@ python -m unittest discover tests
 ```
 Complete before/after comparison tables and line reduction metrics are captured in [`cleaning_pipeline_output.log`](file:///Users/abhinavv/Documents/ClientVault/cleaning_pipeline_output.log).
 
-### 15. Run Document Chunking & Strategy Comparison Suite
+### 15. Run Document Chunking, Metadata Tagging & Provenance Suite
 
-Split cleaned documents into retrieval units using multiple chunking strategies (Fixed-Size with Overlap, Paragraph/Semantic, Sentence-Boundary), compare chunk boundaries and statistics, and output justification for runbook retrieval:
+Split cleaned documents into retrieval units using multiple chunking strategies (Fixed-Size with Overlap, Paragraph/Semantic, Sentence-Boundary), attach consistent metadata (`source_id`, `document_id`, `section`, `page`, `chunk_index`, `total_chunks`, `char_span`, `client_id`, `document_code`), and verify 100% deterministic source traceability:
 
 ```bash
-# Run multi-strategy evaluation on sample document:
+# Run multi-strategy evaluation & traceability check:
 python src/chunker.py
 
-# Save evaluation report and chunk samples to log:
+# Save evaluation report, sample chunks + metadata, and provenance trace to log:
 python src/chunker.py --output-file chunking_comparison_output.log
 
 # Run automated unit tests:
 python -m unittest discover tests
 ```
-Comparative chunk count, average sizes, sample boundaries, and architectural justifications are captured in [`chunking_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/chunking_comparison_output.log).
+Comparative chunk count, average sizes, metadata schema serialization, and exact source traceability proofs are captured in [`chunking_comparison_output.log`](file:///Users/abhinavv/Documents/ClientVault/chunking_comparison_output.log).
 
 
 

@@ -226,23 +226,23 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented multi-strategy document chunking engine (`src/chunker.py`) supporting Fixed-Size with sliding overlap, Paragraph/Semantic boundary chunking, and Sentence grouping, accompanied by quantitative comparison report (`chunking_comparison_output.log`), architectural runbook justification, and verified with 49 automated unit tests across repo (`tests/test_chunker.py`).
+**Last change:** Implemented granular chunk metadata tagging (`ChunkMetadata`) and deterministic retrieval provenance verification (`trace_chunk_to_source`) in `src/chunker.py`, attaching source document identifiers, sections, page numbers, corpus positions (`chunk_index of total_chunks`), character spans, client IDs, and document codes consistently across all chunks, verified via `chunking_comparison_output.log` and 51 passing automated unit tests (`tests/test_chunker.py`).
 
-**Date / iteration:** Document Chunking & Retrieval Precision Sprint.
+**Date / iteration:** Chunk Metadata Tagging & Provenance Verification Sprint.
 
-**Current phase (workflow doc):** Phase 15 — Document Chunking Strategies & Boundary Evaluation.
+**Current phase (workflow doc):** Phase 16 — Chunk Metadata Tagging & Source Provenance.
 
-**Current branch:** `feat/document-chunking-and-evaluation`
+**Current branch:** `feat/chunk-metadata-and-provenance`
 
 **What exists right now:**
-- `src/chunker.py` — Multi-strategy document chunking engine implementing:
-  - Strategy 1: Fixed-Size Chunking with configurable sliding overlap (`FixedSizeChunker`).
-  - Strategy 2: Paragraph / Semantic Boundary Chunking (`ParagraphSemanticChunker`), breaking on headings and runbook steps.
-  - Strategy 3: Sentence-Boundary Chunking (`SentenceChunker`), grouping sentences up to target counts.
-  - Citation Metadata: Preserves `chunk_id`, `document_id`, `source_id`, `section`, `start_char`, `end_char`, and PRD-compliant citations `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
-  - Statistical Comparison & Justification Generator: Quantifies chunk counts, average/min/max token and character counts, and documents why Semantic chunking is optimal for runbook retrieval.
-- `tests/test_chunker.py` — Automated `unittest` suite validating window bounds, sliding overlap, Markdown heading extraction, empty-text resilience, and multi-strategy comparisons.
-- `chunking_comparison_output.log` — Verifiable terminal report recording comparative chunk statistics, sample boundary comparisons, and justification.
+- `src/chunker.py` — Multi-strategy document chunking and metadata provenance engine:
+  - Task 1 & 2: `ChunkMetadata` schema storing `source_id`, `document_id`, `file_path`, `file_format`, `section`, `page`, `chunk_index`, `total_chunks`, `start_char`, `end_char`, `char_count`, `token_count`, `client_id`, `document_code`, and `strategy`.
+  - Task 3: Uniform `Chunk.to_dict()` and `ChunkMetadata.to_dict()` structure guaranteeing consistent fields across all corpus chunks.
+  - Task 4: `trace_chunk_to_source(chunk, original_text)` function demonstrating 100% deterministic mapping of retrieved chunks to exact source documents and character offsets.
+  - Task 5: Terminal evaluation runner emitting side-by-side chunk boundary comparisons, metadata dumps, and provenance proofs to `chunking_comparison_output.log`.
+  - Strategies: Fixed-Size with Overlap (`FixedSizeChunker`), Paragraph/Semantic Boundary (`ParagraphSemanticChunker`), Sentence Boundary (`SentenceChunker`).
+- `tests/test_chunker.py` — Automated `unittest` suite testing windowing, overlap, paragraph breaks, metadata schema consistency, and end-to-end source traceability verification.
+- `chunking_comparison_output.log` — Verifiable terminal report recording comparative chunk statistics, sample chunks with full metadata, and source traceability proofs.
 - `src/text_cleaner.py` — Multi-stage cleaning pipeline with boilerplate removal (`remove_boilerplate`), Unicode NFKC normalization (`normalize_unicode_and_encoding`), whitespace/line-wrap healing (`normalize_whitespace_and_wraps`), and document/corpus coordinators (`clean_document`, `clean_corpus`).
 - `tests/test_text_cleaner.py` — Automated `unittest` suite validating Unicode normalization, pagination and boilerplate stripping, hyphenated wrap healing, metadata preservation, and corpus cleaning uniformity.
 - `cleaning_pipeline_output.log` — Terminal execution capture of corpus cleaning metrics and detailed before/after comparison excerpts.

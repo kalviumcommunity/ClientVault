@@ -126,6 +126,51 @@ class TestChunker(unittest.TestCase):
             self.assertGreater(comp["fixed"]["stats"].total_chunks, 0)
             self.assertGreater(comp["paragraph_semantic"]["stats"].total_chunks, 0)
 
+    def test_chunk_metadata_schema_consistency(self):
+        """Test all chunks receive complete and consistent metadata fields."""
+        chunker = ParagraphSemanticChunker()
+        chunks = chunker.split_document(self.doc)
+        self.assertGreater(len(chunks), 0)
+
+        for c in chunks:
+            # Task 1: Store source identifier
+            self.assertEqual(c.metadata.source_id, "test_doc")
+            self.assertEqual(c.source_id, "test_doc")
+            # Task 2: Attach additional metadata
+            self.assertIsNotNone(c.metadata.section)
+            self.assertGreaterEqual(c.metadata.page, 1)
+            self.assertGreaterEqual(c.metadata.chunk_index, 0)
+            self.assertEqual(c.metadata.total_chunks, len(chunks))
+            self.assertGreaterEqual(c.metadata.start_char, 0)
+            self.assertGreater(c.metadata.end_char, c.metadata.start_char)
+            self.assertEqual(c.metadata.char_count, len(c.content))
+            self.assertGreater(c.metadata.token_count, 0)
+            self.assertEqual(c.metadata.file_path, "data/test_doc.md")
+            self.assertEqual(c.metadata.file_format, "md")
+
+            # Task 3: Consistent dictionary serialization
+            d = c.to_dict()
+            self.assertIn("chunk_id", d)
+            self.assertIn("content", d)
+            self.assertIn("metadata", d)
+            m_dict = d["metadata"]
+            for field_name in ["source_id", "document_id", "file_path", "section", "page", "chunk_index", "total_chunks", "start_char", "end_char", "char_count", "token_count"]:
+                self.assertIn(field_name, m_dict)
+
+    def test_trace_chunk_to_source_verification(self):
+        """Task 4: Demonstrate that a retrieved chunk traces back to exact source text."""
+        from src.chunker import trace_chunk_to_source
+        chunker = ParagraphSemanticChunker()
+        chunks = chunker.split_document(self.doc)
+        target_chunk = chunks[1]  # Pick middle chunk
+
+        trace = trace_chunk_to_source(target_chunk, self.sample_text)
+        self.assertEqual(trace["source_id"], "test_doc")
+        self.assertEqual(trace["file_path"], "data/test_doc.md")
+        self.assertTrue(trace["is_contained_in_source"])
+        self.assertTrue(trace["is_exact_span_match"])
+        self.assertIn("Section:", trace["citation"])
+
 
 if __name__ == "__main__":
     unittest.main()
