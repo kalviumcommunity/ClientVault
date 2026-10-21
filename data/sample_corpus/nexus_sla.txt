@@ -1,12 +1,18 @@
+[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002]
 CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX
 Client Identifier: NEXUS-002 (Nexus Financial Technologies)
-Document Code: SLA-NEX-2026
-Effective Date: 2026-01-01
+Document Code: SLA-NEX-2026 | Effective Date: 2026-01-01
+--- Document Header: Nexus Internal SLA Confidential ---
 
 1. INCIDENT SEVERITY CLASSIFICATIONS
-- Severity 1 (Critical Outage): Core transaction settlement system down. Initial response time <= 15 minutes. Update cadence every 30 minutes.
-- Severity 2 (Major Degradation): Non-critical service unavailable or redundant pipeline degraded. Initial response time <= 1 hour.
-- Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks. Initial response time <= 4 business hours.
+- Severity 1 (Critical Outage): Core transaction settlement system down.
+  Initial response time <= 15 minutes. Update cadence every 30 minutes.
+- Severity 2 (Major Degradation): Non-critical service unavailable or redundant pipeline degraded.
+  Initial response time <= 1 hour.
+- Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks.
+  Initial response time <= 4 business hours.
+
+--- Page 1 of 2 --- NEXUS FINANCIAL TECH ---
 
 2. ESCALATION HIERARCHY
 Level 1: Tier-1 Service Desk Operations (Desk-Nexus@clientvault.internal)
@@ -15,3 +21,5 @@ Level 3: VP of Technical Operations & Account Lead
 
 3. COMPLIANCE & PENALTIES
 Failure to meet Sev-1 response commitments incurs a 5% monthly service credit deduction per SLA Schedule B.
+
+--- Page 2 of 2 --- All rights reserved. NEXUS TECH (c) 2026 ---

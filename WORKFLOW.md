@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR #18**: [feat: implement retrieval text cleaning and normalization pipeline](https://github.com/kalviumcommunity/ClientVault/pull/18)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/text-cleaning-and-normalization`
+  - **Review Status**: Open for peer review
 - **PR #17**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/17)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/document-loader-and-intake`

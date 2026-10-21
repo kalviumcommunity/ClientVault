@@ -208,6 +208,22 @@ python -m unittest discover tests
 ```
 Sample corpus intake verification and skipped-file logs are captured in [`document_intake_output.log`](file:///Users/abhinavv/Documents/ClientVault/document_intake_output.log).
 
+### 14. Run Retrieval Text Cleaning & Normalization Pipeline
+
+Strip recurring boilerplate headers, footers, pagination ("Page X of Y"), and navigation artifacts while normalizing Unicode and whitespace across all documents:
+
+```bash
+# Run cleaning pipeline over corpus and generate before/after report:
+python src/text_cleaner.py
+
+# Save audit report to log file:
+python src/text_cleaner.py --output-file cleaning_pipeline_output.log
+
+# Run automated unit tests:
+python -m unittest discover tests
+```
+Complete before/after comparison tables and line reduction metrics are captured in [`cleaning_pipeline_output.log`](file:///Users/abhinavv/Documents/ClientVault/cleaning_pipeline_output.log).
+
 
 ### 1. Workspace Health Check
 ```
