@@ -226,15 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented `TokenAwareChunker` sizing chunks strictly by token count with controlled token overlap (`tiktoken` cl100k_base / o200k_base), boundary context preservation demonstration (`demonstrate_boundary_context_preservation`), model budget justification for GPT-4o-mini (`get_model_budget_justification`), and sample terminal output report committed to `token_chunking_output.log`, verified with 58 passing automated unit tests (`tests/test_chunker.py`).
+**Last change:** Enhanced `DocumentLoader` (`src/document_loader.py`) with zero-dependency PDF stream extraction (`BT...ET` and `Tj` operator parsing), added `acme_emergency.pdf` to `data/sample_corpus/`, expanded unit test suite (`tests/test_document_loader.py`) to 11 passing tests, generated updated intake confirmation report in `document_intake_output.log`, and resolved macOS base directory path matching.
 
-**Date / iteration:** Token-Aware Chunking & Controlled Overlap Sprint.
+**Date / iteration:** Multi-Format Document Loader & Intake Sprint.
 
-**Current phase (workflow doc):** Phase 17 — Token-Aware Chunking & Controlled Overlap.
+**Current phase (workflow doc):** Phase 13 — Multi-Format Document Loader & Intake Confirmation.
 
-**Current branch:** `feat/token-aware-chunking-and-overlap`
+**Current branch:** `feat/multi-format-document-loader`
 
 **What exists right now:**
+- `src/document_loader.py` — Multi-format loader with extractors for Markdown, Plain Text, HTML, and PDF, non-crashing skip handling for corrupt/missing files, character count reporting, snippet previews, and metadata/source preservation.
+- `data/sample_corpus/` — Mixed format test corpus:
+  - `acme_onboarding.md` (Markdown procedure runbook)
+  - `nexus_sla.txt` (Plain text SLA matrix)
+  - `vertex_dr.html` (HTML disaster recovery runbook)
+  - `acme_emergency.pdf` (Standard uncompressed PDF format protocol)
+  - `corrupt_unsupported.bin` (Corrupted/unsupported file for resilience validation)
+- `tests/test_document_loader.py` — Automated `unittest` suite (11 tests) validating single file loading across formats, source identity preservation, directory batch intake, and non-crashing skip behavior.
+- `document_intake_output.log` — Terminal execution capture of corpus intake verification and skipped file reports.
 - `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine:
   - Task 1: `TokenAwareChunker` measuring and setting chunk size strictly in tokens using BPE tokenizer (`tiktoken` cl100k_base / o200k_base).
   - Task 2: Controlled token overlap repeating exact last N tokens of previous chunk into the next chunk.

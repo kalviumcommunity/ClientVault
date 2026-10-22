@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Multi-Format Document Loader & Intake)**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/multi-format-document-loader)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/multi-format-document-loader`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Chunk Metadata & Provenance)**: [feat: implement chunk metadata tagging and source provenance verification](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/chunk-metadata-and-provenance)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/chunk-metadata-and-provenance`
