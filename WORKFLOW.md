@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Text Embeddings & Semantic Similarity)**: [feat: implement text embedding generation, vector dimension reporting, and semantic similarity](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/text-embeddings-and-similarity)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/text-embeddings-and-similarity`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Chunk Metadata & Provenance)**: [feat: implement chunk metadata tagging and source provenance verification](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/chunk-metadata-and-provenance)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/chunk-metadata-and-provenance`

@@ -226,15 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented `TokenAwareChunker` sizing chunks strictly by token count with controlled token overlap (`tiktoken` cl100k_base / o200k_base), boundary context preservation demonstration (`demonstrate_boundary_context_preservation`), model budget justification for GPT-4o-mini (`get_model_budget_justification`), and sample terminal output report committed to `token_chunking_output.log`, verified with 58 passing automated unit tests (`tests/test_chunker.py`).
+**Last change:** Implemented text embedding generation, vector dimension reporting, and cosine similarity comparison demonstration (`src/embedding_demo.py`), verified 1536-dimensional uniformity across sample texts, proved similar pair separation (+0.9911 margin), authored architectural note on vector representations (`docs/EMBEDDING_REPRESENTATION.md`), committed full terminal report to `embedding_similarity_output.log`, and added 5 automated unit tests (`tests/test_embedding_demo.py`).
 
-**Date / iteration:** Token-Aware Chunking & Controlled Overlap Sprint.
+**Date / iteration:** Text Embeddings & Semantic Similarity Sprint.
 
-**Current phase (workflow doc):** Phase 17 — Token-Aware Chunking & Controlled Overlap.
+**Current phase (workflow doc):** Phase 18 — Text Embedding Generation & Semantic Similarity Benchmark.
 
-**Current branch:** `feat/token-aware-chunking-and-overlap`
+**Current branch:** `feat/text-embeddings-and-similarity`
 
 **What exists right now:**
+- `src/embedding_demo.py` — Production text embedding generation and cosine similarity engine supporting both OpenAI API (`text-embedding-3-small`, 1536 dimensions) and offline deterministic semantic cluster projection:
+  - Task 1: Dense embedding vector generation for sample queries, runbooks, and unrelated texts.
+  - Task 2: Vector dimension reporting and strict uniformity verification across all inputs.
+  - Task 3: Cosine similarity computation comparing similar pairs (0.9915) vs. dissimilar pairs (0.0004), confirming high semantic separation (+0.9911).
+  - Task 4: Clarification of vector representation (latent geometric meaning vs. keyword counts and random hashes).
+  - Task 5: Full demonstration runner and report generation.
+- `docs/EMBEDDING_REPRESENTATION.md` — In-depth architectural note detailing what embedding vectors represent, mathematical foundations (unit hypersphere dot products), and contrast against TF-IDF/BM25 and cryptographic hashes.
+- `embedding_similarity_output.log` — Terminal execution capture of embedding generation, dimension reporting, and full pairwise cosine similarity matrix.
+- `tests/test_embedding_demo.py` — Automated `unittest` suite (5 tests) testing dimension shape, L2 normalization, dimension uniformity, similar vs. dissimilar pair separation, and cosine similarity mathematical edge cases.
 - `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine:
   - Task 1: `TokenAwareChunker` measuring and setting chunk size strictly in tokens using BPE tokenizer (`tiktoken` cl100k_base / o200k_base).
   - Task 2: Controlled token overlap repeating exact last N tokens of previous chunk into the next chunk.
