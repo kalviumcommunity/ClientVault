@@ -226,15 +226,25 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented corpus embedding generation and vector storage pipeline (`src/corpus_embedder.py`), verified 1536-dimensional uniformity across prepared corpus chunks, stored vectors paired with full provenance metadata (`ChunkMetadata`), persisted JSON records (`corpus_embedding_records.json`), verified environment configuration loading from `.env`, generated verification output report (`corpus_embedding_output.log`), and added 6 automated unit tests (`tests/test_corpus_embedder.py`).
+**Last change:** Implemented semantic similarity ranking and vector retrieval engine (`src/similarity_ranker.py`), computed cosine similarity and Euclidean distance metrics, ranked corpus chunk embeddings against benchmark queries, identified most similar (Top-K) and least similar (Bottom-K) chunks, authored architectural justification note on Cosine Similarity (`docs/METRIC_JUSTIFICATION.md`), saved sample rankings to `similarity_ranking_output.log` and `sample_ranking_results.json`, and added 7 automated unit tests (`tests/test_similarity_ranker.py`).
 
-**Date / iteration:** Corpus Embedding Generation & Vector Storage Sprint.
+**Date / iteration:** Semantic Similarity Ranking & Vector Retrieval Sprint.
 
-**Current phase (workflow doc):** Phase 19 — Corpus Embedding Generation & Vector Storage.
+**Current phase (workflow doc):** Phase 20 — Semantic Similarity Ranking & Vector Retrieval.
 
-**Current branch:** `feat/corpus-embedding-storage`
+**Current branch:** `feat/similarity-ranking-and-retrieval`
 
 **What exists right now:**
+- `src/similarity_ranker.py` — Production similarity ranking and vector retrieval engine:
+  - Task 1: Cosine Similarity and Euclidean Distance computation.
+  - Task 2: Query embedding comparison against stored corpus chunk embeddings.
+  - Task 3: Full score ranking, identifying most similar (Top-K) and least similar (Bottom-K) chunks with spread analysis.
+  - Task 4: Metric selection justification (magnitude invariance, hypersphere dot product equivalence, bounded [-1, +1] interpretability).
+  - Task 5: End-to-end benchmark demonstration runner across multiple query domains.
+- `docs/METRIC_JUSTIFICATION.md` — In-depth architectural note detailing mathematical rationale for selecting Cosine Similarity over Euclidean, Manhattan, and unnormalized Dot Product.
+- `similarity_ranking_output.log` — Terminal execution capture of benchmark queries, scores, and extrema analysis.
+- `sample_ranking_results.json` — Persisted structured JSON file containing benchmark query rankings, candidate scores, and citation metadata.
+- `tests/test_similarity_ranker.py` — Automated `unittest` suite (7 tests) validating metric computation, descending score order, extrema identification, client isolation filtering, and end-to-end pipeline execution.
 - `src/corpus_embedder.py` — Production corpus embedding and vector storage pipeline:
   - Task 1: API-driven embedding generation (OpenAI `text-embedding-3-small` / mock fallback) returning uniform 1536-dimensional vectors.
   - Task 2: Vector store schema (`EmbeddedChunk`, `VectorStore`) storing each vector with source chunk text, document provenance, and client isolation metadata.

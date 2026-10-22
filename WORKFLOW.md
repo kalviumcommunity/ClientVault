@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Semantic Similarity Ranking & Vector Retrieval)**: [feat: implement semantic similarity ranking, metric justification, and extrema analysis](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/similarity-ranking-and-retrieval)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/similarity-ranking-and-retrieval`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Corpus Embedding Generation & Vector Storage)**: [feat: implement corpus embedding generation, vector storage, and metadata persistence](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-embedding-storage)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/corpus-embedding-storage`
