@@ -275,6 +275,22 @@ python -m unittest tests/test_corpus_embedder.py
 ```
 Ingested chunks, vector dimensions, sample values, and client-isolated retrieval verifications are saved in [`corpus_embedding_output.log`](file:///Users/fibafathima/ClientVault/corpus_embedding_output.log) and [`corpus_embedding_records.json`](file:///Users/fibafathima/ClientVault/corpus_embedding_records.json).
 
+### 18. Run Semantic Similarity Ranking & Vector Retrieval
+
+Compare query embeddings against stored corpus chunk embeddings using Cosine Similarity, rank candidates, and display most similar (Top-K) and least similar (Bottom-K) chunks:
+
+```bash
+# Run similarity ranking demonstration across benchmark queries:
+python src/similarity_ranker.py --mock
+
+# Specify custom output log and ranking JSON paths:
+python src/similarity_ranker.py --mock --output-log similarity_ranking_output.log --output-json sample_ranking_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_similarity_ranker.py
+```
+Full query comparison logs, candidate scores, and mathematical justifications are preserved in [`similarity_ranking_output.log`](file:///Users/fibafathima/ClientVault/similarity_ranking_output.log), [`sample_ranking_results.json`](file:///Users/fibafathima/ClientVault/sample_ranking_results.json), and [`docs/METRIC_JUSTIFICATION.md`](file:///Users/fibafathima/ClientVault/docs/METRIC_JUSTIFICATION.md).
+
 
 
 ### 1. Workspace Health Check
