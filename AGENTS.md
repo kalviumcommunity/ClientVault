@@ -226,15 +226,25 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented text embedding generation, vector dimension reporting, and cosine similarity comparison demonstration (`src/embedding_demo.py`), verified 1536-dimensional uniformity across sample texts, proved similar pair separation (+0.9911 margin), authored architectural note on vector representations (`docs/EMBEDDING_REPRESENTATION.md`), committed full terminal report to `embedding_similarity_output.log`, and added 5 automated unit tests (`tests/test_embedding_demo.py`).
+**Last change:** Implemented corpus embedding generation and vector storage pipeline (`src/corpus_embedder.py`), verified 1536-dimensional uniformity across prepared corpus chunks, stored vectors paired with full provenance metadata (`ChunkMetadata`), persisted JSON records (`corpus_embedding_records.json`), verified environment configuration loading from `.env`, generated verification output report (`corpus_embedding_output.log`), and added 6 automated unit tests (`tests/test_corpus_embedder.py`).
 
-**Date / iteration:** Text Embeddings & Semantic Similarity Sprint.
+**Date / iteration:** Corpus Embedding Generation & Vector Storage Sprint.
 
-**Current phase (workflow doc):** Phase 18 — Text Embedding Generation & Semantic Similarity Benchmark.
+**Current phase (workflow doc):** Phase 19 — Corpus Embedding Generation & Vector Storage.
 
-**Current branch:** `feat/text-embeddings-and-similarity`
+**Current branch:** `feat/corpus-embedding-storage`
 
 **What exists right now:**
+- `src/corpus_embedder.py` — Production corpus embedding and vector storage pipeline:
+  - Task 1: API-driven embedding generation (OpenAI `text-embedding-3-small` / mock fallback) returning uniform 1536-dimensional vectors.
+  - Task 2: Vector store schema (`EmbeddedChunk`, `VectorStore`) storing each vector with source chunk text, document provenance, and client isolation metadata.
+  - Task 3: Dynamic environment configuration loading (`load_embedding_config`) from `.env` without hardcoded secrets.
+  - Task 4: Verification output generation confirming chunk counts, vector lengths, sample coordinates, and account-isolated semantic retrieval.
+  - Task 5: End-to-end demonstration runner persisting records to `corpus_embedding_records.json` and trace to `corpus_embedding_output.log`.
+- `tests/test_corpus_embedder.py` — Automated `unittest` suite (6 tests) validating environment loading, dimension uniformity, vector storage, metadata retention, client isolation filtering, and JSON roundtrip serialization.
+- `corpus_embedding_output.log` — Verifiable terminal report recording chunk intake, vector dimensions, sample trimmed values, and account-isolated retrieval search.
+- `corpus_embedding_records.json` — Persisted JSON dataset containing stored chunks, vectors, dimensions, and metadata.
+- `src/embedding_demo.py` — Standalone text embedding generation and similarity demonstration engine.
 - `src/embedding_demo.py` — Production text embedding generation and cosine similarity engine supporting both OpenAI API (`text-embedding-3-small`, 1536 dimensions) and offline deterministic semantic cluster projection:
   - Task 1: Dense embedding vector generation for sample queries, runbooks, and unrelated texts.
   - Task 2: Vector dimension reporting and strict uniformity verification across all inputs.

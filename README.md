@@ -259,6 +259,22 @@ python -m unittest tests/test_embedding_demo.py
 ```
 Full similarity matrix and mathematical explanations are recorded in [`embedding_similarity_output.log`](file:///Users/fibafathima/ClientVault/embedding_similarity_output.log) and [`docs/EMBEDDING_REPRESENTATION.md`](file:///Users/fibafathima/ClientVault/docs/EMBEDDING_REPRESENTATION.md).
 
+### 17. Run Corpus Embedding Generation & Vector Storage Pipeline
+
+Convert prepared corpus chunks into dense embedding vectors (`text-embedding-3-small`, 1536 dims), attach full source and client isolation metadata, verify dimensional uniformity, and persist vector records:
+
+```bash
+# Run corpus embedding pipeline in deterministic / API mode:
+python src/corpus_embedder.py --mock
+
+# Specify custom output log and vector records storage paths:
+python src/corpus_embedder.py --mock --output-log corpus_embedding_output.log --output-records corpus_embedding_records.json
+
+# Run automated unit tests:
+python -m unittest tests/test_corpus_embedder.py
+```
+Ingested chunks, vector dimensions, sample values, and client-isolated retrieval verifications are saved in [`corpus_embedding_output.log`](file:///Users/fibafathima/ClientVault/corpus_embedding_output.log) and [`corpus_embedding_records.json`](file:///Users/fibafathima/ClientVault/corpus_embedding_records.json).
+
 
 
 ### 1. Workspace Health Check
