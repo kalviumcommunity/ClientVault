@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Corpus Embedding Generation & Vector Storage)**: [feat: implement corpus embedding generation, vector storage, and metadata persistence](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-embedding-storage)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/corpus-embedding-storage`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Text Embeddings & Semantic Similarity)**: [feat: implement text embedding generation, vector dimension reporting, and semantic similarity](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/text-embeddings-and-similarity)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/text-embeddings-and-similarity`
