@@ -243,6 +243,22 @@ python -m unittest discover tests
 ```
 Comparative chunk count, average sizes, metadata schema serialization, boundary context preservation proofs, model budget justification (GPT-4o-mini), and exact source traceability proofs are captured in [`token_chunking_output.log`](file:///Users/fibafathima/ClientVault/token_chunking_output.log) and [`chunking_comparison_output.log`](file:///Users/fibafathima/ClientVault/chunking_comparison_output.log).
 
+### 16. Run Text Embedding Generation & Semantic Similarity Demonstration
+
+Generate dense text embeddings (`text-embedding-3-small`, 1536 dimensions), verify strict dimensional uniformity across sample texts, compute cosine similarity between similar and dissimilar pairs, and demonstrate semantic retrieval mechanics:
+
+```bash
+# Run embedding similarity demonstration in deterministic / API mode:
+python src/embedding_demo.py --mock
+
+# Save execution benchmark and similarity matrix to log file:
+python src/embedding_demo.py --mock --output-file embedding_similarity_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_embedding_demo.py
+```
+Full similarity matrix and mathematical explanations are recorded in [`embedding_similarity_output.log`](file:///Users/fibafathima/ClientVault/embedding_similarity_output.log) and [`docs/EMBEDDING_REPRESENTATION.md`](file:///Users/fibafathima/ClientVault/docs/EMBEDDING_REPRESENTATION.md).
+
 
 
 ### 1. Workspace Health Check
