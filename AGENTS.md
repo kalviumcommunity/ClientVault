@@ -226,15 +226,23 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented semantic similarity ranking and vector retrieval engine (`src/similarity_ranker.py`), computed cosine similarity and Euclidean distance metrics, ranked corpus chunk embeddings against benchmark queries, identified most similar (Top-K) and least similar (Bottom-K) chunks, authored architectural justification note on Cosine Similarity (`docs/METRIC_JUSTIFICATION.md`), saved sample rankings to `similarity_ranking_output.log` and `sample_ranking_results.json`, and added 7 automated unit tests (`tests/test_similarity_ranker.py`).
+**Last change:** Implemented scalable batch embedding pipeline (`src/batch_embedder.py`) with configurable batching, retries with exponential backoff for transient rate limits, token cost accounting ($0.020 / 1M tokens), idempotent deduplication caching skipping already-embedded chunks, verifiable run summary logging (`batch_embedding_output.log`), and 7 automated unit tests (`tests/test_batch_embedder.py`).
 
-**Date / iteration:** Semantic Similarity Ranking & Vector Retrieval Sprint.
+**Date / iteration:** Scalable Batch Embedding & Cost Tracking Pipeline Sprint.
 
-**Current phase (workflow doc):** Phase 20 — Semantic Similarity Ranking & Vector Retrieval.
+**Current phase (workflow doc):** Phase 21 — Scalable Batch Embedding Pipeline & Cost Tracking.
 
-**Current branch:** `feat/similarity-ranking-and-retrieval`
+**Current branch:** `feat/batch-embedding-pipeline`
 
 **What exists right now:**
+- `src/batch_embedder.py` — Production batch embedding and cost-tracking engine:
+  - Task 1: Configurable batching (`batch_size=N`) sending multi-chunk payloads per API request.
+  - Task 2: Automatic retry with exponential backoff (`max_retries=3`, `initial_backoff=0.5s`, `backoff_factor=2.0`) for rate-limits (HTTP 429) and transient API failures, with simulated failure hooks.
+  - Task 3: Comprehensive run accounting (`BatchEmbeddingStats`) reporting chunks submitted, embeddings generated, skipped chunks, failed batches, token counts, model tier pricing, and exact dollar costs ($).
+  - Task 4: Idempotent deduplication caching comparing chunk IDs and SHA-256 content hashes (`compute_content_hash`) against stored vectors to completely avoid duplicate API calls and wasted spend.
+  - Task 5: End-to-end two-run demonstration comparing initial embedding with transient error recovery against idempotent re-run (100% chunks skipped with cost savings audit).
+- `batch_embedding_output.log` — Terminal execution capture of batching, retry with backoff, cost accounting, and duplicate skipping.
+- `tests/test_batch_embedder.py` — Automated `unittest` suite (7 tests) validating batch partitioning, transient retry recovery, retry exhaustion, re-run caching, token cost math, content hash change detection, and end-to-end runner.
 - `src/similarity_ranker.py` — Production similarity ranking and vector retrieval engine:
   - Task 1: Cosine Similarity and Euclidean Distance computation.
   - Task 2: Query embedding comparison against stored corpus chunk embeddings.

@@ -103,6 +103,10 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Scalable Batch Embedding Pipeline & Cost Tracking)**: [feat: implement scalable batch embedding pipeline with retries, caching, and cost tracking](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/batch-embedding-pipeline)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/batch-embedding-pipeline`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Semantic Similarity Ranking & Vector Retrieval)**: [feat: implement semantic similarity ranking, metric justification, and extrema analysis](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/similarity-ranking-and-retrieval)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/similarity-ranking-and-retrieval`
