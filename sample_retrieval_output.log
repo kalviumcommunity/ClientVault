@@ -1,0 +1,140 @@
+================================================================================
+  ClientVault — Vector Database Top-K Semantic Retrieval Audit
+================================================================================
+
+>> TASK 1: USER QUERY EMBEDDING GENERATION
+--------------------------------------------------------------------------------
+  Sample Query:           "How do I verify employee identity via the primary sponsor directory during onboarding?"
+  Embedding Model:        text-embedding-3-small
+  Vector Dimension:       1536 dimensions (L2-normalized unit hypersphere)
+  Alignment:              Model and dimension match corpus chunk vectors exactly.
+
+>> TASK 4: DEMONSTRATING CHANGING K (K=2 vs K=4 vs K=6)
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+  RUN WITH K = 2 (Chunks Retrieved: 2/2 requested | Latency: 1.9ms)
+  Score Range: High: +0.9984 | Low: +0.9973 | Spread: 0.0011
+--------------------------------------------------------------------------------
+  Rank #1 [Score: +0.9984 | Dist: 0.0016]
+    Chunk ID:        'acme_onboarding#tok_001'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #1 | Page: 1
+    Section:         'Identity confirmation verified via pr...'
+    Token Count:     200 tokens
+    Snippet:         " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All R..."
+
+  Rank #2 [Score: +0.9973 | Dist: 0.0027]
+    Chunk ID:        'acme_onboarding#tok_000'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #0 | Page: 1
+    Section:         'ACME Logistics — Client Onboarding & ...'
+    Token Count:     200 tokens
+    Snippet:         "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Cli..."
+
+--------------------------------------------------------------------------------
+  RUN WITH K = 4 (Chunks Retrieved: 4/4 requested | Latency: 1.9ms)
+  Score Range: High: +0.9984 | Low: +0.4142 | Spread: 0.5842
+--------------------------------------------------------------------------------
+  Rank #1 [Score: +0.9984 | Dist: 0.0016]
+    Chunk ID:        'acme_onboarding#tok_001'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #1 | Page: 1
+    Section:         'Identity confirmation verified via pr...'
+    Token Count:     200 tokens
+    Snippet:         " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All R..."
+
+  Rank #2 [Score: +0.9973 | Dist: 0.0027]
+    Chunk ID:        'acme_onboarding#tok_000'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #0 | Page: 1
+    Section:         'ACME Logistics — Client Onboarding & ...'
+    Token Count:     200 tokens
+    Snippet:         "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Cli..."
+
+  Rank #3 [Score: +0.7395 | Dist: 0.2605]
+    Chunk ID:        'acme_onboarding#tok_002'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #2 | Page: 2
+    Section:         'Step 3.3: Sandbox Confinement'
+    Token Count:     71 tokens
+    Snippet:         " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials ..."
+
+  Rank #4 [Score: +0.4142 | Dist: 0.5858]
+    Chunk ID:        'nexus_sla#tok_001'
+    Source Document: 'data/sample_corpus/nexus_sla.txt' (Doc: 'nexus_sla')
+    Client ID:       'NEXUS-002' | Chunk Index: #1 | Page: 1
+    Section:         'ESCALATION HIERARCHY'
+    Token Count:     153 tokens
+    Snippet:         " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL ..."
+
+--------------------------------------------------------------------------------
+  RUN WITH K = 6 (Chunks Retrieved: 6/6 requested | Latency: 1.9ms)
+  Score Range: High: +0.9984 | Low: +0.0080 | Spread: 0.9904
+--------------------------------------------------------------------------------
+  Rank #1 [Score: +0.9984 | Dist: 0.0016]
+    Chunk ID:        'acme_onboarding#tok_001'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #1 | Page: 1
+    Section:         'Identity confirmation verified via pr...'
+    Token Count:     200 tokens
+    Snippet:         " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All R..."
+
+  Rank #2 [Score: +0.9973 | Dist: 0.0027]
+    Chunk ID:        'acme_onboarding#tok_000'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #0 | Page: 1
+    Section:         'ACME Logistics — Client Onboarding & ...'
+    Token Count:     200 tokens
+    Snippet:         "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Cli..."
+
+  Rank #3 [Score: +0.7395 | Dist: 0.2605]
+    Chunk ID:        'acme_onboarding#tok_002'
+    Source Document: 'data/sample_corpus/acme_onboarding.md' (Doc: 'acme_onboarding')
+    Client ID:       'ACME-001' | Chunk Index: #2 | Page: 2
+    Section:         'Step 3.3: Sandbox Confinement'
+    Token Count:     71 tokens
+    Snippet:         " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials ..."
+
+  Rank #4 [Score: +0.4142 | Dist: 0.5858]
+    Chunk ID:        'nexus_sla#tok_001'
+    Source Document: 'data/sample_corpus/nexus_sla.txt' (Doc: 'nexus_sla')
+    Client ID:       'NEXUS-002' | Chunk Index: #1 | Page: 1
+    Section:         'ESCALATION HIERARCHY'
+    Token Count:     153 tokens
+    Snippet:         " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL ..."
+
+  Rank #5 [Score: +0.3222 | Dist: 0.6778]
+    Chunk ID:        'vertex_dr#tok_000'
+    Source Document: 'data/sample_corpus/vertex_dr.html' (Doc: 'vertex_dr')
+    Client ID:       'VERTEX-003' | Chunk Index: #0 | Page: 1
+    Section:         'Trigger Criteria'
+    Token Count:     161 tokens
+    Snippet:         "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB..."
+
+  Rank #6 [Score: +0.0080 | Dist: 0.9920]
+    Chunk ID:        'nexus_sla#tok_000'
+    Source Document: 'data/sample_corpus/nexus_sla.txt' (Doc: 'nexus_sla')
+    Client ID:       'NEXUS-002' | Chunk Index: #0 | Page: 1
+    Section:         'INCIDENT SEVERITY CLASSIFICATIONS'
+    Token Count:     200 tokens
+    Snippet:         "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identif..."
+
+>> TASK 4 ANALYSIS & OBSERVATIONS (HOW CHANGING K AFFECTS RESULTS)
+--------------------------------------------------------------------------------
+[1] Result Window Growth: K=2 -> 2 chunks, K=4 -> 4 chunks, K=6 -> 6 chunks.
+
+[2] Score Decay & Granularity: At K=2, lowest score was +0.9973 (spread: 0.0011). Expanding to K=6 drops the threshold to +0.0080 (spread: 0.9904), admitting lower-confidence or orthogonal passages.
+
+[3] Contextual Breadth: Increasing K from 2 to 6 introduced 4 additional document sections ('Trigger Criteria', 'Step 3.3: Sandbox Confinement', 'ESCALATION HIERARCHY'), providing wider background context for LLM synthesis at the expense of prompt token consumption.
+
+>> MULTI-DOMAIN RETRIEVAL VALIDATION (SLA / Turnaround Domain)
+--------------------------------------------------------------------------------
+  Query:                  "What is the initial response time SLA guarantee for critical business outages?"
+  Configured K:           2 (Retrieved: 2)
+  Top Match Chunk:        'nexus_sla#tok_000' [Score: +0.9599]
+  Document / Section:     'nexus_sla' | 'INCIDENT SEVERITY CLASSIFICATIONS'
+  Passage Snippet:        "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identif..."
+
+================================================================================
+  STATUS: PASSED — Top-K vector search, scores, metadata, and K variance verified.
+================================================================================

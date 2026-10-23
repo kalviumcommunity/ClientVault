@@ -226,15 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented corpus vector database indexing engine (`src/corpus_indexer.py`), inserted all corpus chunk embeddings with rich provenance metadata into ChromaDB collection, verified indexed record count (6/6 records, 0 failures), performed field-by-field integrity spot-checks across documents confirming ID, vector dimensions, text, and metadata fidelity, saved execution audit to `corpus_indexing_output.log`, added batch upsert method to `VectorDatabaseManager` (`src/vector_db.py`), and added 6 automated unit tests (`tests/test_corpus_indexer.py`).
+**Last change:** Implemented Top-K vector retrieval engine (`src/vector_retriever.py`), generated query embeddings using identical model (`text-embedding-3-small`, 1536 dims), executed Top-K nearest-neighbor similarity searches against ChromaDB with similarity scores and provenance metadata, demonstrated result set variance across changing values of $K$ ($K=2$, $K=4$, $K=6$) with score decay and contextual breadth analysis, saved benchmark audit to `sample_retrieval_output.log` and `sample_retrieval_results.json`, and added 7 automated unit tests (`tests/test_vector_retriever.py`).
 
-**Date / iteration:** Corpus Vector Database Indexing & Integrity Audit Sprint.
+**Date / iteration:** Vector Database Top-K Semantic Retrieval & K Variance Sprint.
 
-**Current phase (workflow doc):** Phase 24 — Corpus Vector Database Indexing & Audit.
+**Current phase (workflow doc):** Phase 25 — Vector Database Top-K Semantic Retrieval.
 
-**Current branch:** `feat/corpus-vector-indexing`
+**Current branch:** `feat/topk-vector-retrieval`
 
 **What exists right now:**
+- `src/vector_retriever.py` — Production Top-K vector retrieval & semantic search engine:
+  - Task 1: Query embedding generation matching corpus model (`text-embedding-3-small`, 1536 dims).
+  - Task 2: Top-K nearest-neighbor vector similarity search with optional client isolation filtering (`where={"client_id": ...}`).
+  - Task 3: Complete chunk packaging with similarity scores, distances, source text, and provenance metadata (`source_document`, `document_id`, `chunk_index`, `section`, `page`, `client_id`, `token_count`).
+  - Task 4: Multi-K variance comparison engine (`demonstrate_varying_k()`) analyzing result growth ($K=2 \to 2$, $K=4 \to 4$, $K=6 \to 6$), score decay (+0.9973 down to +0.0080), and contextual breadth expansion.
+  - Task 5: End-to-end CLI runner generating human-readable audit report (`sample_retrieval_output.log`) and structured JSON data (`sample_retrieval_results.json`).
+- `sample_retrieval_output.log` — Verifiable terminal report recording query embedding, multi-K variance runs, and secondary multi-domain SLA retrieval.
+- `sample_retrieval_results.json` — Persisted structured JSON data containing multi-K results, chunk rankings, scores, and provenance citations.
+- `tests/test_vector_retriever.py` — Automated `unittest` suite (7 tests) validating query embedding dimension, Top-K descending score ordering, metadata retention, changing K expansion and score decay, client isolation filtering, and runner persistence.
 - `src/corpus_indexer.py` — Production corpus vector database indexing & integrity verification engine:
   - Task 1: Batch-upserting all corpus chunk embeddings into ChromaDB collection (`index_corpus()`).
   - Task 2: Associating each vector with raw source text and retrieval metadata (`source_document`, `document_id`, `chunk_index`, `section`, `page`, `client_id`, `token_count`).
