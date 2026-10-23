@@ -226,15 +226,23 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented retrieval sanity-testing and relevance verification engine (`src/retrieval_sanity_checker.py`), created curated suite of known query-chunk/document relevance pairs, confirmed related documents rank above unrelated ones with positive margins, diagnosed surprising/borderline cases (header dominance vs. granular tail chunk in TC-05, nearest-neighbor fallback on out-of-domain queries in TC-06, and cross-client topical bleed in TC-07), generated structured sanity reports (`retrieval_sanity_report.log`, `retrieval_sanity_results.json`), and added 7 automated unit tests (`tests/test_retrieval_sanity_checker.py`).
+**Last change:** Implemented ChromaDB vector database manager (`src/vector_db.py`), configured client reachability via local config and environment variables, created collection with exact 1536-dimensional sizing and HNSW cosine distance metric, designed strongly-typed stored record schema (`VectorRecord`, `VectorRecordMetadata`) with account isolation and provenance metadata, inserted and read back test record validating ID, vector dimensions, text, and metadata, logged verification report to `vector_db_readback_output.log`, and added 8 automated unit tests (`tests/test_vector_db.py`).
 
-**Date / iteration:** Retrieval Relevance Sanity Testing & Quality Audit Sprint.
+**Date / iteration:** Vector Database Collection Setup & Readback Audit Sprint.
 
-**Current phase (workflow doc):** Phase 22 — Retrieval Relevance Sanity Testing & Quality Audit.
+**Current phase (workflow doc):** Phase 23 — Vector Database Collection Setup & Readback Audit.
 
-**Current branch:** `feat/retrieval-sanity-checks`
+**Current branch:** `feat/vector-database-setup`
 
 **What exists right now:**
+- `src/vector_db.py` — Production ChromaDB vector database collection management & persistence engine:
+  - Task 1: Environment-driven configuration and reachability check (`check_reachability()`) supporting both persistent storage and ephemeral in-memory modes.
+  - Task 2: Collection lifecycle management (`get_or_create_collection`) configuring HNSW cosine space (`hnsw:space: cosine`), 1536 vector dimensions (`text-embedding-3-small`), and model metadata.
+  - Task 3: Strongly-typed stored record schema (`VectorRecord`, `VectorRecordMetadata`) validating IDs, non-empty text, required `client_id`, provenance metadata, and strict vector dimension matching.
+  - Task 4: Insert and readback methods (`insert_record`, `read_record`) with 6-point verification checklist (ID match, dimension match, text integrity, client isolation, document provenance, section retention).
+  - Task 5: End-to-end CLI demonstration runner persisting audit log to `vector_db_readback_output.log`.
+- `vector_db_readback_output.log` — Verifiable terminal report recording collection setup, reachability, payload preparation, insert, and successful readback audit.
+- `tests/test_vector_db.py` — Automated `unittest` suite (8 tests) validating config defaults, reachability, collection metadata, dimension mismatch rejection, exact record readback, missing ID handling, persistent disk reloading, and end-to-end runner.
 - `src/retrieval_sanity_checker.py` — Production retrieval sanity-testing and relevance verification engine:
   - Task 1: Curated relevance test suite (`RelevanceTestCase`) with predetermined ground truth targets and explicit unrelated contrast documents.
   - Task 2: Automated similarity ranking evaluation confirming related documents rank above unrelated documents with positive separation margins (> 0.20).

@@ -323,6 +323,22 @@ python -m unittest tests/test_retrieval_sanity_checker.py
 ```
 Detailed test results, separation margins, and architectural edge case analyses are preserved in [`retrieval_sanity_report.log`](file:///Users/fibafathima/ClientVault/retrieval_sanity_report.log) and [`retrieval_sanity_results.json`](file:///Users/fibafathima/ClientVault/retrieval_sanity_results.json).
 
+### 21. Run Vector Database Collection Setup & Readback Audit
+
+Initialize ChromaDB vector database collection, enforce collection dimension sizing (1536 dimensions, HNSW cosine metric), validate strongly-typed record schema with client isolation metadata, and confirm record insert and readback:
+
+```bash
+# Run vector database collection setup and readback verification:
+python src/vector_db.py --mock --in-memory
+
+# Specify persistent storage directory and custom output log:
+python src/vector_db.py --mock --persist-dir outputs/chroma_db --output-log vector_db_readback_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_vector_db.py
+```
+Verification checklists, vector lengths, and readback record audits are saved in [`vector_db_readback_output.log`](file:///Users/fibafathima/ClientVault/vector_db_readback_output.log).
+
 
 
 ### 1. Workspace Health Check
