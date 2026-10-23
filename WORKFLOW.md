@@ -103,10 +103,14 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Corpus Vector Database Indexing & Audit)**: [feat: implement corpus vector database indexing, count validation, and spot-check audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-vector-indexing)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/corpus-vector-indexing`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Vector Database Collection Setup & Readback Audit)**: [feat: implement vector database collection setup, schema validation, and readback audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/vector-database-setup)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/vector-database-setup`
-  - **Review Status**: Pushed and ready for peer review / merge
+  - **Review Status**: Merged into `main`
 - **PR (Retrieval Relevance Sanity Checks & Quality Audit)**: [feat: implement retrieval sanity checks, related vs unrelated ranking verification, and quality audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/retrieval-sanity-checks)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/retrieval-sanity-checks`

@@ -226,15 +226,23 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented ChromaDB vector database manager (`src/vector_db.py`), configured client reachability via local config and environment variables, created collection with exact 1536-dimensional sizing and HNSW cosine distance metric, designed strongly-typed stored record schema (`VectorRecord`, `VectorRecordMetadata`) with account isolation and provenance metadata, inserted and read back test record validating ID, vector dimensions, text, and metadata, logged verification report to `vector_db_readback_output.log`, and added 8 automated unit tests (`tests/test_vector_db.py`).
+**Last change:** Implemented corpus vector database indexing engine (`src/corpus_indexer.py`), inserted all corpus chunk embeddings with rich provenance metadata into ChromaDB collection, verified indexed record count (6/6 records, 0 failures), performed field-by-field integrity spot-checks across documents confirming ID, vector dimensions, text, and metadata fidelity, saved execution audit to `corpus_indexing_output.log`, added batch upsert method to `VectorDatabaseManager` (`src/vector_db.py`), and added 6 automated unit tests (`tests/test_corpus_indexer.py`).
 
-**Date / iteration:** Vector Database Collection Setup & Readback Audit Sprint.
+**Date / iteration:** Corpus Vector Database Indexing & Integrity Audit Sprint.
 
-**Current phase (workflow doc):** Phase 23 — Vector Database Collection Setup & Readback Audit.
+**Current phase (workflow doc):** Phase 24 — Corpus Vector Database Indexing & Audit.
 
-**Current branch:** `feat/vector-database-setup`
+**Current branch:** `feat/corpus-vector-indexing`
 
 **What exists right now:**
+- `src/corpus_indexer.py` — Production corpus vector database indexing & integrity verification engine:
+  - Task 1: Batch-upserting all corpus chunk embeddings into ChromaDB collection (`index_corpus()`).
+  - Task 2: Associating each vector with raw source text and retrieval metadata (`source_document`, `document_id`, `chunk_index`, `section`, `page`, `client_id`, `token_count`).
+  - Task 3: Verifying that stored database count matches prepared chunk count (6 prepared == 6 indexed, 0 failures).
+  - Task 4: Granular spot-check readback auditing (`spot_check_integrity()`) comparing stored records against source chunks for ID match, 1536-dim vector fidelity, text equality, and metadata retention.
+  - Task 5: End-to-end CLI runner generating formatted summary report to `corpus_indexing_output.log`.
+- `corpus_indexing_output.log` — Verifiable terminal report recording collection setup, count validation, zero failures, and 3-document spot-check audit.
+- `tests/test_corpus_indexer.py` — Automated `unittest` suite (6 tests) validating record preparation from JSON/corpus, batch insertion, count validation, spot-check fidelity, missing record detection, and end-to-end runner.
 - `src/vector_db.py` — Production ChromaDB vector database collection management & persistence engine:
   - Task 1: Environment-driven configuration and reachability check (`check_reachability()`) supporting both persistent storage and ephemeral in-memory modes.
   - Task 2: Collection lifecycle management (`get_or_create_collection`) configuring HNSW cosine space (`hnsw:space: cosine`), 1536 vector dimensions (`text-embedding-3-small`), and model metadata.

@@ -339,6 +339,22 @@ python -m unittest tests/test_vector_db.py
 ```
 Verification checklists, vector lengths, and readback record audits are saved in [`vector_db_readback_output.log`](file:///Users/fibafathima/ClientVault/vector_db_readback_output.log).
 
+### 22. Run Corpus Vector Database Indexing & Audit
+
+Index all corpus embeddings into the ChromaDB vector database collection with provenance metadata, validate that stored counts match prepared chunks, and run granular spot-checks verifying ID, vector, text, and metadata fidelity:
+
+```bash
+# Run corpus indexing and integrity audit:
+python src/corpus_indexer.py --mock --in-memory
+
+# Specify persistent storage directory and custom output log:
+python src/corpus_indexer.py --mock --persist-dir outputs/chroma_db --output-log corpus_indexing_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_corpus_indexer.py
+```
+Count alignment audits, indexing stats, and spot-check readback reports are preserved in [`corpus_indexing_output.log`](file:///Users/fibafathima/ClientVault/corpus_indexing_output.log).
+
 
 
 ### 1. Workspace Health Check
