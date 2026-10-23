@@ -355,6 +355,22 @@ python -m unittest tests/test_corpus_indexer.py
 ```
 Count alignment audits, indexing stats, and spot-check readback reports are preserved in [`corpus_indexing_output.log`](file:///Users/fibafathima/ClientVault/corpus_indexing_output.log).
 
+### 23. Run Vector Database Top-K Semantic Retrieval
+
+Embed user queries using `text-embedding-3-small` (1536 dimensions), execute nearest-neighbor similarity searches against the ChromaDB collection, retrieve Top-K chunks with similarity scores and metadata, and demonstrate result set variations across changing $K$ ($K=2$, $K=4$, $K=6$):
+
+```bash
+# Run top-k semantic retrieval and demonstrate varying K:
+python src/vector_retriever.py --mock --in-memory
+
+# Specify custom query, K values, and output files:
+python src/vector_retriever.py --mock --query "How do I verify employee identity via sponsor directory?" --k-values 2 4 6 --output-log sample_retrieval_output.log --output-json sample_retrieval_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_vector_retriever.py
+```
+Full query comparison logs, score spreads, and structured JSON results are preserved in [`sample_retrieval_output.log`](file:///Users/fibafathima/ClientVault/sample_retrieval_output.log) and [`sample_retrieval_results.json`](file:///Users/fibafathima/ClientVault/sample_retrieval_results.json).
+
 
 
 ### 1. Workspace Health Check

@@ -103,10 +103,14 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Vector Database Top-K Semantic Retrieval & K Variance)**: [feat: implement top-k vector retrieval, scores, metadata, and varying K demonstration](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/topk-vector-retrieval)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/topk-vector-retrieval`
+  - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Corpus Vector Database Indexing & Audit)**: [feat: implement corpus vector database indexing, count validation, and spot-check audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-vector-indexing)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/corpus-vector-indexing`
-  - **Review Status**: Pushed and ready for peer review / merge
+  - **Review Status**: Merged into `main`
 - **PR (Vector Database Collection Setup & Readback Audit)**: [feat: implement vector database collection setup, schema validation, and readback audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/vector-database-setup)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/vector-database-setup`
