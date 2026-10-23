@@ -103,10 +103,14 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
-- **PR (Retrieval Tuning & Settings Optimization)**: [feat: implement retrieval tuning experiment, settings comparison, and relevance optimization](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/retrieval-tuning-experiment)
+- **PR (Two-Stage Candidate Re-Ranking Pipeline)**: [feat: implement two-stage candidate retrieval and re-ranking pipeline](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/candidate-reranking-pipeline)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/candidate-reranking-pipeline`
+  - **Review Status**: Pushed and ready for peer review / merge
+- **PR #33 (Retrieval Tuning & Settings Optimization)**: [feat: implement retrieval tuning experiment, settings comparison, and relevance optimization](https://github.com/kalviumcommunity/ClientVault/pull/33)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/retrieval-tuning-experiment`
-  - **Review Status**: Pushed and ready for peer review / merge
+  - **Review Status**: Merged into `main`
 - **PR #32 (Filtered Retrieval & Hybrid Lexical Search)**: [feat: implement metadata filtered retrieval, hybrid keyword search, and precision comparison](https://github.com/kalviumcommunity/ClientVault/pull/32)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/filtered-retrieval-and-hybrid-search`
