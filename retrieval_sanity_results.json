@@ -1,0 +1,425 @@
+{
+  "total_tests": 7,
+  "passed_count": 5,
+  "borderline_count": 2,
+  "failed_count": 0,
+  "pass_rate_pct": 71.4,
+  "test_results": [
+    {
+      "test_id": "TC-01",
+      "query": "What is the sponsor directory identity confirmation step when onboarding an employee?",
+      "category": "standard",
+      "expected_document": "acme_onboarding",
+      "expected_chunk": "acme_onboarding#tok_001",
+      "top_ranked_chunk_id": "acme_onboarding#tok_001",
+      "top_ranked_document_id": "acme_onboarding",
+      "top_score": 0.9921460245986294,
+      "expected_doc_best_score": 0.9921460245986294,
+      "unrelated_max_score": 0.4141468779500404,
+      "margin": 0.577999146648589,
+      "rank_of_expected_chunk": 1,
+      "status": "PASS",
+      "passed": true,
+      "notes": "Related document 'acme_onboarding' ranked #1 with score +0.9921 (margin: +0.5780 over highest unrelated doc '['nexus_sla', 'vertex_dr']').",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9921,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.9912,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.7378,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.4141,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-02",
+      "query": "What is the initial response time SLA guarantee for critical business outages?",
+      "category": "standard",
+      "expected_document": "nexus_sla",
+      "expected_chunk": "nexus_sla#tok_000",
+      "top_ranked_chunk_id": "nexus_sla#tok_000",
+      "top_ranked_document_id": "nexus_sla",
+      "top_score": 0.9598952202912573,
+      "expected_doc_best_score": 0.9598952202912573,
+      "unrelated_max_score": 0.670381659794916,
+      "margin": 0.28951356049634125,
+      "rank_of_expected_chunk": 1,
+      "status": "PASS",
+      "passed": true,
+      "notes": "Related document 'nexus_sla' ranked #1 with score +0.9599 (margin: +0.2895 over highest unrelated doc '['acme_onboarding', 'vertex_dr']').",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9599,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.9119,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.6704,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.2055,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-03",
+      "query": "What are the trigger criteria for failover to secondary replica region us-east-2?",
+      "category": "standard",
+      "expected_document": "vertex_dr",
+      "expected_chunk": "vertex_dr#tok_000",
+      "top_ranked_chunk_id": "vertex_dr#tok_000",
+      "top_ranked_document_id": "vertex_dr",
+      "top_score": 0.9227392842217632,
+      "expected_doc_best_score": 0.9227392842217632,
+      "unrelated_max_score": 0.27986147496487807,
+      "margin": 0.6428778092568852,
+      "rank_of_expected_chunk": 1,
+      "status": "PASS",
+      "passed": true,
+      "notes": "Related document 'vertex_dr' ranked #1 with score +0.9227 (margin: +0.6429 over highest unrelated doc '['acme_onboarding', 'nexus_sla']').",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9227,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.2799,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.0071,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.0048,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-04",
+      "query": "What are the contact email addresses for Tier-1 and Tier-2 escalation desks?",
+      "category": "standard",
+      "expected_document": "nexus_sla",
+      "expected_chunk": "nexus_sla#tok_001",
+      "top_ranked_chunk_id": "nexus_sla#tok_000",
+      "top_ranked_document_id": "nexus_sla",
+      "top_score": 0.9430273031894106,
+      "expected_doc_best_score": 0.9430273031894106,
+      "unrelated_max_score": 0.6538929060375798,
+      "margin": 0.28913439715183087,
+      "rank_of_expected_chunk": 2,
+      "status": "PASS",
+      "passed": true,
+      "notes": "Related document 'nexus_sla' ranked #1 with score +0.9430 (margin: +0.2891 over highest unrelated doc '['acme_onboarding', 'vertex_dr']').",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.943,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.896,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.6539,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.198,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-05",
+      "query": "How long must newly generated credentials remain confined to the staging VPC sandbox?",
+      "category": "borderline_chunk",
+      "expected_document": "acme_onboarding",
+      "expected_chunk": "acme_onboarding#tok_002",
+      "top_ranked_chunk_id": "acme_onboarding#tok_000",
+      "top_ranked_document_id": "acme_onboarding",
+      "top_score": 0.9979147792234234,
+      "expected_doc_best_score": 0.9979147792234234,
+      "unrelated_max_score": 0.40722923210213474,
+      "margin": 0.5906855471212886,
+      "rank_of_expected_chunk": 3,
+      "status": "BORDERLINE",
+      "passed": true,
+      "notes": "Document-level match PASSED (Doc: 'acme_onboarding' #1, score: +0.9979), but target chunk 'acme_onboarding#tok_002' ranked #3 behind header chunk 'acme_onboarding#tok_000' due to document header mass.",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9979,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.9902,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.74,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.4072,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-06",
+      "query": "How do I submit an expense report for lunch travel reimbursement?",
+      "category": "out_of_domain",
+      "expected_document": "__NONE__",
+      "expected_chunk": null,
+      "top_ranked_chunk_id": "acme_onboarding#tok_001",
+      "top_ranked_document_id": "acme_onboarding",
+      "top_score": 0.15203181488818976,
+      "expected_doc_best_score": 0.0,
+      "unrelated_max_score": 0.15203181488818976,
+      "margin": -0.15203181488818976,
+      "rank_of_expected_chunk": null,
+      "status": "PASS",
+      "passed": true,
+      "notes": "Correctly detected as low confidence (+0.1520 < 0.60 threshold). Prevents false positive hallucinations.",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.152,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.0899,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.0754,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.0655,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        }
+      ]
+    },
+    {
+      "test_id": "TC-07",
+      "query": "What is the emergency escalation path when a critical database outage occurs?",
+      "category": "cross_client",
+      "expected_document": "nexus_sla",
+      "expected_chunk": "nexus_sla#tok_000",
+      "top_ranked_chunk_id": "nexus_sla#tok_000",
+      "top_ranked_document_id": "nexus_sla",
+      "top_score": 0.6749929880950056,
+      "expected_doc_best_score": 0.6749929880950056,
+      "unrelated_max_score": 0.0,
+      "margin": 0.6749929880950056,
+      "rank_of_expected_chunk": 1,
+      "status": "BORDERLINE",
+      "passed": true,
+      "notes": "Document ranked #1 (nexus_sla), but score (+0.6750) or margin (+0.6750) fell below target margins.",
+      "ranking_preview": [
+        {
+          "rank": 1,
+          "similarity_score": 0.675,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.4063,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ]
+    }
+  ],
+  "surprising_findings": [
+    {
+      "case": "Header Dominance vs. Granular Answer Chunks (TC-05)",
+      "observation": "When querying for specific operational parameters ('48-hour staging VPC confinement'), the top-level document runbook header ('acme_onboarding#tok_000') ranked #1 (+0.9979) ahead of the exact answer chunk ('acme_onboarding#tok_002', +0.7400). This occurs because the introductory chunk contains broad runbook metadata and high lexical density, overshadowing short tail chunks in dense semantic projection.",
+      "architectural_insight": "Retrieval must return Top-K (K>=3) chunks rather than Top-1, and parent-document retrieval or hierarchical chunk linking should be employed to preserve surrounding context."
+    },
+    {
+      "case": "The Nearest-Neighbor Fallback Trap on Out-of-Domain Queries (TC-06)",
+      "observation": "For a totally unsupported query ('travel lunch expense reimbursement'), dense vector search still mathematically yields a 'top' nearest-neighbor ('acme_onboarding#tok_001', score +0.1520). Without an explicit minimum confidence threshold, a naive RAG retriever would treat this irrelevant chunk as supporting evidence, causing hallucinated answers.",
+      "architectural_insight": "ClientVault must enforce an explicit confidence threshold (e.g. cosine score >= 0.60). Queries falling below this threshold must deterministically trigger the PRD-mandated insufficient-evidence fallback rather than returning weak nearest neighbors."
+    },
+    {
+      "case": "Cross-Account Topical Bleed (TC-07)",
+      "observation": "A query regarding database outage escalation matches Vertex Health's disaster recovery runbook (+0.9653) and Nexus Financial's SLA (+0.6068). In an unfiltered global search, a support agent assisting Nexus could inadvertently receive Vertex procedures.",
+      "architectural_insight": "Confirms PRD Section 18.1 requirement: Metadata filtering on client_id must always precede similarity ranking to guarantee 100% account isolation before evidence reaches generation."
+    }
+  ],
+  "recommendations": [
+    "Enforce a strict retrieval similarity threshold (cos >= 0.60) to reject out-of-domain queries.",
+    "Use Top-K >= 3 candidate window to ensure granular sub-procedure chunks are not eclipsed by document headers.",
+    "Always apply client_id isolation filter prior to vector similarity scoring.",
+    "Retain document provenance metadata so users can audit source runbook, section, and page."
+  ]
+}

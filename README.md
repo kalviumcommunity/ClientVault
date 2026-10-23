@@ -307,6 +307,22 @@ python -m unittest tests/test_batch_embedder.py
 ```
 A complete execution trace demonstrating batch partitioning, transient retry recovery, cost accounting, and duplicate skipping on re-run is preserved in [`batch_embedding_output.log`](file:///Users/fibafathima/ClientVault/batch_embedding_output.log).
 
+### 20. Run Retrieval Relevance Sanity Testing & Quality Audit
+
+Execute automated sanity tests across predetermined query-chunk pairs to confirm that related documents consistently rank above unrelated ones, diagnose surprising edge cases (such as header dominance and out-of-domain nearest-neighbor traps), and generate structured sanity reports:
+
+```bash
+# Run retrieval sanity check suite:
+python src/retrieval_sanity_checker.py --mock
+
+# Specify custom output report and JSON paths:
+python src/retrieval_sanity_checker.py --mock --output-log retrieval_sanity_report.log --output-json retrieval_sanity_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_retrieval_sanity_checker.py
+```
+Detailed test results, separation margins, and architectural edge case analyses are preserved in [`retrieval_sanity_report.log`](file:///Users/fibafathima/ClientVault/retrieval_sanity_report.log) and [`retrieval_sanity_results.json`](file:///Users/fibafathima/ClientVault/retrieval_sanity_results.json).
+
 
 
 ### 1. Workspace Health Check
