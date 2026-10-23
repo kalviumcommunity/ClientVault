@@ -409,6 +409,19 @@ python -m unittest tests/test_retrieval_tuner.py
 ```
 Full tuning metrics, comparative tables, and structured JSON results are preserved in [`retrieval_tuning_output.log`](file:///Users/fibafathima/ClientVault/retrieval_tuning_output.log) and [`retrieval_tuning_results.json`](file:///Users/fibafathima/ClientVault/retrieval_tuning_results.json).
 
+### 26. Run Two-Stage Candidate Re-Ranking
+
+Retrieve a larger candidate set ($K_{\text{initial}}=10$), re-rank candidates using cross-attention lexical-semantic scoring (evaluating token co-occurrence, phrase proximity, exact codes e.g. `SEC-ONB`, and procedural action density), and select the final grounded Top-3 chunks ($K_{\text{final}}=3$):
+
+```bash
+# Run end-to-end two-stage candidate retrieval and re-ranking:
+python src/reranker.py --mock
+
+# Run automated unit tests:
+python -m unittest tests/test_reranker.py
+```
+Full before-and-after candidate rankings, shift metrics, and structured JSON results are preserved in [`sample_rerank_output.log`](file:///Users/fibafathima/ClientVault/sample_rerank_output.log) and [`sample_rerank_results.json`](file:///Users/fibafathima/ClientVault/sample_rerank_results.json).
+
 
 
 ### 1. Workspace Health Check

@@ -1,0 +1,147 @@
+=====================================================================================
+  CLIENTVAULT — TWO-STAGE CANDIDATE RE-RANKING AUDIT REPORT
+=====================================================================================
+Timestamp:   2026-10-23T09:08:48.562157+00:00
+Module:      src/reranker.py
+Pipeline:    Stage 1: Coarse Vector Retrieval (K=10) -> Stage 2: Cross-Scoring Re-Rank (Top-3)
+
+>> DEMONSTRATION #1: SAMPLE QUERY EVALUATION
+-------------------------------------------------------------------------------------
+Query:                  "What are the step-by-step procedural rules and dual-operator authorization requirements for provisioning credentials?"
+Target Client Scope:    ACME-001
+Initial Candidates:     10 chunks
+Final Selected K:       3 chunks
+Re-rank Execution Time: 7.69 ms
+Improvement Status:     Top result affirmed: Chunk 'acme_onboarding#tok_001' retained Rank #1 with strong cross-interaction score (0.2750) and phrase alignment.
+
+TASK 4 — BEFORE-AND-AFTER ORDERING COMPARISON:
+-------------------------------------------------------------------------------------
+Rerank #  | Init #  | Shift   | Chunk ID                       | Vec Score  | Rerank Score
+-------------------------------------------------------------------------------------
+Rank #1   | #1     | =       | acme_onboarding#tok_001        |   +0.9945 |      0.6472
+Rank #2   | #3     | +1      | acme_onboarding_guide#tok_000  |   +0.9900 |      0.6465
+Rank #3   | #6     | +3      | acme_contractor_access#tok_000 |   +0.8594 |      0.4659
+Rank #4   | #4     | =       | acme_warehouse_api_runbook#tok |   +0.9872 |      0.4486
+Rank #5   | #2     | -3      | acme_onboarding#tok_000        |   +0.9930 |      0.4459
+Rank #6   | #5     | -1      | acme_warehouse_api_runbook#tok |   +0.8812 |      0.3737
+Rank #7   | #7     | =       | acme_onboarding#tok_002        |   +0.7384 |      0.3523
+Rank #8   | #8     | =       | acme_onboarding_guide#tok_001  |   +0.7379 |      0.3522
+Rank #9   | #9     | =       | acme_service_level_agreement#t |   +0.3492 |      0.3264
+Rank #10  | #10    | =       | acme_incident_escalation#tok_0 |   +0.0140 |      0.2686
+-------------------------------------------------------------------------------------
+
+TASK 3 — FINAL SELECTED TOP-3 CHUNKS FOR GROUNDING:
+  * Final Rank #1 [ACME-001] Doc: 'acme_onboarding' | Section: 'Identity confirmation verified via pr...'
+    Chunk ID:     acme_onboarding#tok_001
+    Scores:       Vector: +0.9945 -> Re-rank: 0.6472 (Cross: 0.2750, Phrase: 0.4400)
+    Matches:      Phrases: ['dual-operator'] | IDs: ['dual-operator']
+    Passage Text: " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Reserved. Page 2 of 4 — ..."
+
+  * Final Rank #2 [ACME-001] Doc: 'acme_onboarding_guide' | Section: 'ACME Logistics - Client Onboarding & ...'
+    Chunk ID:     acme_onboarding_guide#tok_000
+    Scores:       Vector: +0.9900 -> Re-rank: 0.6465 (Cross: 0.2750, Phrase: 0.4400)
+    Matches:      Phrases: ['dual-operator'] | IDs: ['dual-operator']
+    Passage Text: "# ACME Logistics - Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Support Only  ## 1. Overvi..."
+
+  * Final Rank #3 [ACME-001] Doc: 'acme_contractor_access' | Section: 'ACME Logistics - Contractor & Vendor ...'
+    Chunk ID:     acme_contractor_access#tok_000
+    Scores:       Vector: +0.8594 -> Re-rank: 0.4659 (Cross: 0.1125, Phrase: 0.0000)
+    Matches:      Phrases: [] | IDs: []
+    Passage Text: "# ACME Logistics - Contractor & Vendor Access Policy Document ID: KB-ONB-002 | Revision: 2.1 Client ID: ACME-001 | Security Tier: Level-2  ## 1. Scope and Eligi..."
+
+>> DEMONSTRATION #2: SAMPLE QUERY EVALUATION
+-------------------------------------------------------------------------------------
+Query:                  "What is the guaranteed response time SLA and service credit deduction for Sev-1 critical production outages?"
+Target Client Scope:    NEXUS-002
+Initial Candidates:     10 chunks
+Final Selected K:       3 chunks
+Re-rank Execution Time: 5.33 ms
+Improvement Status:     Top result improved: Chunk 'nexus_service_level_agreement#tok_000' jumped from Initial Rank #2 to Re-ranked Rank #1 (Re-rank Score: 0.8690 vs Initial Top 'nexus_sla#tok_000'). Demoted initial top result due to generic bi-encoder vector bias.
+
+TASK 4 — BEFORE-AND-AFTER ORDERING COMPARISON:
+-------------------------------------------------------------------------------------
+Rerank #  | Init #  | Shift   | Chunk ID                       | Vec Score  | Rerank Score
+-------------------------------------------------------------------------------------
+Rank #1   | #2     | +1      | nexus_service_level_agreement# |   +0.9203 |      0.8690
+Rank #2   | #3     | +1      | nexus_sla#tok_001              |   +0.9127 |      0.8374
+Rank #3   | #1     | -2      | nexus_sla#tok_000              |   +0.9601 |      0.5438
+Rank #4   | #7     | +3      | nexus_database_failover_runboo |   +0.5040 |      0.3820
+Rank #5   | #4     | -1      | nexus_compliance_guide#tok_000 |   +0.6696 |      0.3784
+Rank #6   | #5     | -1      | nexus_partner_onboarding#tok_0 |   +0.6205 |      0.3494
+Rank #7   | #6     | -1      | nexus_payment_gateway_runbook# |   +0.5151 |      0.3053
+Rank #8   | #9     | +1      | nexus_database_failover_runboo |   +0.0206 |      0.2575
+Rank #9   | #8     | -1      | nexus_compliance_guide#tok_001 |   +0.0345 |      0.2242
+Rank #10  | #10    | =       | nexus_partner_onboarding#tok_0 |   -0.0066 |      0.1990
+-------------------------------------------------------------------------------------
+
+TASK 3 — FINAL SELECTED TOP-3 CHUNKS FOR GROUNDING:
+  * Final Rank #1 [NEXUS-002] Doc: 'nexus_service_level_agreement' | Section: 'INCIDENT SEVERITY CLASSIFICATIONS'
+    Chunk ID:     nexus_service_level_agreement#tok_000
+    Scores:       Vector: +0.9203 -> Re-rank: 0.8690 (Cross: 0.7323, Phrase: 0.7400)
+    Matches:      Phrases: ['response time'] | IDs: ['sev-1']
+    Passage Text: "CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document Code: SLA-NEX-2026 | Effective Date: 202..."
+
+  * Final Rank #2 [NEXUS-002] Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+    Chunk ID:     nexus_sla#tok_001
+    Scores:       Vector: +0.9127 -> Re-rank: 0.8374 (Cross: 0.6914, Phrase: 0.7400)
+    Matches:      Phrases: ['response time'] | IDs: ['sev-1']
+    Passage Text: " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  2. ESCALATION HIERAR..."
+
+  * Final Rank #3 [NEXUS-002] Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATIONS'
+    Chunk ID:     nexus_sla#tok_000
+    Scores:       Vector: +0.9601 -> Re-rank: 0.5438 (Cross: 0.2395, Phrase: 0.1400)
+    Matches:      Phrases: ['response time'] | IDs: []
+    Passage Text: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financia..."
+
+>> DEMONSTRATION #3: SAMPLE QUERY EVALUATION
+-------------------------------------------------------------------------------------
+Query:                  "What are the database heartbeat failure trigger criteria for disaster recovery failover under SOP-DB-FAIL-04?"
+Target Client Scope:    Global / Multi-Client
+Initial Candidates:     10 chunks
+Final Selected K:       3 chunks
+Re-rank Execution Time: 5.41 ms
+Improvement Status:     Top result improved: Chunk 'vertex_dr#tok_000' jumped from Initial Rank #2 to Re-ranked Rank #1 (Re-rank Score: 0.5806 vs Initial Top 'vertex_hipaa_security_policy#tok_000'). Demoted initial top result due to generic bi-encoder vector bias.
+
+TASK 4 — BEFORE-AND-AFTER ORDERING COMPARISON:
+-------------------------------------------------------------------------------------
+Rerank #  | Init #  | Shift   | Chunk ID                       | Vec Score  | Rerank Score
+-------------------------------------------------------------------------------------
+Rank #1   | #2     | +1      | vertex_dr#tok_000              |   +0.9701 |      0.5806
+Rank #2   | #3     | +1      | vertex_ehr_disaster_recovery#t |   +0.9701 |      0.5806
+Rank #3   | #9     | +6      | nexus_database_failover_runboo |   +0.7815 |      0.4292
+Rank #4   | #1     | -3      | vertex_hipaa_security_policy#t |   +0.9875 |      0.4081
+Rank #5   | #5     | =       | vertex_telehealth_outage_runbo |   +0.8880 |      0.4012
+Rank #6   | #10    | +4      | nexus_payment_gateway_runbook# |   +0.7587 |      0.3638
+Rank #7   | #4     | -3      | vertex_telehealth_outage_runbo |   +0.8964 |      0.3335
+Rank #8   | #7     | -1      | nexus_database_failover_runboo |   +0.8801 |      0.3200
+Rank #9   | #6     | -3      | vertex_clinician_onboarding#to |   +0.8835 |      0.3165
+Rank #10  | #8     | -2      | acme_warehouse_api_runbook#tok |   +0.7953 |      0.2883
+-------------------------------------------------------------------------------------
+
+TASK 3 — FINAL SELECTED TOP-3 CHUNKS FOR GROUNDING:
+  * Final Rank #1 [VERTEX-003] Doc: 'vertex_dr' | Section: 'Trigger Criteria'
+    Chunk ID:     vertex_dr#tok_000
+    Scores:       Vector: +0.9701 -> Re-rank: 0.5806 (Cross: 0.6328, Phrase: 0.0000)
+    Matches:      Phrases: [] | IDs: []
+    Passage Text: "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Client: VERTEX-003   1...."
+
+  * Final Rank #2 [VERTEX-003] Doc: 'vertex_ehr_disaster_recovery' | Section: 'Trigger Criteria'
+    Chunk ID:     vertex_ehr_disaster_recovery#tok_000
+    Scores:       Vector: +0.9701 -> Re-rank: 0.5806 (Cross: 0.6328, Phrase: 0.0000)
+    Matches:      Phrases: [] | IDs: []
+    Passage Text: "Vertex Health - Disaster Recovery Runbook  Vertex Health Operations: Disaster Recovery & Failover Protocol  Document ID: SOP-DB-007 | Client: VERTEX-003  1. Tri..."
+
+  * Final Rank #3 [NEXUS-002] Doc: 'nexus_database_failover_runbook' | Section: 'Nexus Financial Technologies - Databa...'
+    Chunk ID:     nexus_database_failover_runbook#tok_000
+    Scores:       Vector: +0.7815 -> Re-rank: 0.4292 (Cross: 0.1800, Phrase: 0.0000)
+    Matches:      Phrases: [] | IDs: []
+    Passage Text: "# Nexus Financial Technologies - Database High Availability & Failover Protocol Document ID: SOP-DR-004 | Revision: 4.2 Client Identifier: NEXUS-002 | Scope: Pr..."
+
+=====================================================================================
+  RE-RANKING IMPACT & CONTEXT QUALITY SUMMARY
+=====================================================================================
+  [1] High-Recall Initial Phase: Successfully expanded candidate retrieval pool from 3 to 10 chunks.
+  [2] Actionable Procedural Promotion: Promoted actionable sign-off and step chunks over introductory headers.
+  [3] Cross-Account Noise Rejection: Foreign client chunks demoted below the top-3 threshold.
+  [4] Model Token Preservation: Final context filtered strictly to top-3 highest-salience chunks.
+=====================================================================================

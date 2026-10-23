@@ -226,15 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented retrieval tuning experiment and configuration optimizer (`src/retrieval_tuner.py`), defined 6 benchmark test queries covering in-domain procedures and out-of-domain rejection, empirically compared 4 distinct retrieval configurations across metadata filtering, K, hybrid scoring, and confidence score thresholds, measured Top-1 Hit Rate, Top-K Recall, MRR, Account Isolation, and Out-of-Domain Safety, selected Setting D (Account-Filtered + Hybrid α=0.65 + Threshold τ=0.65) achieving 100% Top-1 Hit Rate and 100% Account Isolation, persisted audit logs (`retrieval_tuning_output.log`) and structured JSON (`retrieval_tuning_results.json`), and added 5 automated unit tests (`tests/test_retrieval_tuner.py`).
+**Last change:** Implemented two-stage candidate retrieval and re-ranking pipeline (`src/reranker.py`), retrieving larger candidate pools ($K_{\text{initial}}=10$) from 31 indexed corpus records and applying cross-attention scoring (token cross-interaction, phrase proximity, exact technical codes, and procedural action density) to select the grounded Top-3 ($K_{\text{final}}=3$), showing improved top results where actionable procedure chunks outrank generic headers, tracking before-and-after rank shifts and scores in `sample_rerank_output.log` and `sample_rerank_results.json`, verified with 6 passing automated unit tests (`tests/test_reranker.py`).
 
-**Date / iteration:** Retrieval Tuning & Settings Optimization Sprint.
+**Date / iteration:** Two-Stage Candidate Re-Ranking Sprint.
 
-**Current phase (workflow doc):** Phase 27 — Retrieval Tuning and Relevance Optimization.
+**Current phase (workflow doc):** Phase 28 — Two-Stage Candidate Retrieval and Re-Ranking.
 
-**Current branch:** `feat/retrieval-tuning-experiment`
+**Current branch:** `feat/candidate-reranking-pipeline`
 
 **What exists right now:**
+- `src/reranker.py` — Production two-stage candidate retrieval and re-ranking engine:
+  - Task 1: Coarse candidate retrieval pulling larger pool ($K_{\text{initial}}=10$) from ChromaDB to maximize initial recall.
+  - Task 2: Cross-scoring re-ranker evaluating token co-occurrence ($S_{\text{cross}}$), exact phrase / technical codes ($S_{\text{phrase}}$), procedural action density ($S_{\text{action}}$), and vector baseline ($S_{\text{vector}}$).
+  - Task 3: Improved top results demonstration showing actionable procedure chunks promoted over generic introductory boilerplate.
+  - Task 4: Before-and-after comparison tracking initial vector rank/score, re-ranked rank/score, and rank deltas.
+  - Task 5: End-to-end CLI runner generating formatted terminal audit report (`sample_rerank_output.log`) and structured JSON data (`sample_rerank_results.json`).
+- `sample_rerank_output.log` — Verifiable terminal report recording before-and-after ordering comparison and grounded top-3 selections.
+- `sample_rerank_results.json` — Persisted structured JSON data containing initial candidates, re-ranked order, and sub-score metrics.
+- `tests/test_reranker.py` — Automated `unittest` suite (6 tests) validating cross-interaction scoring, phrase/code detection, procedural density, K=10 to K=3 truncation, rank shift tracking, and persistence.
 - `src/retrieval_tuner.py` — Production retrieval tuning and configuration optimizer engine:
   - Task 1: `TuningTestQuery` dataclass and benchmark test suite (`get_benchmark_test_queries()`) covering ACME, Nexus, Vertex, and out-of-domain safe rejection.
   - Task 2: Comparative configuration harness (`RetrievalSettingConfig`) evaluating Naive Vector vs. Account-Filtered Vector vs. Thresholded Vector vs. Optimal Filtered Hybrid.
