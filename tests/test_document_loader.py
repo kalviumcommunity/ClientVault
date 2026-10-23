@@ -10,6 +10,8 @@ from src.document_loader import (
     extract_text_from_txt,
     extract_text_from_md,
     extract_text_from_html,
+    extract_text_from_pdf,
+    run_intake_demonstration,
     Document,
 )
 
@@ -17,7 +19,7 @@ from src.document_loader import (
 class TestDocumentLoader(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.TemporaryDirectory()
-        self.dir_path = Path(self.test_dir.name)
+        self.dir_path = Path(self.test_dir.name).resolve()
         self.loader = DocumentLoader(base_dir=self.dir_path)
 
     def tearDown(self):
@@ -58,6 +60,31 @@ class TestDocumentLoader(unittest.TestCase):
         self.assertIn("Procedure step.", doc.content)
         self.assertNotIn("<h1>", doc.content)
 
+    def test_load_pdf_document(self):
+        pdf_file = self.dir_path / "emergency.pdf"
+        sample_pdf_content = (
+            b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+            b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
+            b"3 0 obj\n<< /Type /Page /Parent 2 0 R /Contents 4 0 R >>\nendobj\n"
+            b"4 0 obj\n<< /Length 80 >>\nstream\n"
+            b"BT\n/F1 12 Tf\n(Critical Outage Manual Failover) Tj\nET\nendstream\nendobj\n"
+            b"trailer\n<< /Root 1 0 R >>\n%%EOF"
+        )
+        pdf_file.write_bytes(sample_pdf_content)
+
+        doc = self.loader.load_single_file(pdf_file)
+        self.assertIsNotNone(doc)
+        self.assertEqual(doc.file_format, "pdf")
+        self.assertEqual(doc.source_id, "emergency")
+        self.assertIn("Critical Outage Manual Failover", doc.content)
+
+    def test_corrupt_pdf_file_skipped_without_crash(self):
+        corrupt_pdf = self.dir_path / "corrupt.pdf"
+        corrupt_pdf.write_bytes(b"\x00\xff\xfe\x00\x01\x02\x03\x04")
+
+        doc = self.loader.load_single_file(corrupt_pdf)
+        self.assertIsNone(doc)
+
     def test_missing_file_handled_gracefully(self):
         missing_file = self.dir_path / "does_not_exist.txt"
         doc = self.loader.load_single_file(missing_file)
@@ -77,6 +104,20 @@ class TestDocumentLoader(unittest.TestCase):
         doc = self.loader.load_single_file(empty_file)
         self.assertIsNone(doc)
 
+    def test_preserve_source_identity(self):
+        doc_file = self.dir_path / "incident_report.md"
+        doc_file.write_text("# Incident P1\nDatabase connection timeout.", encoding="utf-8")
+
+        doc = self.loader.load_single_file(doc_file)
+        self.assertIsNotNone(doc)
+        self.assertEqual(doc.source_id, "incident_report")
+        self.assertEqual(doc.file_path, "incident_report.md")
+        self.assertEqual(doc.file_format, "md")
+        self.assertIn("filename", doc.metadata)
+        self.assertEqual(doc.metadata["filename"], "incident_report.md")
+        self.assertEqual(doc.metadata["extension"], ".md")
+        self.assertGreater(doc.metadata["file_size_bytes"], 0)
+
     def test_directory_batch_intake(self):
         f1 = self.dir_path / "doc1.txt"
         f1.write_text("Document 1 content.", encoding="utf-8")
@@ -89,6 +130,14 @@ class TestDocumentLoader(unittest.TestCase):
         self.assertEqual(len(docs), 2)
         self.assertEqual(len(skipped), 1)
         self.assertIn("invalid.bin", skipped)
+
+    def test_run_intake_demonstration(self):
+        f = self.dir_path / "sample.txt"
+        f.write_text("Sample demonstration text for verification.", encoding="utf-8")
+        output = run_intake_demonstration(self.dir_path)
+        self.assertIn("ClientVault — Multi-Format Document Loader & Intake Confirmation", output)
+        self.assertIn("Loaded 1 document(s)", output)
+        self.assertIn("Sample demonstration text", output)
 
 
 if __name__ == "__main__":

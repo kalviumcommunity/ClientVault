@@ -1,0 +1,56 @@
+================================================================================
+  ClientVault — Scalable Batch Embedding & Cost-Tracking Pipeline
+================================================================================
+
+Corpus Input: 6 chunks prepared across sample documents.
+
+>> RUN 1: INITIAL BATCH EMBEDDING WITH TRANSIENT RETRY HANDLING
+--------------------------------------------------------------------------------
+  [TEST INJECTION] Simulating temporary HTTP 429 RateLimit on Batch #2...
+  Batch Size Configured:     2 chunks/batch
+  Total Chunks Submitted:    6
+  Batches Processed:         3
+  Embeddings Generated:      6
+  Already-Embedded Skipped:  0
+  Batches Failed:            0
+  Transient Retries Triggered: 1
+    - Event: Batch #2 | Attempt #1 | TransientRateLimitError | Waited 0.05s -> Recovered!
+  Tokens Embedded:           985 tokens
+  Model Pricing Tier:        $0.020 per 1M tokens (text-embedding-3-small)
+  Estimated Run Cost:        $0.00001970 USD
+
+>> RUN 2: IDEMPOTENT RE-RUN (SKIP ALREADY-EMBEDDED CHUNKS)
+--------------------------------------------------------------------------------
+  Executing pipeline again over the same corpus...
+  Total Chunks Submitted:    6
+  Embeddings Generated:      0 (Zero duplicate API calls!)
+  Already-Embedded Skipped:  6 chunks (100% skipped)
+  Batches Executed:          0
+  Tokens Skipped:            985 tokens
+  Estimated Run Cost:        $0.00000000 USD
+  Estimated Cost Saved:      $0.00001970 USD
+  Idempotency Check:         PASSED — Duplicate work prevented completely
+
+>> SAMPLE STORED VECTOR CHUNK AUDIT
+--------------------------------------------------------------------------------
+[1] Chunk: 'acme_onboarding#tok_000'
+    Source: 'acme_onboarding' | Client: 'ACME-001' | Section: 'ACME Logistics — Client Onboarding & ...'
+    Text:   "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: In..."
+    Vector: [+0.0253, +0.0287, +0.0324, +0.0362, ... 1536 dims ..., +0.0019, +0.0018]
+    Hash:   04269607b49920f3
+
+[2] Chunk: 'acme_onboarding#tok_001'
+    Source: 'acme_onboarding' | Client: 'ACME-001' | Section: 'Identity confirmation verified via pr...'
+    Text:   " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics ..."
+    Vector: [+0.0253, +0.0289, +0.0327, +0.0366, ... 1536 dims ..., +0.0051, +0.0050]
+    Hash:   16e84a944e220545
+
+[3] Chunk: 'acme_onboarding#tok_002'
+    Source: 'acme_onboarding' | Client: 'ACME-001' | Section: 'Step 3.3: Sandbox Confinement'
+    Text:   " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated cr..."
+    Vector: [+0.0179, +0.0204, +0.0232, +0.0260, ... 1536 dims ..., +0.0013, +0.0012]
+    Hash:   3de5d832fd7c13c7
+
+================================================================================
+  STATUS: Batching, retries with backoff, cost tracking, and caching verified.
+================================================================================

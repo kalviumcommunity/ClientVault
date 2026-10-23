@@ -1,0 +1,267 @@
+{
+  "case_1_account_isolation": {
+    "query": "What is the initial response time and priority classification for critical service issues?",
+    "target_client_id": "NEXUS-002",
+    "k": 3,
+    "unfiltered_isolation_pct": 66.67,
+    "filtered_isolation_pct": 100.0,
+    "hybrid_isolation_pct": 100.0,
+    "precision_gain_pct": 33.33,
+    "noise_chunks_eliminated": 1,
+    "explanation": "Unfiltered search returned 1 out of 3 chunks from foreign clients. Metadata filter 'client_id='NEXUS-002'' enforced 100% account isolation, boosting precision by +33.3%. Hybrid search reinforced exact identifier matches.",
+    "unfiltered_top_chunks": [
+      {
+        "rank": 1,
+        "chunk_id": "nexus_sla#tok_000",
+        "hybrid_score": 0.9602,
+        "vector_score": 0.9602,
+        "keyword_score": 0.4375,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "critical",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+        "page": 1,
+        "token_count": 200,
+        "snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nexus_sla#tok_001",
+        "hybrid_score": 0.9128,
+        "vector_score": 0.9128,
+        "keyword_score": 0.35,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "ESCALATION HIERARCHY",
+        "page": 1,
+        "token_count": 153,
+        "snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+      },
+      {
+        "rank": 3,
+        "chunk_id": "acme_onboarding#tok_002",
+        "hybrid_score": 0.6718,
+        "vector_score": 0.6718,
+        "keyword_score": 0.0,
+        "matched_terms": [],
+        "matched_identifiers": [],
+        "client_id": "ACME-001",
+        "document_id": "acme_onboarding",
+        "section": "Step 3.3: Sandbox Confinement",
+        "page": 2,
+        "token_count": 71,
+        "snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+      }
+    ],
+    "filtered_top_chunks": [
+      {
+        "rank": 1,
+        "chunk_id": "nexus_sla#tok_000",
+        "hybrid_score": 0.9602,
+        "vector_score": 0.9602,
+        "keyword_score": 0.4375,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "critical",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+        "page": 1,
+        "token_count": 200,
+        "snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nexus_sla#tok_001",
+        "hybrid_score": 0.9128,
+        "vector_score": 0.9128,
+        "keyword_score": 0.35,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "ESCALATION HIERARCHY",
+        "page": 1,
+        "token_count": 153,
+        "snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+      }
+    ],
+    "hybrid_top_chunks": [
+      {
+        "rank": 1,
+        "chunk_id": "nexus_sla#tok_000",
+        "hybrid_score": 0.8173,
+        "vector_score": 0.9602,
+        "keyword_score": 0.4375,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "critical",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+        "page": 1,
+        "token_count": 200,
+        "snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nexus_sla#tok_001",
+        "hybrid_score": 0.7745,
+        "vector_score": 0.9128,
+        "keyword_score": 0.35,
+        "matched_terms": [
+          "initial",
+          "response",
+          "time",
+          "service"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "ESCALATION HIERARCHY",
+        "page": 1,
+        "token_count": 153,
+        "snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+      }
+    ]
+  },
+  "case_2_exact_identifier_hybrid": {
+    "query": "What are the pre-requisites for routing an onboarding ticket in the SEC-ONB queue?",
+    "identifier_targeted": "SEC-ONB",
+    "client_id": "ACME-001",
+    "pure_vector_top_match": {
+      "rank": 1,
+      "chunk_id": "acme_onboarding#tok_001",
+      "hybrid_score": 0.9846,
+      "vector_score": 0.9846,
+      "keyword_score": 0.4083,
+      "matched_terms": [
+        "ticket",
+        "sec-onb"
+      ],
+      "matched_identifiers": [
+        "sec-onb"
+      ],
+      "client_id": "ACME-001",
+      "document_id": "acme_onboarding",
+      "section": "Identity confirmation verified via pr...",
+      "page": 1,
+      "token_count": 200,
+      "snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+    },
+    "hybrid_top_match": {
+      "rank": 1,
+      "chunk_id": "acme_onboarding#tok_000",
+      "hybrid_score": 0.9668,
+      "vector_score": 0.9783,
+      "keyword_score": 0.9333,
+      "matched_terms": [
+        "pre-requisites",
+        "onboarding",
+        "ticket",
+        "sec-onb",
+        "queue"
+      ],
+      "matched_identifiers": [
+        "pre-requisites",
+        "sec-onb"
+      ],
+      "client_id": "ACME-001",
+      "document_id": "acme_onboarding",
+      "section": "ACME Logistics \u2014 Client Onboarding & ...",
+      "page": 1,
+      "token_count": 200,
+      "snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+    },
+    "hybrid_rank_1_matches": [
+      "pre-requisites",
+      "sec-onb"
+    ],
+    "explanation": "Hybrid search detected exact ticket queue identifier 'sec-onb' and boosted the precise procedural requirement chunk containing the ticket queue to Rank #1."
+  },
+  "case_3_section_scoping": {
+    "query": "Who is the contact person for Tier 1 helpdesk and duty manager?",
+    "target_section": "ESCALATION HIERARCHY",
+    "unfiltered_chunks": [
+      {
+        "rank": 1,
+        "chunk_id": "nexus_sla#tok_000",
+        "hybrid_score": 0.9591,
+        "vector_score": 0.9591,
+        "keyword_score": 0.1167,
+        "matched_terms": [
+          "tier"
+        ],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+        "page": 1,
+        "token_count": 200,
+        "snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+      },
+      {
+        "rank": 2,
+        "chunk_id": "nexus_sla#tok_001",
+        "hybrid_score": 0.9122,
+        "vector_score": 0.9122,
+        "keyword_score": 0.0,
+        "matched_terms": [],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "ESCALATION HIERARCHY",
+        "page": 1,
+        "token_count": 153,
+        "snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+      }
+    ],
+    "filtered_chunks": [
+      {
+        "rank": 1,
+        "chunk_id": "nexus_sla#tok_001",
+        "hybrid_score": 0.9122,
+        "vector_score": 0.9122,
+        "keyword_score": 0.0,
+        "matched_terms": [],
+        "matched_identifiers": [],
+        "client_id": "NEXUS-002",
+        "document_id": "nexus_sla",
+        "section": "ESCALATION HIERARCHY",
+        "page": 1,
+        "token_count": 153,
+        "snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+      }
+    ],
+    "explanation": "Section scoping restricted the candidate space strictly to 'ESCALATION HIERARCHY', preventing severity classification chunks from diluting the escalation contacts."
+  }
+}

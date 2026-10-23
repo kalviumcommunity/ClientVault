@@ -1,6 +1,6 @@
 ===========================================================================
   ClientVault — Multi-Format Document Loader & Intake Confirmation
-  Target Corpus: /Users/abhinavv/Documents/ClientVault/data/sample_corpus
+  Target Corpus: /Users/fibafathima/ClientVault/data/sample_corpus
 ===========================================================================
 
 Intake Summary: Loaded 4 document(s) | Skipped 1 file(s)
@@ -11,29 +11,29 @@ Intake Summary: Loaded 4 document(s) | Skipped 1 file(s)
 [1] Document Source ID: 'acme_emergency'
     File Path:         data/sample_corpus/acme_emergency.pdf
     Format:            PDF
-    Length:            330 characters
+    Length:            296 characters
     Sample Preview:
-      | %PDF-1.4 Mock Binary Header
-      | ACME Logistics Emergency Runbook — Root Password Reset Protocol
-      | Document Reference: SEC-EMERG-001 (Section 2.1, Page 1)
+      | ACME Logistics - Emergency System Access & Outage Protocol
+      | Document ID: SOP-EMERGENCY-001 | Client: ACME-001 | Level: Tier-1
+      | In case of primary warehouse API failure, initiate immediate failover to standby replica.
 
 [2] Document Source ID: 'acme_onboarding'
     File Path:         data/sample_corpus/acme_onboarding.md
     Format:            MD
-    Length:            1181 characters
+    Length:            1650 characters
     Sample Preview:
       | # ACME Logistics — Client Onboarding & Authentication Runbook
-      | Document ID: KB-ONB-001
-      | Revision: 3.2
+      | Document ID: KB-ONB-001 | Revision: 3.2
+      | Classification: Internal Client Support Only
 
 [3] Document Source ID: 'nexus_sla'
     File Path:         data/sample_corpus/nexus_sla.txt
     Format:            TXT
-    Length:            986 characters
+    Length:            1228 characters
     Sample Preview:
+      | [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002]
       | CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX
       | Client Identifier: NEXUS-002 (Nexus Financial Technologies)
-      | Document Code: SLA-NEX-2026
 
 [4] Document Source ID: 'vertex_dr'
     File Path:         data/sample_corpus/vertex_dr.html
