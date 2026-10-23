@@ -97,6 +97,7 @@ data/*
 !data/.gitkeep
 !data/sample_corpus/
 !data/sample_corpus/**
+!data/sample_corpus/*.pdf
 
 # Generated outputs & local vector persistence
 outputs/*
@@ -118,6 +119,7 @@ embeddings/
 # ---------- Docs & generated artifacts ----------
 # Keep human-authored docs; ignore generated/exported docs.
 *.pdf
+!data/sample_corpus/*.pdf
 *.docx~
 *~
 

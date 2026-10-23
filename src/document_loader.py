@@ -108,24 +108,78 @@ def extract_text_from_html(path: Path) -> str:
 def extract_text_from_pdf(path: Path) -> str:
     """
     Extracts text from PDF files.
-    Tries pypdf if installed; falls back to text stream extraction for lightweight/mock PDFs.
+    Tries pypdf if installed; falls back to stream-based text extraction (BT...ET and Tj operators)
+    and structural filtering for uncompressed or plain PDFs.
     """
     try:
         import pypdf
         reader = pypdf.PdfReader(str(path))
-        pages_text = [page.extract_text() or "" for page in reader.pages]
-        return "\n\n".join(pages_text).strip()
-    except ImportError:
-        # Fallback parser for plain/mock PDF files
+        pages_text = [page.extract_text() or "" for page in reader.pages if page.extract_text()]
+        if pages_text:
+            return "\n\n".join(pages_text).strip()
+    except Exception:
+        pass
+
+    try:
         raw_bytes = path.read_bytes()
-        try:
-            # Try direct text decode
-            text = raw_bytes.decode("utf-8", errors="ignore")
-            # Filter non-printable ASCII noise if raw binary
-            printable = "".join(ch for ch in text if ch.isprintable() or ch in "\n\r\t")
-            return printable.strip()
-        except Exception as e:
-            raise DocumentReadError(f"Failed to parse PDF binary without pypdf library: {e}")
+        content_str = raw_bytes.decode("latin-1")
+
+        # 1. Search for PDF text objects: BT ... ET
+        text_blocks = re.findall(r"BT[\s\S]*?ET", content_str)
+        extracted_lines = []
+        if text_blocks:
+            for block in text_blocks:
+                # Find (text) Tj
+                tj_matches = re.findall(r"\((.*?)\)\s*Tj", block)
+                for item in tj_matches:
+                    clean_item = item.replace(r"\(", "(").replace(r"\)", ")")
+                    if clean_item.strip():
+                        extracted_lines.append(clean_item.strip())
+                # Find [(text) ...] TJ
+                tj_arrays = re.findall(r"\[(.*?)\]\s*TJ", block)
+                for arr in tj_arrays:
+                    parts = re.findall(r"\((.*?)\)", arr)
+                    if parts:
+                        line = " ".join(p.replace(r"\(", "(").replace(r"\)", ")") for p in parts)
+                        if line.strip():
+                            extracted_lines.append(line.strip())
+
+        if extracted_lines:
+            return "\n".join(extracted_lines).strip()
+
+        # 2. If no BT/ET blocks, try stream ... endstream blocks
+        stream_matches = re.findall(r"stream[\r\n]+([\s\S]*?)[\r\n]+endstream", content_str)
+        stream_text_lines = []
+        for s in stream_matches:
+            lines = [line.strip() for line in s.splitlines() if line.strip() and not line.strip().startswith(("%", "xref", "trailer"))]
+            for l in lines:
+                printable = "".join(ch for ch in l if ch.isprintable() or ch in " \t")
+                if len(printable) > 3 and not re.match(r"^[\d\s\<\>\/\[\]]+$", printable):
+                    stream_text_lines.append(printable)
+        if stream_text_lines:
+            return "\n".join(stream_text_lines).strip()
+
+        # 3. Direct decode fallback, filtering binary PDF header/trailer artifacts
+        decoded = raw_bytes.decode("utf-8", errors="ignore")
+        clean_lines = []
+        for line in decoded.splitlines():
+            l_strip = line.strip()
+            if not l_strip:
+                continue
+            if re.match(r"^(%PDF|xref|\d+\s+\d+|trailer|startxref|%%EOF|<<|>>|\d+\s+\d+\s+obj|endobj)", l_strip):
+                continue
+            printable = "".join(ch for ch in l_strip if ch.isprintable() or ch in " \t")
+            if printable:
+                clean_lines.append(printable)
+
+        if clean_lines:
+            return "\n".join(clean_lines).strip()
+
+        raise DocumentReadError(f"No readable text could be extracted from PDF: {path.name}")
+    except DocumentReadError:
+        raise
+    except Exception as e:
+        raise DocumentReadError(f"Failed to parse PDF binary without pypdf library: {e}")
 
 
 # Registry of supported loaders
@@ -149,7 +203,7 @@ class DocumentLoader:
     """
 
     def __init__(self, base_dir: Optional[Path] = None):
-        self.base_dir = base_dir or PROJECT_ROOT
+        self.base_dir = Path(base_dir or PROJECT_ROOT).resolve()
 
     def load_single_file(self, file_path: Union[str, Path]) -> Optional[Document]:
         """

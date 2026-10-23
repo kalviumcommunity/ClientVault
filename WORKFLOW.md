@@ -103,6 +103,9 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 
 ## 6. Active Pull Requests
 
+- **PR (Multi-Format Document Loader & Intake)**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/multi-format-document-loader)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/multi-format-document-loader`
 - **PR (Filtered Retrieval & Hybrid Lexical Search)**: [feat: implement metadata filtered retrieval, hybrid keyword search, and precision comparison](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/filtered-retrieval-and-hybrid-search)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/filtered-retrieval-and-hybrid-search`

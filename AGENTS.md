@@ -226,6 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
+**Last change:** Enhanced `DocumentLoader` (`src/document_loader.py`) with zero-dependency PDF stream extraction (`BT...ET` and `Tj` operator parsing), added `acme_emergency.pdf` to `data/sample_corpus/`, expanded unit test suite (`tests/test_document_loader.py`) to 11 passing tests, generated updated intake confirmation report in `document_intake_output.log`, and resolved macOS base directory path matching.
+
+**Date / iteration:** Multi-Format Document Loader & Intake Sprint.
+
+**Current phase (workflow doc):** Phase 13 — Multi-Format Document Loader & Intake Confirmation.
+
+**Current branch:** `feat/multi-format-document-loader`
+
+**What exists right now:**
+- `src/document_loader.py` — Multi-format loader with extractors for Markdown, Plain Text, HTML, and PDF, non-crashing skip handling for corrupt/missing files, character count reporting, snippet previews, and metadata/source preservation.
+- `data/sample_corpus/` — Mixed format test corpus:
+  - `acme_onboarding.md` (Markdown procedure runbook)
+  - `nexus_sla.txt` (Plain text SLA matrix)
+  - `vertex_dr.html` (HTML disaster recovery runbook)
+  - `acme_emergency.pdf` (Standard uncompressed PDF format protocol)
+  - `corrupt_unsupported.bin` (Corrupted/unsupported file for resilience validation)
+- `tests/test_document_loader.py` — Automated `unittest` suite (11 tests) validating single file loading across formats, source identity preservation, directory batch intake, and non-crashing skip behavior.
+- `document_intake_output.log` — Terminal execution capture of corpus intake verification and skipped file reports.
 **Last change:** Implemented metadata-scoped filtered retrieval and hybrid lexical-semantic search engine (`src/filtered_retriever.py`), added strongly-typed `MetadataFilter` converting to ChromaDB where clauses (`client_id`, `document_id`, `section`, `page`), implemented BM25/lexical term overlap and technical identifier matching (e.g. ticket queue `SEC-ONB`, SOP IDs), demonstrated side-by-side comparison of unfiltered vs. filtered vs. hybrid retrieval proving +33.3% precision gain and 100% account isolation compliance, persisted audit logs (`sample_filtered_search_output.log`) and structured JSON (`sample_filtered_search_results.json`), and added 8 automated unit tests (`tests/test_filtered_retriever.py`).
 
 **Date / iteration:** Scoped Filtered Retrieval & Hybrid Search Sprint.
