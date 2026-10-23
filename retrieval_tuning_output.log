@@ -1,0 +1,58 @@
+=====================================================================================
+  CLIENTVAULT — RETRIEVAL TUNING EXPERIMENT & OPTIMIZATION AUDIT
+=====================================================================================
+Timestamp:   2026-10-23T08:59:13.151294+00:00
+Module:      src/retrieval_tuner.py
+Evaluator:   Multi-Setting Empirical Relevance Harness
+
+>> TASK 2 & 3: RETRIEVAL SETTINGS COMPARISON TABLE
+-------------------------------------------------------------------------------------
+Setting Name                           | Top-1   | Top-K   | MRR     | Isol.   | Safety  | Composite
+-------------------------------------------------------------------------------------
+Setting A: Naive Unfiltered Vector     |  40.0% | 100.0% | 0.6667 |  60.0% |   0.0% |   0.5000
+Setting B: Account-Filtered Vector     |  60.0% | 100.0% | 0.8000 | 100.0% |   0.0% |   0.6800
+Setting C: Filtered Vector + Threshold |  40.0% |  80.0% | 0.6000 | 100.0% | 100.0% |   0.7800
+Setting D: ClientVault Optimal (Filter | 100.0% | 100.0% | 1.0000 | 100.0% | 100.0% |   1.0000
+-------------------------------------------------------------------------------------
+
+>> PER-QUERY BEHAVIOR ACROSS COMPARED SETTINGS
+-------------------------------------------------------------------------------------
+  [TQ-01] "What are the mandatory pre-requisites for client onboarding and ServiceNow queue routing?"
+    - Setting A (Naive):   Top Match: 'acme_onboarding#tok_001' (Score: +0.9911) | Hit@1: False | Isol: 100%
+    - Setting D (Optimal): Top Match: 'acme_onboarding#tok_000' (Score: +0.9432) | Hit@1: True | Isol: 100%
+
+  [TQ-02] "What is the dual-operator authorization and staging sandbox confinement duration?"
+    - Setting A (Naive):   Top Match: 'nexus_sla#tok_001' (Score: +0.0506) | Hit@1: False | Isol: 33%
+    - Setting D (Optimal): Top Match: 'acme_onboarding#tok_001' (Score: +0.6504) | Hit@1: True | Isol: 100%
+
+  [TQ-03] "What is the guaranteed initial response time SLA for Severity 1 (Critical Outage) production outages?"
+    - Setting A (Naive):   Top Match: 'nexus_sla#tok_000' (Score: +0.9519) | Hit@1: True | Isol: 67%
+    - Setting D (Optimal): Top Match: 'nexus_sla#tok_000' (Score: +0.8059) | Hit@1: True | Isol: 100%
+
+  [TQ-04] "Who are the escalation contacts for Level 1 Tier-1 Service Desk Operations and Level 2 Client Reliability Engineer?"
+    - Setting A (Naive):   Top Match: 'nexus_sla#tok_000' (Score: +0.9577) | Hit@1: False | Isol: 67%
+    - Setting D (Optimal): Top Match: 'nexus_sla#tok_001' (Score: +0.9656) | Hit@1: True | Isol: 100%
+
+  [TQ-05] "What are the database heartbeat failure trigger criteria for disaster recovery failover under SOP-DB-FAIL-04?"
+    - Setting A (Naive):   Top Match: 'vertex_dr#tok_000' (Score: +0.9701) | Hit@1: True | Isol: 33%
+    - Setting D (Optimal): Top Match: 'vertex_dr#tok_000' (Score: +0.8118) | Hit@1: True | Isol: 100%
+
+  [TQ-06] "What is the standard corporate reimbursement policy for executive airport parking and travel per diem?"
+    - Setting A (Naive):   Top Match: 'acme_onboarding#tok_001' (Score: +0.1651) | Hit@1: False | Isol: 100%
+    - Setting D (Optimal): Top Match: 'None' (Score: +0.0000) | Hit@1: True | Isol: 100%
+
+=====================================================================================
+>> TASK 4: FINAL CHOSEN SETTING & OPERATIONAL JUSTIFICATION
+=====================================================================================
+  WINNER: Setting D: ClientVault Optimal (Filtered + Hybrid + τ=0.65) [SETTING_D_OPTIMAL_FILTERED_HYBRID]
+
+Chosen Configuration: 'Setting D: ClientVault Optimal (Filtered + Hybrid + τ=0.65)' (ID: SETTING_D_OPTIMAL_FILTERED_HYBRID).
+Operational & Mathematical Justification:
+1. Account Isolation: Achieves 100.0% compliance, satisfying PRD §18.1 (>= 95%) and preventing cross-client data leaks found in unfiltered search.
+2. Top-1 Hit Rate: Achieves 100.0% (MRR: 1.0000). Hybrid lexical matching boosts exact technical identifiers (e.g. ticket queue 'SEC-ONB' and 'SOP-DB-FAIL-04') to Rank #1.
+3. Out-of-Domain Safety: Achieves 100.0% safe rejection via score threshold τ=0.65, preventing hallucinations on unsupported corporate queries.
+4. Window Efficiency: K=3 provides complete procedural context without blowing prompt token budgets.
+
+=====================================================================================
+  DECISION OF RECORD: Production defaults set to Filtered Hybrid (K=3, α=0.65, τ=0.65).
+=====================================================================================

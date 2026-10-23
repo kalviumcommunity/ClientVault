@@ -396,6 +396,19 @@ python -m unittest tests/test_filtered_retriever.py
 ```
 Full comparative analysis, precision metrics, and JSON output are preserved in [`sample_filtered_search_output.log`](file:///Users/fibafathima/ClientVault/sample_filtered_search_output.log) and [`sample_filtered_search_results.json`](file:///Users/fibafathima/ClientVault/sample_filtered_search_results.json).
 
+### 25. Run Retrieval Tuning & Settings Optimization
+
+Evaluate and tune retrieval settings across candidate configurations (Naive Vector, Account-Filtered Vector, Filtered with Threshold, and ClientVault Optimal Filtered Hybrid), measure relevance metrics (Top-1 Hit Rate, Top-K Recall, MRR, Account Isolation, Out-of-Domain Safety), and select production defaults:
+
+```bash
+# Run end-to-end retrieval tuning experiment and generate audit report:
+python src/retrieval_tuner.py --mock
+
+# Run automated unit tests:
+python -m unittest tests/test_retrieval_tuner.py
+```
+Full tuning metrics, comparative tables, and structured JSON results are preserved in [`retrieval_tuning_output.log`](file:///Users/fibafathima/ClientVault/retrieval_tuning_output.log) and [`retrieval_tuning_results.json`](file:///Users/fibafathima/ClientVault/retrieval_tuning_results.json).
+
 
 
 ### 1. Workspace Health Check

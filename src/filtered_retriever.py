@@ -292,6 +292,7 @@ class FilteredRetrievalResult:
     execution_time_ms: float
     account_isolation_pct: float
     target_client_id: Optional[str] = None
+    score_threshold: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -304,6 +305,7 @@ class FilteredRetrievalResult:
             "execution_time_ms": round(self.execution_time_ms, 2),
             "account_isolation_pct": round(self.account_isolation_pct, 2),
             "target_client_id": self.target_client_id,
+            "score_threshold": self.score_threshold,
             "chunks": [c.to_preview_dict() for c in self.chunks],
         }
 
@@ -370,11 +372,14 @@ class FilteredRetriever:
         search_mode: str = "hybrid",
         alpha: float = 0.70,
         target_client_id: Optional[str] = None,
+        score_threshold: Optional[float] = None,
     ) -> FilteredRetrievalResult:
         """
-        Task 1, 2, 3: Executes retrieval with metadata filtering and optional hybrid scoring.
+        Task 1, 2, 3: Executes retrieval with metadata filtering, optional hybrid scoring,
+        and optional score thresholding.
         - search_mode: 'vector' (pure vector), 'keyword' (pure keyword), or 'hybrid' (vector + keyword)
         - alpha: weight assigned to vector score (0.0 <= alpha <= 1.0)
+        - score_threshold: minimum similarity score required for candidate retention
         """
         t0 = time.perf_counter()
         query_vector = self.vector_retriever.embed_query(query)
@@ -467,6 +472,15 @@ class FilteredRetriever:
         else:  # hybrid
             scored_candidates.sort(key=lambda c: c.hybrid_score, reverse=True)
 
+        # Apply score threshold cutoff if specified
+        if score_threshold is not None:
+            if search_mode == "vector":
+                scored_candidates = [c for c in scored_candidates if c.vector_score >= score_threshold]
+            elif search_mode == "keyword":
+                scored_candidates = [c for c in scored_candidates if c.keyword_score >= score_threshold]
+            else:  # hybrid
+                scored_candidates = [c for c in scored_candidates if c.hybrid_score >= score_threshold]
+
         # Truncate to requested k and assign rank numbers
         final_chunks = scored_candidates[:k]
         for rank_num, c in enumerate(final_chunks, 1):
@@ -493,6 +507,7 @@ class FilteredRetriever:
             execution_time_ms=elapsed_ms,
             account_isolation_pct=isolation_pct,
             target_client_id=eval_client,
+            score_threshold=score_threshold,
         )
 
     def compare_filtered_and_unfiltered(

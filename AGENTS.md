@@ -226,16 +226,25 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented `IngestionPipeline` (`src/ingestion_pipeline.py`) executing end-to-end corpus ingestion (loading, cleaning, token-aware chunking, granular tagging) across the entire synthetic 3-client corpus (`data/corpus/`), validating complete mathematical reconciliation (17 source files = 15 ingested + 2 recorded skips, 0 unaccounted drops), generating multi-client inspection reports in `ingestion_summary.log`, verified with 66 passing automated unit tests (`tests/test_ingestion_pipeline.py`).
+**Last change:** Implemented retrieval tuning experiment and configuration optimizer (`src/retrieval_tuner.py`), defined 6 benchmark test queries covering in-domain procedures and out-of-domain rejection, empirically compared 4 distinct retrieval configurations across metadata filtering, K, hybrid scoring, and confidence score thresholds, measured Top-1 Hit Rate, Top-K Recall, MRR, Account Isolation, and Out-of-Domain Safety, selected Setting D (Account-Filtered + Hybrid α=0.65 + Threshold τ=0.65) achieving 100% Top-1 Hit Rate and 100% Account Isolation, persisted audit logs (`retrieval_tuning_output.log`) and structured JSON (`retrieval_tuning_results.json`), and added 5 automated unit tests (`tests/test_retrieval_tuner.py`).
 
-**Date / iteration:** Full Corpus Ingestion & Completeness Validation Sprint.
+**Date / iteration:** Retrieval Tuning & Settings Optimization Sprint.
 
-**Current phase (workflow doc):** Phase 18 — Full Corpus Ingestion & Completeness Validation.
+**Current phase (workflow doc):** Phase 27 — Retrieval Tuning and Relevance Optimization.
 
-**Current branch:** `feat/full-corpus-ingestion-and-validation`
+**Current branch:** `feat/retrieval-tuning-experiment`
 
 **What exists right now:**
-- `src/ingestion_pipeline.py` — End-to-end full corpus ingestion coordinator:
+- `src/retrieval_tuner.py` — Production retrieval tuning and configuration optimizer engine:
+  - Task 1: `TuningTestQuery` dataclass and benchmark test suite (`get_benchmark_test_queries()`) covering ACME, Nexus, Vertex, and out-of-domain safe rejection.
+  - Task 2: Comparative configuration harness (`RetrievalSettingConfig`) evaluating Naive Vector vs. Account-Filtered Vector vs. Thresholded Vector vs. Optimal Filtered Hybrid.
+  - Task 3: Relevance reporting metrics: Top-1 Hit Rate (40.0% -> 100.0%), Top-K Recall (100.0%), MRR (0.6667 -> 1.0000), Account Isolation (60.0% -> 100.0%), and Out-of-Domain Safety (0.0% -> 100.0%).
+  - Task 4: Empirical justification engine selecting Setting D (Filtered Hybrid with K=3, α=0.65, τ=0.65) for production default deployment.
+  - Task 5: End-to-end CLI runner generating formatted terminal audit report (`retrieval_tuning_output.log`) and structured JSON data (`retrieval_tuning_results.json`).
+- `retrieval_tuning_output.log` — Verifiable terminal report recording comparative settings table, per-query behavior, and winning setting justification.
+- `retrieval_tuning_results.json` — Persisted structured JSON data containing per-setting and per-query evaluation metrics.
+- `tests/test_retrieval_tuner.py` — Automated `unittest` suite (5 tests) validating benchmark query schema, setting definitions, in-domain/out-of-domain evaluation, winner selection, and JSON persistence.
+- `src/filtered_retriever.py` — Production metadata-scoped and hybrid retrieval engine with score thresholding:
   - Task 1: Runs discovery, loading, cleaning, token-aware chunking, and tagging over the whole corpus directory.
   - Task 2: Emits quantitative summaries with per-client and per-format breakdowns, average chunks/doc, and average tokens/chunk.
   - Task 3: Strict completeness validation and mathematical reconciliation: Candidate Source Files == Ingested Documents + Recorded Failures with 0 unaccounted drops.
