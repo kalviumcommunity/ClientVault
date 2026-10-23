@@ -226,13 +226,13 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented two-stage candidate retrieval and re-ranking pipeline (`src/reranker.py`), retrieving larger candidate pools ($K_{\text{initial}}=10$) from 31 indexed corpus records and applying cross-attention scoring (token cross-interaction, phrase proximity, exact technical codes, and procedural action density) to select the grounded Top-3 ($K_{\text{final}}=3$), showing improved top results where actionable procedure chunks outrank generic headers, tracking before-and-after rank shifts and scores in `sample_rerank_output.log` and `sample_rerank_results.json`, verified with 6 passing automated unit tests (`tests/test_reranker.py`).
+**Last change:** Fixed fallback tokenizer decoding in `TokenAwareChunker` (`src/chunker.py`) to prevent lossy hash token decoding, added resilient token count fallbacks to `count_tokens` (`src/token_cost_estimator.py`), verified complete test suite pass (142 tests passing), merged all changes into `main`, and pushed directly to `origin/main`.
 
-**Date / iteration:** Two-Stage Candidate Re-Ranking Sprint.
+**Date / iteration:** Bug Fix & Main Integration Sprint.
 
-**Current phase (workflow doc):** Phase 28 — Two-Stage Candidate Retrieval and Re-Ranking.
+**Current phase (workflow doc):** Production Readiness & Main Integration.
 
-**Current branch:** `feat/candidate-reranking-pipeline`
+**Current branch:** `main`
 
 **What exists right now:**
 - `src/reranker.py` — Production two-stage candidate retrieval and re-ranking engine:
