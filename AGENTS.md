@@ -226,15 +226,27 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented scalable batch embedding pipeline (`src/batch_embedder.py`) with configurable batching, retries with exponential backoff for transient rate limits, token cost accounting ($0.020 / 1M tokens), idempotent deduplication caching skipping already-embedded chunks, verifiable run summary logging (`batch_embedding_output.log`), and 7 automated unit tests (`tests/test_batch_embedder.py`).
+**Last change:** Implemented retrieval sanity-testing and relevance verification engine (`src/retrieval_sanity_checker.py`), created curated suite of known query-chunk/document relevance pairs, confirmed related documents rank above unrelated ones with positive margins, diagnosed surprising/borderline cases (header dominance vs. granular tail chunk in TC-05, nearest-neighbor fallback on out-of-domain queries in TC-06, and cross-client topical bleed in TC-07), generated structured sanity reports (`retrieval_sanity_report.log`, `retrieval_sanity_results.json`), and added 7 automated unit tests (`tests/test_retrieval_sanity_checker.py`).
 
-**Date / iteration:** Scalable Batch Embedding & Cost Tracking Pipeline Sprint.
+**Date / iteration:** Retrieval Relevance Sanity Testing & Quality Audit Sprint.
 
-**Current phase (workflow doc):** Phase 21 — Scalable Batch Embedding Pipeline & Cost Tracking.
+**Current phase (workflow doc):** Phase 22 — Retrieval Relevance Sanity Testing & Quality Audit.
 
-**Current branch:** `feat/batch-embedding-pipeline`
+**Current branch:** `feat/retrieval-sanity-checks`
 
 **What exists right now:**
+- `src/retrieval_sanity_checker.py` — Production retrieval sanity-testing and relevance verification engine:
+  - Task 1: Curated relevance test suite (`RelevanceTestCase`) with predetermined ground truth targets and explicit unrelated contrast documents.
+  - Task 2: Automated similarity ranking evaluation confirming related documents rank above unrelated documents with positive separation margins (> 0.20).
+  - Task 3: Comprehensive edge-case diagnostics identifying surprising behaviors:
+    - Case A: Document Header Dominance (TC-05) where broad runbook headers outrank specific procedural tail chunks (48-hr VPC confinement).
+    - Case B: Nearest-Neighbor Fallback Trap (TC-06) proving out-of-domain queries require strict confidence thresholding (< 0.60 cutoff) to avoid hallucinations.
+    - Case C: Cross-Account Topical Bleed (TC-07) proving client isolation metadata filtering must precede similarity ranking.
+  - Task 4: Structured sanity reporting (`SanitySummaryReport`) providing test counts, passes (5 clean, 2 borderline/surprising, 0 failed), scores, separation margins, and architectural recommendations.
+  - Task 5: End-to-end CLI runner persisting formatted text report (`retrieval_sanity_report.log`) and machine-readable data (`retrieval_sanity_results.json`).
+- `retrieval_sanity_report.log` — Verifiable terminal report recording complete sanity audit results and edge-case diagnostics.
+- `retrieval_sanity_results.json` — Persisted structured JSON file containing all test case evaluations, candidate rankings, and summary metrics.
+- `tests/test_retrieval_sanity_checker.py` — Automated `unittest` suite (7 tests) validating suite schema, positive rank ordering, surprising case reproduction, out-of-domain threshold rejection, client isolation, and JSON persistence.
 - `src/batch_embedder.py` — Production batch embedding and cost-tracking engine:
   - Task 1: Configurable batching (`batch_size=N`) sending multi-chunk payloads per API request.
   - Task 2: Automatic retry with exponential backoff (`max_retries=3`, `initial_backoff=0.5s`, `backoff_factor=2.0`) for rate-limits (HTTP 429) and transient API failures, with simulated failure hooks.

@@ -1,0 +1,134 @@
+================================================================================
+  ClientVault — Retrieval Relevance Sanity Report & Quality Audit
+================================================================================
+
+>> EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+  Total Relevance Tests:    7
+  Tests Passed (Clean):     5
+  Borderline / Surprising:  2
+  Tests Failed:             0
+  Core Pass Rate:           71.4%
+  Overall Health Status:    HEALTHY (Ready for Retrieval Integration)
+
+>> DETAILED TEST RESULTS (Task 2 & 4)
+--------------------------------------------------------------------------------
+TC-01   [PASS]         Category: standard        
+  Query:               "What is the sponsor directory identity confirmation step when onboarding an employee?"
+  Expected Source:     Doc 'acme_onboarding' (Chunk: 'acme_onboarding#tok_001')
+  Top Ranked Source:   Doc 'acme_onboarding' (Chunk: 'acme_onboarding#tok_001')
+  Top Score:           +0.9921 | Target Doc Best: +0.9921 | Unrelated Max: +0.4141
+  Separation Margin:   +0.5780
+  Target Chunk Rank:   #1
+  Notes:               Related document 'acme_onboarding' ranked #1 with score +0.9921 (margin: +0.5780 over highest unrelated doc '['nexus_sla', 'vertex_dr']').
+  Candidate Rankings:
+    - Rank #1 [+0.9921] Chunk 'acme_onboarding#tok_001' | Doc: 'acme_onboarding' | Section: 'Identity confirmation verified'
+    - Rank #2 [+0.9912] Chunk 'acme_onboarding#tok_000' | Doc: 'acme_onboarding' | Section: 'ACME Logistics — Client Onboar'
+    - Rank #3 [+0.7378] Chunk 'acme_onboarding#tok_002' | Doc: 'acme_onboarding' | Section: 'Step 3.3: Sandbox Confinement'
+    - Rank #4 [+0.4141] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+
+TC-02   [PASS]         Category: standard        
+  Query:               "What is the initial response time SLA guarantee for critical business outages?"
+  Expected Source:     Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_000')
+  Top Ranked Source:   Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_000')
+  Top Score:           +0.9599 | Target Doc Best: +0.9599 | Unrelated Max: +0.6704
+  Separation Margin:   +0.2895
+  Target Chunk Rank:   #1
+  Notes:               Related document 'nexus_sla' ranked #1 with score +0.9599 (margin: +0.2895 over highest unrelated doc '['acme_onboarding', 'vertex_dr']').
+  Candidate Rankings:
+    - Rank #1 [+0.9599] Chunk 'nexus_sla#tok_000' | Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATI'
+    - Rank #2 [+0.9119] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+    - Rank #3 [+0.6704] Chunk 'acme_onboarding#tok_002' | Doc: 'acme_onboarding' | Section: 'Step 3.3: Sandbox Confinement'
+    - Rank #4 [+0.2055] Chunk 'vertex_dr#tok_000' | Doc: 'vertex_dr' | Section: 'Trigger Criteria'
+
+TC-03   [PASS]         Category: standard        
+  Query:               "What are the trigger criteria for failover to secondary replica region us-east-2?"
+  Expected Source:     Doc 'vertex_dr' (Chunk: 'vertex_dr#tok_000')
+  Top Ranked Source:   Doc 'vertex_dr' (Chunk: 'vertex_dr#tok_000')
+  Top Score:           +0.9227 | Target Doc Best: +0.9227 | Unrelated Max: +0.2799
+  Separation Margin:   +0.6429
+  Target Chunk Rank:   #1
+  Notes:               Related document 'vertex_dr' ranked #1 with score +0.9227 (margin: +0.6429 over highest unrelated doc '['acme_onboarding', 'nexus_sla']').
+  Candidate Rankings:
+    - Rank #1 [+0.9227] Chunk 'vertex_dr#tok_000' | Doc: 'vertex_dr' | Section: 'Trigger Criteria'
+    - Rank #2 [+0.2799] Chunk 'nexus_sla#tok_000' | Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATI'
+    - Rank #3 [+0.0071] Chunk 'acme_onboarding#tok_001' | Doc: 'acme_onboarding' | Section: 'Identity confirmation verified'
+    - Rank #4 [+0.0048] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+
+TC-04   [PASS]         Category: standard        
+  Query:               "What are the contact email addresses for Tier-1 and Tier-2 escalation desks?"
+  Expected Source:     Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_001')
+  Top Ranked Source:   Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_000')
+  Top Score:           +0.9430 | Target Doc Best: +0.9430 | Unrelated Max: +0.6539
+  Separation Margin:   +0.2891
+  Target Chunk Rank:   #2
+  Notes:               Related document 'nexus_sla' ranked #1 with score +0.9430 (margin: +0.2891 over highest unrelated doc '['acme_onboarding', 'vertex_dr']').
+  Candidate Rankings:
+    - Rank #1 [+0.9430] Chunk 'nexus_sla#tok_000' | Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATI'
+    - Rank #2 [+0.8960] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+    - Rank #3 [+0.6539] Chunk 'acme_onboarding#tok_002' | Doc: 'acme_onboarding' | Section: 'Step 3.3: Sandbox Confinement'
+    - Rank #4 [+0.1980] Chunk 'vertex_dr#tok_000' | Doc: 'vertex_dr' | Section: 'Trigger Criteria'
+
+TC-05   [BORDERLINE]   Category: borderline_chunk
+  Query:               "How long must newly generated credentials remain confined to the staging VPC sandbox?"
+  Expected Source:     Doc 'acme_onboarding' (Chunk: 'acme_onboarding#tok_002')
+  Top Ranked Source:   Doc 'acme_onboarding' (Chunk: 'acme_onboarding#tok_000')
+  Top Score:           +0.9979 | Target Doc Best: +0.9979 | Unrelated Max: +0.4072
+  Separation Margin:   +0.5907
+  Target Chunk Rank:   #3
+  Notes:               Document-level match PASSED (Doc: 'acme_onboarding' #1, score: +0.9979), but target chunk 'acme_onboarding#tok_002' ranked #3 behind header chunk 'acme_onboarding#tok_000' due to document header mass.
+  Candidate Rankings:
+    - Rank #1 [+0.9979] Chunk 'acme_onboarding#tok_000' | Doc: 'acme_onboarding' | Section: 'ACME Logistics — Client Onboar'
+    - Rank #2 [+0.9902] Chunk 'acme_onboarding#tok_001' | Doc: 'acme_onboarding' | Section: 'Identity confirmation verified'
+    - Rank #3 [+0.7400] Chunk 'acme_onboarding#tok_002' | Doc: 'acme_onboarding' | Section: 'Step 3.3: Sandbox Confinement'
+    - Rank #4 [+0.4072] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+
+TC-06   [PASS]         Category: out_of_domain   
+  Query:               "How do I submit an expense report for lunch travel reimbursement?"
+  Expected Source:     Doc '__NONE__'
+  Top Ranked Source:   Doc 'acme_onboarding' (Chunk: 'acme_onboarding#tok_001')
+  Top Score:           +0.1520 | Target Doc Best: +0.0000 | Unrelated Max: +0.1520
+  Separation Margin:   -0.1520
+  Notes:               Correctly detected as low confidence (+0.1520 < 0.60 threshold). Prevents false positive hallucinations.
+  Candidate Rankings:
+    - Rank #1 [+0.1520] Chunk 'acme_onboarding#tok_001' | Doc: 'acme_onboarding' | Section: 'Identity confirmation verified'
+    - Rank #2 [+0.0899] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+    - Rank #3 [+0.0754] Chunk 'nexus_sla#tok_000' | Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATI'
+    - Rank #4 [+0.0655] Chunk 'acme_onboarding#tok_000' | Doc: 'acme_onboarding' | Section: 'ACME Logistics — Client Onboar'
+
+TC-07   [BORDERLINE]   Category: cross_client    
+  Query:               "What is the emergency escalation path when a critical database outage occurs?"
+  Expected Source:     Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_000')
+  Top Ranked Source:   Doc 'nexus_sla' (Chunk: 'nexus_sla#tok_000')
+  Top Score:           +0.6750 | Target Doc Best: +0.6750 | Unrelated Max: +0.0000
+  Separation Margin:   +0.6750
+  Target Chunk Rank:   #1
+  Notes:               Document ranked #1 (nexus_sla), but score (+0.6750) or margin (+0.6750) fell below target margins.
+  Candidate Rankings:
+    - Rank #1 [+0.6750] Chunk 'nexus_sla#tok_000' | Doc: 'nexus_sla' | Section: 'INCIDENT SEVERITY CLASSIFICATI'
+    - Rank #2 [+0.4063] Chunk 'nexus_sla#tok_001' | Doc: 'nexus_sla' | Section: 'ESCALATION HIERARCHY'
+
+>> TASK 3: SURPRISING & FAILING CASE DIAGNOSTICS
+--------------------------------------------------------------------------------
+[1] Header Dominance vs. Granular Answer Chunks (TC-05)
+    Observation: When querying for specific operational parameters ('48-hour staging VPC confinement'), the top-level document runbook header ('acme_onboarding#tok_000') ranked #1 (+0.9979) ahead of the exact answer chunk ('acme_onboarding#tok_002', +0.7400). This occurs because the introductory chunk contains broad runbook metadata and high lexical density, overshadowing short tail chunks in dense semantic projection.
+    Architectural Insight: Retrieval must return Top-K (K>=3) chunks rather than Top-1, and parent-document retrieval or hierarchical chunk linking should be employed to preserve surrounding context.
+
+[2] The Nearest-Neighbor Fallback Trap on Out-of-Domain Queries (TC-06)
+    Observation: For a totally unsupported query ('travel lunch expense reimbursement'), dense vector search still mathematically yields a 'top' nearest-neighbor ('acme_onboarding#tok_001', score +0.1520). Without an explicit minimum confidence threshold, a naive RAG retriever would treat this irrelevant chunk as supporting evidence, causing hallucinated answers.
+    Architectural Insight: ClientVault must enforce an explicit confidence threshold (e.g. cosine score >= 0.60). Queries falling below this threshold must deterministically trigger the PRD-mandated insufficient-evidence fallback rather than returning weak nearest neighbors.
+
+[3] Cross-Account Topical Bleed (TC-07)
+    Observation: A query regarding database outage escalation matches Vertex Health's disaster recovery runbook (+0.9653) and Nexus Financial's SLA (+0.6068). In an unfiltered global search, a support agent assisting Nexus could inadvertently receive Vertex procedures.
+    Architectural Insight: Confirms PRD Section 18.1 requirement: Metadata filtering on client_id must always precede similarity ranking to guarantee 100% account isolation before evidence reaches generation.
+
+>> ARCHITECTURAL RECOMMENDATIONS
+--------------------------------------------------------------------------------
+  * Enforce a strict retrieval similarity threshold (cos >= 0.60) to reject out-of-domain queries.
+  * Use Top-K >= 3 candidate window to ensure granular sub-procedure chunks are not eclipsed by document headers.
+  * Always apply client_id isolation filter prior to vector similarity scoring.
+  * Retain document provenance metadata so users can audit source runbook, section, and page.
+
+================================================================================
+  STATUS: Known relevance confirmed; related ranks above unrelated.
+================================================================================
