@@ -226,15 +226,24 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Implemented Top-K vector retrieval engine (`src/vector_retriever.py`), generated query embeddings using identical model (`text-embedding-3-small`, 1536 dims), executed Top-K nearest-neighbor similarity searches against ChromaDB with similarity scores and provenance metadata, demonstrated result set variance across changing values of $K$ ($K=2$, $K=4$, $K=6$) with score decay and contextual breadth analysis, saved benchmark audit to `sample_retrieval_output.log` and `sample_retrieval_results.json`, and added 7 automated unit tests (`tests/test_vector_retriever.py`).
+**Last change:** Implemented metadata-scoped filtered retrieval and hybrid lexical-semantic search engine (`src/filtered_retriever.py`), added strongly-typed `MetadataFilter` converting to ChromaDB where clauses (`client_id`, `document_id`, `section`, `page`), implemented BM25/lexical term overlap and technical identifier matching (e.g. ticket queue `SEC-ONB`, SOP IDs), demonstrated side-by-side comparison of unfiltered vs. filtered vs. hybrid retrieval proving +33.3% precision gain and 100% account isolation compliance, persisted audit logs (`sample_filtered_search_output.log`) and structured JSON (`sample_filtered_search_results.json`), and added 8 automated unit tests (`tests/test_filtered_retriever.py`).
 
-**Date / iteration:** Vector Database Top-K Semantic Retrieval & K Variance Sprint.
+**Date / iteration:** Scoped Filtered Retrieval & Hybrid Search Sprint.
 
-**Current phase (workflow doc):** Phase 25 — Vector Database Top-K Semantic Retrieval.
+**Current phase (workflow doc):** Phase 26 — Scoped Filtered Retrieval and Hybrid Lexical Search.
 
-**Current branch:** `feat/topk-vector-retrieval`
+**Current branch:** `feat/filtered-retrieval-and-hybrid-search`
 
 **What exists right now:**
+- `src/filtered_retriever.py` — Production metadata-scoped and hybrid retrieval engine:
+  - Task 1: `MetadataFilter` dataclass converting to ChromaDB `$and` where-clauses for account isolation (`client_id`), document scoping (`document_id`), section scoping (`section`), and page boundaries.
+  - Task 2: Comparative evaluation engine (`compare_filtered_and_unfiltered()`) proving filtered retrieval eliminates cross-client contamination and noise chunks.
+  - Task 3: Lexical keyword and high-precision identifier extractor (`extract_exact_identifiers`, `compute_keyword_similarity`) combining dense vector similarity with exact term matching (`SEC-ONB`, `SOP-DB-FAIL-04`) via convex hybrid scoring ($S_{hybrid} = \alpha S_{vector} + (1-\alpha) S_{keyword}$).
+  - Task 4: Precision demonstration harness (`run_precision_demonstrations()`) across 3 enterprise scenarios (Account Isolation, Queue/Code Routing, Section Scoping) showing 66.67% -> 100.0% precision gain.
+  - Task 5: End-to-end CLI runner generating formatted terminal audit report (`sample_filtered_search_output.log`) and structured JSON data (`sample_filtered_search_results.json`).
+- `sample_filtered_search_output.log` — Verifiable terminal report recording comparative analysis, noise removal, and precision metrics.
+- `sample_filtered_search_results.json` — Persisted structured JSON data containing unfiltered vs filtered vs hybrid chunks and precision gains.
+- `tests/test_filtered_retriever.py` — Automated `unittest` suite (8 tests) validating filter conversion, metadata matching, keyword tokenization, identifier boosting, 100% account isolation, scoring modes, precision gain, and end-to-end persistence.
 - `src/vector_retriever.py` — Production Top-K vector retrieval & semantic search engine:
   - Task 1: Query embedding generation matching corpus model (`text-embedding-3-small`, 1536 dims).
   - Task 2: Top-K nearest-neighbor vector similarity search with optional client isolation filtering (`where={"client_id": ...}`).

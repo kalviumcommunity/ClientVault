@@ -371,6 +371,19 @@ python -m unittest tests/test_vector_retriever.py
 ```
 Full query comparison logs, score spreads, and structured JSON results are preserved in [`sample_retrieval_output.log`](file:///Users/fibafathima/ClientVault/sample_retrieval_output.log) and [`sample_retrieval_results.json`](file:///Users/fibafathima/ClientVault/sample_retrieval_results.json).
 
+### 24. Run Scoped Filtered Retrieval and Hybrid Lexical Search
+
+Scope retrieval using metadata filters (`client_id`, `document_id`, `section`, `page`), combine dense vector semantic search with exact keyword and identifier matching (ticket queue codes like `SEC-ONB`, SOP codes like `SOP-DB-FAIL-04`), compare filtered vs unfiltered results, and quantify precision gains:
+
+```bash
+# Run end-to-end filtered retrieval and hybrid search demonstration:
+python src/filtered_retriever.py --mock
+
+# Run automated unit tests:
+python -m unittest tests/test_filtered_retriever.py
+```
+Full comparative analysis, precision metrics, and JSON output are preserved in [`sample_filtered_search_output.log`](file:///Users/fibafathima/ClientVault/sample_filtered_search_output.log) and [`sample_filtered_search_results.json`](file:///Users/fibafathima/ClientVault/sample_filtered_search_results.json).
+
 
 
 ### 1. Workspace Health Check
