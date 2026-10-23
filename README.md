@@ -291,6 +291,22 @@ python -m unittest tests/test_similarity_ranker.py
 ```
 Full query comparison logs, candidate scores, and mathematical justifications are preserved in [`similarity_ranking_output.log`](file:///Users/fibafathima/ClientVault/similarity_ranking_output.log), [`sample_ranking_results.json`](file:///Users/fibafathima/ClientVault/sample_ranking_results.json), and [`docs/METRIC_JUSTIFICATION.md`](file:///Users/fibafathima/ClientVault/docs/METRIC_JUSTIFICATION.md).
 
+### 19. Run Scalable Batch Embedding Pipeline & Cost Tracking
+
+Embed large chunk corpora efficiently with configurable batch sizes, automatic retries with exponential backoff for transient API/rate-limit errors, granular token cost calculation ($0.020 / 1M tokens), and idempotent deduplication caching to skip already-embedded chunks:
+
+```bash
+# Run batch embedding pipeline with simulated transient retry and idempotent re-run:
+python src/batch_embedder.py --mock --batch-size 2
+
+# Specify custom store and run summary log:
+python src/batch_embedder.py --mock --batch-size 4 --output-store outputs/batch_embedded_corpus.json --output-log batch_embedding_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_batch_embedder.py
+```
+A complete execution trace demonstrating batch partitioning, transient retry recovery, cost accounting, and duplicate skipping on re-run is preserved in [`batch_embedding_output.log`](file:///Users/fibafathima/ClientVault/batch_embedding_output.log).
+
 
 
 ### 1. Workspace Health Check
