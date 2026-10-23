@@ -1,0 +1,62 @@
+================================================================================
+  ClientVault — Corpus Vector Database Indexing & Audit Report
+================================================================================
+
+>> TASK 1 & 2: INDEXING SETUP & CONFIGURATION
+--------------------------------------------------------------------------------
+  Target Collection:      clientvault_knowledge_base
+  Database Storage:       :memory:
+  Indexed Record Count:   6 records
+  Execution Time:         0.0047 seconds
+  Schema Fields Stored:   [vector(1536), document_text, source_document, document_id,
+                           chunk_index, section, page, client_id, token_count, created_at]
+
+>> TASK 3: COUNT VALIDATION & CORPUS ALIGNMENT AUDIT
+--------------------------------------------------------------------------------
+  Chunks Prepared Earlier: 6
+  Records Upserted in DB:  6
+  Stored Count in Chroma:  6
+  Indexing Failures:       0
+  Count Validation:        PASSED — Database count matches prepared corpus chunks exactly.
+
+>> TASK 4: STORED RECORD INTEGRITY SPOT-CHECKS
+--------------------------------------------------------------------------------
+  Total Spot-Checks Run:   3
+  Spot-Checks Passed:      3/3
+
+[1] [PASS] Record: 'acme_onboarding#tok_000'
+    Source Document:  'data/sample_corpus/acme_onboarding.md' (Doc ID: 'acme_onboarding')
+    Client ID:        'ACME-001' | Chunk Index: #0
+    Section:          'ACME Logistics — Client Onboarding & ...' | Page: 1
+    Vector Dimension: 1536 dims (Match: YES)
+    Document Text:    836 chars (Match: YES)
+    Metadata Fields:  ALL MATCHED
+    Sample Vector:    Head: [0.0253, 0.0287, 0.0324, 0.0362, 0.04] ... Tail: [0.0021, 0.0019, 0.0018]
+    Snippet:          "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+    Integrity Audit:  All fields match original source chunk exactly.
+
+[2] [PASS] Record: 'nexus_sla#tok_000'
+    Source Document:  'data/sample_corpus/nexus_sla.txt' (Doc ID: 'nexus_sla')
+    Client ID:        'NEXUS-002' | Chunk Index: #0
+    Section:          'INCIDENT SEVERITY CLASSIFICATIONS' | Page: 1
+    Vector Dimension: 1536 dims (Match: YES)
+    Document Text:    820 chars (Match: YES)
+    Metadata Fields:  ALL MATCHED
+    Sample Vector:    Head: [0.0015, 0.0017, 0.0018, 0.0019, 0.002] ... Tail: [0.0028, 0.0028, 0.0027]
+    Snippet:          "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+    Integrity Audit:  All fields match original source chunk exactly.
+
+[3] [PASS] Record: 'vertex_dr#tok_000'
+    Source Document:  'data/sample_corpus/vertex_dr.html' (Doc ID: 'vertex_dr')
+    Client ID:        'VERTEX-003' | Chunk Index: #0
+    Section:          'Trigger Criteria' | Page: 1
+    Vector Dimension: 1536 dims (Match: YES)
+    Document Text:    785 chars (Match: YES)
+    Metadata Fields:  ALL MATCHED
+    Sample Vector:    Head: [0.0084, 0.0095, 0.0106, 0.0119, 0.0131] ... Tail: [0.0005, 0.0005, 0.0004]
+    Snippet:          "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+    Integrity Audit:  All fields match original source chunk exactly.
+
+================================================================================
+  STATUS: PASSED — All corpus embeddings indexed, count aligned, integrity confirmed.
+================================================================================

@@ -308,6 +308,32 @@ class VectorDatabaseManager:
         logger.debug("Successfully upserted record '%s'", record.record_id)
         return record.record_id
 
+    def insert_records(self, records: List[VectorRecord], batch_size: int = 100) -> int:
+        """
+        Task 1 & 2: Validates and batch-upserts multiple VectorRecords into the collection.
+        """
+        if not records:
+            return 0
+
+        # Validate all records upfront
+        for rec in records:
+            rec.validate(expected_dim=self.config.embedding_dimension)
+
+        total_upserted = 0
+        for i in range(0, len(records), batch_size):
+            batch = records[i:i + batch_size]
+            self.collection.upsert(
+                ids=[r.record_id for r in batch],
+                embeddings=[r.vector for r in batch],
+                documents=[r.document_text for r in batch],
+                metadatas=[r.metadata.to_chroma_dict() for r in batch],
+            )
+            total_upserted += len(batch)
+            logger.debug("Batch upserted %d/%d records", total_upserted, len(records))
+
+        logger.info("Successfully indexed %d records into collection '%s'", total_upserted, self.config.collection_name)
+        return total_upserted
+
     def read_record(self, record_id: str) -> Optional[VectorRecord]:
         """
         Task 4: Reads back a record by ID and reconstructs the strongly-typed VectorRecord.
