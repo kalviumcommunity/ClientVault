@@ -465,19 +465,18 @@ class TokenAwareChunker(BaseChunker):
         else:
             self.tokenizer = None
 
-    def encode(self, text: str) -> List[int]:
-        """Encode text into token IDs using tiktoken or fallback pseudo-tokens."""
+    def encode(self, text: str) -> List[Any]:
+        """Encode text into token IDs using tiktoken or fallback tokens."""
         if self.tokenizer is not None:
             return self.tokenizer.encode(text)
-        # Resilient pseudo-token fallback (approx 4 chars per token)
-        words = text.split()
-        return [hash(w) % 100000 for w in words]
+        # Resilient word-level fallback that decodes back to exact text
+        return re.findall(r"\S+\s*", text)
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: List[Any]) -> str:
         """Decode token IDs back to a text string."""
         if self.tokenizer is not None:
             return self.tokenizer.decode(token_ids)
-        return " ".join(str(t) for t in token_ids)
+        return "".join(str(t) for t in token_ids)
 
     def split_text(
         self,
