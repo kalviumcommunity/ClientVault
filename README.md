@@ -243,6 +243,18 @@ python -m unittest discover tests
 ```
 Comparative chunk count, average sizes, metadata schema serialization, boundary context preservation proofs, model budget justification (GPT-4o-mini), and exact source traceability proofs are captured in [`token_chunking_output.log`](file:///Users/fibafathima/ClientVault/token_chunking_output.log) and [`chunking_comparison_output.log`](file:///Users/fibafathima/ClientVault/chunking_comparison_output.log).
 
+### 16. Run Full Corpus Ingestion & Completeness Audit Pipeline
+
+Run the end-to-end ingestion pipeline across the entire synthetic multi-client corpus (loading, boilerplate cleaning, token-aware chunking, granular metadata tagging, and completeness reconciliation audit) ensuring 100% of documents are accounted for with zero silent drops:
+
+```bash
+# Execute end-to-end ingestion pipeline over entire corpus:
+python src/ingestion_pipeline.py --corpus-dir data/corpus --output-file ingestion_summary.log
+
+# Run automated unit tests for the ingestion pipeline:
+python -m unittest tests/test_ingestion_pipeline.py
+```
+Full ingestion statistics, account breakdowns, skipped file records, and sample chunk inspections are preserved in [`ingestion_summary.log`](file:///Users/fibafathima/ClientVault/ingestion_summary.log).
 ### 16. Run Text Embedding Generation & Semantic Similarity Demonstration
 
 Generate dense text embeddings (`text-embedding-3-small`, 1536 dimensions), verify strict dimensional uniformity across sample texts, compute cosine similarity between similar and dissimilar pairs, and demonstrate semantic retrieval mechanics:

@@ -97,6 +97,8 @@ data/*
 !data/.gitkeep
 !data/sample_corpus/
 !data/sample_corpus/**
+!data/corpus/
+!data/corpus/**
 !data/sample_corpus/*.pdf
 
 # Generated outputs & local vector persistence
@@ -107,7 +109,7 @@ qdrant/
 *.db
 *.sqlite
 *.sqlite3
-corpus/
+/corpus/
 chunks/
 embeddings/
 /uploads/

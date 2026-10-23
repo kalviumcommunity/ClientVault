@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nexus Financial — Payment Gateway Runbook</title>
+</head>
+<body>
+  <header>
+    <h1>Nexus Payment Gateway Operations & Circuit Breaker Runbook</h1>
+    <p><strong>Document ID:</strong> SOP-PAY-003 | <strong>Client Identifier:</strong> NEXUS-002</p>
+    <p>Page 1 of 2 — CONFIDENTIAL — NEXUS FINANCIAL TECHNOLOGIES</p>
+  </header>
+  <main>
+    <section id="circuit-breaker">
+      <h2>1. Circuit Breaker Trigger Thresholds</h2>
+      <p>The gateway circuit breaker automatically trips to OPEN state when downstream processor failure rates exceed 4.5% over a rolling 60-second window or when settlement latency exceeds 1200ms.</p>
+    </section>
+    <section id="failover-procedure">
+      <h2>2. Gateway Failover Sequence</h2>
+      <ol>
+        <li>Verify secondary clearing network route health via <code>nexus-cli gateway ping --target processor-beta</code>.</li>
+        <li>Execute traffic switch: <code>nexus-cli route switch --from processor-alpha --to processor-beta --drain-timeout 30s</code>.</li>
+        <li>Inspect ledger reconciliation logs to confirm zero dropped transaction payloads during in-flight drain.</li>
+        <li>Alert Nexus Treasury desk that settlement batches will clear under secondary acquirer profile.</li>
+      </ol>
+    </section>
+  </main>
+  <footer>
+    <p>Compliance Notice: SOC2 and PCI-DSS dual cryptographic authorization required for manual rerouting.</p>
+    <p>Page 2 of 2 — End of Document — CONFIDENTIAL</p>
+  </footer>
+</body>
+</html>
