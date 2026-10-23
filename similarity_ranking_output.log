@@ -1,0 +1,126 @@
+================================================================================
+  ClientVault — Semantic Similarity Ranking & Vector Retrieval Benchmark
+================================================================================
+
+>> TASK 4: RETRIEVAL METRIC JUSTIFICATION
+--------------------------------------------------------------------------------
+Architectural Justification: Why Cosine Similarity for Vector Retrieval
+-------------------------------------------------------------------------------
+1. Directional Alignment vs. Vector Magnitude Invariance:
+   In language models, text length and token frequency can alter raw vector
+   magnitude even when semantic meaning remains constant. Cosine similarity
+   evaluates the cosine of the angle (theta) between vectors, completely
+   normalizing out magnitude variations:
+       cos(theta) = (A . B) / (||A||_2 * ||B||_2)
+   This ensures a concise query like "reset password" matches a longer, descriptive
+   runbook passage with equal semantic precision.
+
+2. Equivalence on Normalized Hyperspheres:
+   Modern embedding models (e.g. OpenAI text-embedding-3-small) output L2-normalized
+   vectors (||v||_2 = 1.0) on the unit hypersphere. On unit-length vectors,
+   Cosine Similarity simplifies directly to the dot product (A . B) and relates
+   monotonically to Euclidean distance:
+       ||A - B||_2^2 = ||A||^2 + ||B||^2 - 2(A . B) = 2 - 2 * cos(theta)
+   Minimizing Euclidean distance is mathematically equivalent to maximizing Cosine
+   Similarity, but Cosine Similarity provides a standardized [-1.0, +1.0] scale.
+
+3. Interpretability & Thresholding:
+   Cosine similarity provides an intuitive, bounded scale for retrieval confidence:
+   - +0.80 to +1.00: High semantic equivalence / direct procedural match.
+   - +0.40 to +0.79: Moderate contextual relevance / shared topical domain.
+   -  0.00 to +0.39: Orthogonal / unrelated concepts.
+   -  Negative: Opposing or incompatible semantic orientation.
+-------------------------------------------------------------------------------
+
+>> TASK 2 & 3: QUERY COMPARISON, RANKING, AND EXTREMA ANALYSIS
+--------------------------------------------------------------------------------
+Query [Q1]: "How do I reset an employee's forgotten account password?"
+Target Intent: Credential provisioning & account onboarding procedure (ACME)
+
+  Total Candidates Evaluated: 6 chunks
+  Similarity Score Range:     0.0022 to 0.9935 (Spread: +0.9914)
+
+  >> MOST SIMILAR CHUNKS (Top Matches):
+    Rank #1 [Score: 0.9935] Chunk: 'acme_onboarding#tok_000'
+      Doc:     'acme_onboarding' | Client: 'ACME-001'
+      Section: 'ACME Logistics — Client Onboarding & ...' | Page: 1
+      Snippet: "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3...."
+
+    Rank #2 [Score: 0.9888] Chunk: 'acme_onboarding#tok_001'
+      Doc:     'acme_onboarding' | Client: 'ACME-001'
+      Section: 'Identity confirmation verified via pr...' | Page: 1
+      Snippet: " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) ..."
+
+  >> LEAST SIMILAR CHUNKS (Bottom Matches / Orthogonal):
+    Rank #5 [Score: 0.3216] Chunk: 'vertex_dr#tok_000'
+      Doc:     'vertex_dr' | Client: 'VERTEX-003'
+      Section: 'Trigger Criteria' | Page: 1
+      Snippet: "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover P..."
+
+    Rank #6 [Score: 0.0022] Chunk: 'nexus_sla#tok_000'
+      Doc:     'nexus_sla' | Client: 'NEXUS-002'
+      Section: 'INCIDENT SEVERITY CLASSIFICATIONS' | Page: 1
+      Snippet: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ES..."
+
+--------------------------------------------------------------------------------
+Query [Q2]: "What is the guaranteed response time for critical database outages?"
+Target Intent: SLA response time & escalation matrix (NEXUS)
+
+  Total Candidates Evaluated: 6 chunks
+  Similarity Score Range:     -0.0003 to 0.8387 (Spread: +0.8390)
+
+  >> MOST SIMILAR CHUNKS (Top Matches):
+    Rank #1 [Score: 0.8387] Chunk: 'nexus_sla#tok_000'
+      Doc:     'nexus_sla' | Client: 'NEXUS-002'
+      Section: 'INCIDENT SEVERITY CLASSIFICATIONS' | Page: 1
+      Snippet: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ES..."
+
+    Rank #2 [Score: 0.8310] Chunk: 'vertex_dr#tok_000'
+      Doc:     'vertex_dr' | Client: 'VERTEX-003'
+      Section: 'Trigger Criteria' | Page: 1
+      Snippet: "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover P..."
+
+  >> LEAST SIMILAR CHUNKS (Bottom Matches / Orthogonal):
+    Rank #5 [Score: 0.0059] Chunk: 'acme_onboarding#tok_001'
+      Doc:     'acme_onboarding' | Client: 'ACME-001'
+      Section: 'Identity confirmation verified via pr...' | Page: 1
+      Snippet: " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) ..."
+
+    Rank #6 [Score: -0.0003] Chunk: 'acme_onboarding#tok_000'
+      Doc:     'acme_onboarding' | Client: 'ACME-001'
+      Section: 'ACME Logistics — Client Onboarding & ...' | Page: 1
+      Snippet: "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3...."
+
+--------------------------------------------------------------------------------
+Query [Q3]: "What are the disaster recovery failover steps when primary site goes down?"
+Target Intent: Disaster recovery & standby replica activation (VERTEX)
+
+  Total Candidates Evaluated: 6 chunks
+  Similarity Score Range:     0.1985 to 0.9633 (Spread: +0.7648)
+
+  >> MOST SIMILAR CHUNKS (Top Matches):
+    Rank #1 [Score: 0.9633] Chunk: 'vertex_dr#tok_000'
+      Doc:     'vertex_dr' | Client: 'VERTEX-003'
+      Section: 'Trigger Criteria' | Page: 1
+      Snippet: "Vertex Health — Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover P..."
+
+    Rank #2 [Score: 0.4770] Chunk: 'acme_onboarding#tok_000'
+      Doc:     'acme_onboarding' | Client: 'ACME-001'
+      Section: 'ACME Logistics — Client Onboarding & ...' | Page: 1
+      Snippet: "# ACME Logistics — Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3...."
+
+  >> LEAST SIMILAR CHUNKS (Bottom Matches / Orthogonal):
+    Rank #5 [Score: 0.2436] Chunk: 'nexus_sla#tok_000'
+      Doc:     'nexus_sla' | Client: 'NEXUS-002'
+      Section: 'INCIDENT SEVERITY CLASSIFICATIONS' | Page: 1
+      Snippet: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ES..."
+
+    Rank #6 [Score: 0.1985] Chunk: 'nexus_sla#tok_001'
+      Doc:     'nexus_sla' | Client: 'NEXUS-002'
+      Section: 'ESCALATION HIERARCHY' | Page: 1
+      Snippet: " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Pa..."
+
+--------------------------------------------------------------------------------
+================================================================================
+  STATUS: Similarity metric computed, candidates ranked, and extrema verified.
+================================================================================

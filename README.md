@@ -243,6 +243,147 @@ python -m unittest discover tests
 ```
 Comparative chunk count, average sizes, metadata schema serialization, boundary context preservation proofs, model budget justification (GPT-4o-mini), and exact source traceability proofs are captured in [`token_chunking_output.log`](file:///Users/fibafathima/ClientVault/token_chunking_output.log) and [`chunking_comparison_output.log`](file:///Users/fibafathima/ClientVault/chunking_comparison_output.log).
 
+### 16. Run Text Embedding Generation & Semantic Similarity Demonstration
+
+Generate dense text embeddings (`text-embedding-3-small`, 1536 dimensions), verify strict dimensional uniformity across sample texts, compute cosine similarity between similar and dissimilar pairs, and demonstrate semantic retrieval mechanics:
+
+```bash
+# Run embedding similarity demonstration in deterministic / API mode:
+python src/embedding_demo.py --mock
+
+# Save execution benchmark and similarity matrix to log file:
+python src/embedding_demo.py --mock --output-file embedding_similarity_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_embedding_demo.py
+```
+Full similarity matrix and mathematical explanations are recorded in [`embedding_similarity_output.log`](file:///Users/fibafathima/ClientVault/embedding_similarity_output.log) and [`docs/EMBEDDING_REPRESENTATION.md`](file:///Users/fibafathima/ClientVault/docs/EMBEDDING_REPRESENTATION.md).
+
+### 17. Run Corpus Embedding Generation & Vector Storage Pipeline
+
+Convert prepared corpus chunks into dense embedding vectors (`text-embedding-3-small`, 1536 dims), attach full source and client isolation metadata, verify dimensional uniformity, and persist vector records:
+
+```bash
+# Run corpus embedding pipeline in deterministic / API mode:
+python src/corpus_embedder.py --mock
+
+# Specify custom output log and vector records storage paths:
+python src/corpus_embedder.py --mock --output-log corpus_embedding_output.log --output-records corpus_embedding_records.json
+
+# Run automated unit tests:
+python -m unittest tests/test_corpus_embedder.py
+```
+Ingested chunks, vector dimensions, sample values, and client-isolated retrieval verifications are saved in [`corpus_embedding_output.log`](file:///Users/fibafathima/ClientVault/corpus_embedding_output.log) and [`corpus_embedding_records.json`](file:///Users/fibafathima/ClientVault/corpus_embedding_records.json).
+
+### 18. Run Semantic Similarity Ranking & Vector Retrieval
+
+Compare query embeddings against stored corpus chunk embeddings using Cosine Similarity, rank candidates, and display most similar (Top-K) and least similar (Bottom-K) chunks:
+
+```bash
+# Run similarity ranking demonstration across benchmark queries:
+python src/similarity_ranker.py --mock
+
+# Specify custom output log and ranking JSON paths:
+python src/similarity_ranker.py --mock --output-log similarity_ranking_output.log --output-json sample_ranking_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_similarity_ranker.py
+```
+Full query comparison logs, candidate scores, and mathematical justifications are preserved in [`similarity_ranking_output.log`](file:///Users/fibafathima/ClientVault/similarity_ranking_output.log), [`sample_ranking_results.json`](file:///Users/fibafathima/ClientVault/sample_ranking_results.json), and [`docs/METRIC_JUSTIFICATION.md`](file:///Users/fibafathima/ClientVault/docs/METRIC_JUSTIFICATION.md).
+
+### 19. Run Scalable Batch Embedding Pipeline & Cost Tracking
+
+Embed large chunk corpora efficiently with configurable batch sizes, automatic retries with exponential backoff for transient API/rate-limit errors, granular token cost calculation ($0.020 / 1M tokens), and idempotent deduplication caching to skip already-embedded chunks:
+
+```bash
+# Run batch embedding pipeline with simulated transient retry and idempotent re-run:
+python src/batch_embedder.py --mock --batch-size 2
+
+# Specify custom store and run summary log:
+python src/batch_embedder.py --mock --batch-size 4 --output-store outputs/batch_embedded_corpus.json --output-log batch_embedding_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_batch_embedder.py
+```
+A complete execution trace demonstrating batch partitioning, transient retry recovery, cost accounting, and duplicate skipping on re-run is preserved in [`batch_embedding_output.log`](file:///Users/fibafathima/ClientVault/batch_embedding_output.log).
+
+### 20. Run Retrieval Relevance Sanity Testing & Quality Audit
+
+Execute automated sanity tests across predetermined query-chunk pairs to confirm that related documents consistently rank above unrelated ones, diagnose surprising edge cases (such as header dominance and out-of-domain nearest-neighbor traps), and generate structured sanity reports:
+
+```bash
+# Run retrieval sanity check suite:
+python src/retrieval_sanity_checker.py --mock
+
+# Specify custom output report and JSON paths:
+python src/retrieval_sanity_checker.py --mock --output-log retrieval_sanity_report.log --output-json retrieval_sanity_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_retrieval_sanity_checker.py
+```
+Detailed test results, separation margins, and architectural edge case analyses are preserved in [`retrieval_sanity_report.log`](file:///Users/fibafathima/ClientVault/retrieval_sanity_report.log) and [`retrieval_sanity_results.json`](file:///Users/fibafathima/ClientVault/retrieval_sanity_results.json).
+
+### 21. Run Vector Database Collection Setup & Readback Audit
+
+Initialize ChromaDB vector database collection, enforce collection dimension sizing (1536 dimensions, HNSW cosine metric), validate strongly-typed record schema with client isolation metadata, and confirm record insert and readback:
+
+```bash
+# Run vector database collection setup and readback verification:
+python src/vector_db.py --mock --in-memory
+
+# Specify persistent storage directory and custom output log:
+python src/vector_db.py --mock --persist-dir outputs/chroma_db --output-log vector_db_readback_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_vector_db.py
+```
+Verification checklists, vector lengths, and readback record audits are saved in [`vector_db_readback_output.log`](file:///Users/fibafathima/ClientVault/vector_db_readback_output.log).
+
+### 22. Run Corpus Vector Database Indexing & Audit
+
+Index all corpus embeddings into the ChromaDB vector database collection with provenance metadata, validate that stored counts match prepared chunks, and run granular spot-checks verifying ID, vector, text, and metadata fidelity:
+
+```bash
+# Run corpus indexing and integrity audit:
+python src/corpus_indexer.py --mock --in-memory
+
+# Specify persistent storage directory and custom output log:
+python src/corpus_indexer.py --mock --persist-dir outputs/chroma_db --output-log corpus_indexing_output.log
+
+# Run automated unit tests:
+python -m unittest tests/test_corpus_indexer.py
+```
+Count alignment audits, indexing stats, and spot-check readback reports are preserved in [`corpus_indexing_output.log`](file:///Users/fibafathima/ClientVault/corpus_indexing_output.log).
+
+### 23. Run Vector Database Top-K Semantic Retrieval
+
+Embed user queries using `text-embedding-3-small` (1536 dimensions), execute nearest-neighbor similarity searches against the ChromaDB collection, retrieve Top-K chunks with similarity scores and metadata, and demonstrate result set variations across changing $K$ ($K=2$, $K=4$, $K=6$):
+
+```bash
+# Run top-k semantic retrieval and demonstrate varying K:
+python src/vector_retriever.py --mock --in-memory
+
+# Specify custom query, K values, and output files:
+python src/vector_retriever.py --mock --query "How do I verify employee identity via sponsor directory?" --k-values 2 4 6 --output-log sample_retrieval_output.log --output-json sample_retrieval_results.json
+
+# Run automated unit tests:
+python -m unittest tests/test_vector_retriever.py
+```
+Full query comparison logs, score spreads, and structured JSON results are preserved in [`sample_retrieval_output.log`](file:///Users/fibafathima/ClientVault/sample_retrieval_output.log) and [`sample_retrieval_results.json`](file:///Users/fibafathima/ClientVault/sample_retrieval_results.json).
+
+### 24. Run Scoped Filtered Retrieval and Hybrid Lexical Search
+
+Scope retrieval using metadata filters (`client_id`, `document_id`, `section`, `page`), combine dense vector semantic search with exact keyword and identifier matching (ticket queue codes like `SEC-ONB`, SOP codes like `SOP-DB-FAIL-04`), compare filtered vs unfiltered results, and quantify precision gains:
+
+```bash
+# Run end-to-end filtered retrieval and hybrid search demonstration:
+python src/filtered_retriever.py --mock
+
+# Run automated unit tests:
+python -m unittest tests/test_filtered_retriever.py
+```
+Full comparative analysis, precision metrics, and JSON output are preserved in [`sample_filtered_search_output.log`](file:///Users/fibafathima/ClientVault/sample_filtered_search_output.log) and [`sample_filtered_search_results.json`](file:///Users/fibafathima/ClientVault/sample_filtered_search_results.json).
+
 
 
 ### 1. Workspace Health Check

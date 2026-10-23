@@ -1,0 +1,355 @@
+{
+  "metric": "Cosine Similarity",
+  "metric_justification": {
+    "chosen_metric": "Cosine Similarity",
+    "formula": "cos(theta) = (A . B) / (||A||_2 * ||B||_2)",
+    "reasons": [
+      "Length and magnitude invariance across differing passage lengths",
+      "Direct equivalence to dot product on L2-normalized hyperspheres",
+      "Clear [-1.0, +1.0] bounded range for deterministic relevance thresholding",
+      "Separates semantic direction from lexical token density"
+    ],
+    "full_text": "Architectural Justification: Why Cosine Similarity for Vector Retrieval\n-------------------------------------------------------------------------------\n1. Directional Alignment vs. Vector Magnitude Invariance:\n   In language models, text length and token frequency can alter raw vector\n   magnitude even when semantic meaning remains constant. Cosine similarity\n   evaluates the cosine of the angle (theta) between vectors, completely\n   normalizing out magnitude variations:\n       cos(theta) = (A . B) / (||A||_2 * ||B||_2)\n   This ensures a concise query like \"reset password\" matches a longer, descriptive\n   runbook passage with equal semantic precision.\n\n2. Equivalence on Normalized Hyperspheres:\n   Modern embedding models (e.g. OpenAI text-embedding-3-small) output L2-normalized\n   vectors (||v||_2 = 1.0) on the unit hypersphere. On unit-length vectors,\n   Cosine Similarity simplifies directly to the dot product (A . B) and relates\n   monotonically to Euclidean distance:\n       ||A - B||_2^2 = ||A||^2 + ||B||^2 - 2(A . B) = 2 - 2 * cos(theta)\n   Minimizing Euclidean distance is mathematically equivalent to maximizing Cosine\n   Similarity, but Cosine Similarity provides a standardized [-1.0, +1.0] scale.\n\n3. Interpretability & Thresholding:\n   Cosine similarity provides an intuitive, bounded scale for retrieval confidence:\n   - +0.80 to +1.00: High semantic equivalence / direct procedural match.\n   - +0.40 to +0.79: Moderate contextual relevance / shared topical domain.\n   -  0.00 to +0.39: Orthogonal / unrelated concepts.\n   -  Negative: Opposing or incompatible semantic orientation.\n-------------------------------------------------------------------------------"
+  },
+  "query_results": [
+    {
+      "query": "How do I reset an employee's forgotten account password?",
+      "total_candidates": 6,
+      "highest_score": 0.9935,
+      "lowest_score": 0.0022,
+      "score_spread": 0.9914,
+      "most_similar": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9935,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.9888,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        }
+      ],
+      "least_similar": [
+        {
+          "rank": 5,
+          "similarity_score": 0.3216,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": 0.0022,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        }
+      ],
+      "all_ranked_chunks": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9935,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.9888,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.7392,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.4101,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        },
+        {
+          "rank": 5,
+          "similarity_score": 0.3216,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": 0.0022,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        }
+      ]
+    },
+    {
+      "query": "What is the guaranteed response time for critical database outages?",
+      "total_candidates": 6,
+      "highest_score": 0.8387,
+      "lowest_score": -0.0003,
+      "score_spread": 0.839,
+      "most_similar": [
+        {
+          "rank": 1,
+          "similarity_score": 0.8387,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.831,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        }
+      ],
+      "least_similar": [
+        {
+          "rank": 5,
+          "similarity_score": 0.0059,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": -0.0003,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        }
+      ],
+      "all_ranked_chunks": [
+        {
+          "rank": 1,
+          "similarity_score": 0.8387,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.831,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.5993,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.4396,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 5,
+          "similarity_score": 0.0059,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": -0.0003,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        }
+      ]
+    },
+    {
+      "query": "What are the disaster recovery failover steps when primary site goes down?",
+      "total_candidates": 6,
+      "highest_score": 0.9633,
+      "lowest_score": 0.1985,
+      "score_spread": 0.7648,
+      "most_similar": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9633,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.477,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        }
+      ],
+      "least_similar": [
+        {
+          "rank": 5,
+          "similarity_score": 0.2436,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": 0.1985,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ],
+      "all_ranked_chunks": [
+        {
+          "rank": 1,
+          "similarity_score": 0.9633,
+          "chunk_id": "vertex_dr#tok_000",
+          "document_id": "vertex_dr",
+          "client_id": "VERTEX-003",
+          "section": "Trigger Criteria",
+          "page": 1,
+          "content_snippet": "Vertex Health \u2014 Disaster Recovery Runbook   Vertex Health Operations: Disaster Recovery & Failover Protocol    Document ID: SOP-DB-007 | Cli..."
+        },
+        {
+          "rank": 2,
+          "similarity_score": 0.477,
+          "chunk_id": "acme_onboarding#tok_000",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "ACME Logistics \u2014 Client Onboarding & ...",
+          "page": 1,
+          "content_snippet": "# ACME Logistics \u2014 Client Onboarding & Authentication Runbook Document ID: KB-ONB-001 | Revision: 3.2 Classification: Internal Client Suppor..."
+        },
+        {
+          "rank": 3,
+          "similarity_score": 0.476,
+          "chunk_id": "acme_onboarding#tok_001",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Identity confirmation verified via pr...",
+          "page": 1,
+          "content_snippet": " `SEC-ONB`. 3. Identity confirmation verified via primary sponsor directory.  Notice: Copyright (c) 2026 ACME Logistics Inc. All Rights Rese..."
+        },
+        {
+          "rank": 4,
+          "similarity_score": 0.3556,
+          "chunk_id": "acme_onboarding#tok_002",
+          "document_id": "acme_onboarding",
+          "client_id": "ACME-001",
+          "section": "Step 3.3: Sandbox Confinement",
+          "page": 2,
+          "content_snippet": " the verification ticket and signs off with cryptographic OTP.  ### Step 3.3: Sandbox Confinement All newly generated credentials must be bo..."
+        },
+        {
+          "rank": 5,
+          "similarity_score": 0.2436,
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "page": 1,
+          "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS..."
+        },
+        {
+          "rank": 6,
+          "similarity_score": 0.1985,
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "client_id": "NEXUS-002",
+          "section": "ESCALATION HIERARCHY",
+          "page": 1,
+          "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  ..."
+        }
+      ]
+    }
+  ]
+}

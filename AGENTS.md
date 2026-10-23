@@ -244,6 +244,98 @@ Update durable records:
   - `corrupt_unsupported.bin` (Corrupted/unsupported file for resilience validation)
 - `tests/test_document_loader.py` — Automated `unittest` suite (11 tests) validating single file loading across formats, source identity preservation, directory batch intake, and non-crashing skip behavior.
 - `document_intake_output.log` — Terminal execution capture of corpus intake verification and skipped file reports.
+**Last change:** Implemented metadata-scoped filtered retrieval and hybrid lexical-semantic search engine (`src/filtered_retriever.py`), added strongly-typed `MetadataFilter` converting to ChromaDB where clauses (`client_id`, `document_id`, `section`, `page`), implemented BM25/lexical term overlap and technical identifier matching (e.g. ticket queue `SEC-ONB`, SOP IDs), demonstrated side-by-side comparison of unfiltered vs. filtered vs. hybrid retrieval proving +33.3% precision gain and 100% account isolation compliance, persisted audit logs (`sample_filtered_search_output.log`) and structured JSON (`sample_filtered_search_results.json`), and added 8 automated unit tests (`tests/test_filtered_retriever.py`).
+
+**Date / iteration:** Scoped Filtered Retrieval & Hybrid Search Sprint.
+
+**Current phase (workflow doc):** Phase 26 — Scoped Filtered Retrieval and Hybrid Lexical Search.
+
+**Current branch:** `feat/filtered-retrieval-and-hybrid-search`
+
+**What exists right now:**
+- `src/filtered_retriever.py` — Production metadata-scoped and hybrid retrieval engine:
+  - Task 1: `MetadataFilter` dataclass converting to ChromaDB `$and` where-clauses for account isolation (`client_id`), document scoping (`document_id`), section scoping (`section`), and page boundaries.
+  - Task 2: Comparative evaluation engine (`compare_filtered_and_unfiltered()`) proving filtered retrieval eliminates cross-client contamination and noise chunks.
+  - Task 3: Lexical keyword and high-precision identifier extractor (`extract_exact_identifiers`, `compute_keyword_similarity`) combining dense vector similarity with exact term matching (`SEC-ONB`, `SOP-DB-FAIL-04`) via convex hybrid scoring ($S_{hybrid} = \alpha S_{vector} + (1-\alpha) S_{keyword}$).
+  - Task 4: Precision demonstration harness (`run_precision_demonstrations()`) across 3 enterprise scenarios (Account Isolation, Queue/Code Routing, Section Scoping) showing 66.67% -> 100.0% precision gain.
+  - Task 5: End-to-end CLI runner generating formatted terminal audit report (`sample_filtered_search_output.log`) and structured JSON data (`sample_filtered_search_results.json`).
+- `sample_filtered_search_output.log` — Verifiable terminal report recording comparative analysis, noise removal, and precision metrics.
+- `sample_filtered_search_results.json` — Persisted structured JSON data containing unfiltered vs filtered vs hybrid chunks and precision gains.
+- `tests/test_filtered_retriever.py` — Automated `unittest` suite (8 tests) validating filter conversion, metadata matching, keyword tokenization, identifier boosting, 100% account isolation, scoring modes, precision gain, and end-to-end persistence.
+- `src/vector_retriever.py` — Production Top-K vector retrieval & semantic search engine:
+  - Task 1: Query embedding generation matching corpus model (`text-embedding-3-small`, 1536 dims).
+  - Task 2: Top-K nearest-neighbor vector similarity search with optional client isolation filtering (`where={"client_id": ...}`).
+  - Task 3: Complete chunk packaging with similarity scores, distances, source text, and provenance metadata (`source_document`, `document_id`, `chunk_index`, `section`, `page`, `client_id`, `token_count`).
+  - Task 4: Multi-K variance comparison engine (`demonstrate_varying_k()`) analyzing result growth ($K=2 \to 2$, $K=4 \to 4$, $K=6 \to 6$), score decay (+0.9973 down to +0.0080), and contextual breadth expansion.
+  - Task 5: End-to-end CLI runner generating human-readable audit report (`sample_retrieval_output.log`) and structured JSON data (`sample_retrieval_results.json`).
+- `sample_retrieval_output.log` — Verifiable terminal report recording query embedding, multi-K variance runs, and secondary multi-domain SLA retrieval.
+- `sample_retrieval_results.json` — Persisted structured JSON data containing multi-K results, chunk rankings, scores, and provenance citations.
+- `tests/test_vector_retriever.py` — Automated `unittest` suite (7 tests) validating query embedding dimension, Top-K descending score ordering, metadata retention, changing K expansion and score decay, client isolation filtering, and runner persistence.
+- `src/corpus_indexer.py` — Production corpus vector database indexing & integrity verification engine:
+  - Task 1: Batch-upserting all corpus chunk embeddings into ChromaDB collection (`index_corpus()`).
+  - Task 2: Associating each vector with raw source text and retrieval metadata (`source_document`, `document_id`, `chunk_index`, `section`, `page`, `client_id`, `token_count`).
+  - Task 3: Verifying that stored database count matches prepared chunk count (6 prepared == 6 indexed, 0 failures).
+  - Task 4: Granular spot-check readback auditing (`spot_check_integrity()`) comparing stored records against source chunks for ID match, 1536-dim vector fidelity, text equality, and metadata retention.
+  - Task 5: End-to-end CLI runner generating formatted summary report to `corpus_indexing_output.log`.
+- `corpus_indexing_output.log` — Verifiable terminal report recording collection setup, count validation, zero failures, and 3-document spot-check audit.
+- `tests/test_corpus_indexer.py` — Automated `unittest` suite (6 tests) validating record preparation from JSON/corpus, batch insertion, count validation, spot-check fidelity, missing record detection, and end-to-end runner.
+- `src/vector_db.py` — Production ChromaDB vector database collection management & persistence engine:
+  - Task 1: Environment-driven configuration and reachability check (`check_reachability()`) supporting both persistent storage and ephemeral in-memory modes.
+  - Task 2: Collection lifecycle management (`get_or_create_collection`) configuring HNSW cosine space (`hnsw:space: cosine`), 1536 vector dimensions (`text-embedding-3-small`), and model metadata.
+  - Task 3: Strongly-typed stored record schema (`VectorRecord`, `VectorRecordMetadata`) validating IDs, non-empty text, required `client_id`, provenance metadata, and strict vector dimension matching.
+  - Task 4: Insert and readback methods (`insert_record`, `read_record`) with 6-point verification checklist (ID match, dimension match, text integrity, client isolation, document provenance, section retention).
+  - Task 5: End-to-end CLI demonstration runner persisting audit log to `vector_db_readback_output.log`.
+- `vector_db_readback_output.log` — Verifiable terminal report recording collection setup, reachability, payload preparation, insert, and successful readback audit.
+- `tests/test_vector_db.py` — Automated `unittest` suite (8 tests) validating config defaults, reachability, collection metadata, dimension mismatch rejection, exact record readback, missing ID handling, persistent disk reloading, and end-to-end runner.
+- `src/retrieval_sanity_checker.py` — Production retrieval sanity-testing and relevance verification engine:
+  - Task 1: Curated relevance test suite (`RelevanceTestCase`) with predetermined ground truth targets and explicit unrelated contrast documents.
+  - Task 2: Automated similarity ranking evaluation confirming related documents rank above unrelated documents with positive separation margins (> 0.20).
+  - Task 3: Comprehensive edge-case diagnostics identifying surprising behaviors:
+    - Case A: Document Header Dominance (TC-05) where broad runbook headers outrank specific procedural tail chunks (48-hr VPC confinement).
+    - Case B: Nearest-Neighbor Fallback Trap (TC-06) proving out-of-domain queries require strict confidence thresholding (< 0.60 cutoff) to avoid hallucinations.
+    - Case C: Cross-Account Topical Bleed (TC-07) proving client isolation metadata filtering must precede similarity ranking.
+  - Task 4: Structured sanity reporting (`SanitySummaryReport`) providing test counts, passes (5 clean, 2 borderline/surprising, 0 failed), scores, separation margins, and architectural recommendations.
+  - Task 5: End-to-end CLI runner persisting formatted text report (`retrieval_sanity_report.log`) and machine-readable data (`retrieval_sanity_results.json`).
+- `retrieval_sanity_report.log` — Verifiable terminal report recording complete sanity audit results and edge-case diagnostics.
+- `retrieval_sanity_results.json` — Persisted structured JSON file containing all test case evaluations, candidate rankings, and summary metrics.
+- `tests/test_retrieval_sanity_checker.py` — Automated `unittest` suite (7 tests) validating suite schema, positive rank ordering, surprising case reproduction, out-of-domain threshold rejection, client isolation, and JSON persistence.
+- `src/batch_embedder.py` — Production batch embedding and cost-tracking engine:
+  - Task 1: Configurable batching (`batch_size=N`) sending multi-chunk payloads per API request.
+  - Task 2: Automatic retry with exponential backoff (`max_retries=3`, `initial_backoff=0.5s`, `backoff_factor=2.0`) for rate-limits (HTTP 429) and transient API failures, with simulated failure hooks.
+  - Task 3: Comprehensive run accounting (`BatchEmbeddingStats`) reporting chunks submitted, embeddings generated, skipped chunks, failed batches, token counts, model tier pricing, and exact dollar costs ($).
+  - Task 4: Idempotent deduplication caching comparing chunk IDs and SHA-256 content hashes (`compute_content_hash`) against stored vectors to completely avoid duplicate API calls and wasted spend.
+  - Task 5: End-to-end two-run demonstration comparing initial embedding with transient error recovery against idempotent re-run (100% chunks skipped with cost savings audit).
+- `batch_embedding_output.log` — Terminal execution capture of batching, retry with backoff, cost accounting, and duplicate skipping.
+- `tests/test_batch_embedder.py` — Automated `unittest` suite (7 tests) validating batch partitioning, transient retry recovery, retry exhaustion, re-run caching, token cost math, content hash change detection, and end-to-end runner.
+- `src/similarity_ranker.py` — Production similarity ranking and vector retrieval engine:
+  - Task 1: Cosine Similarity and Euclidean Distance computation.
+  - Task 2: Query embedding comparison against stored corpus chunk embeddings.
+  - Task 3: Full score ranking, identifying most similar (Top-K) and least similar (Bottom-K) chunks with spread analysis.
+  - Task 4: Metric selection justification (magnitude invariance, hypersphere dot product equivalence, bounded [-1, +1] interpretability).
+  - Task 5: End-to-end benchmark demonstration runner across multiple query domains.
+- `docs/METRIC_JUSTIFICATION.md` — In-depth architectural note detailing mathematical rationale for selecting Cosine Similarity over Euclidean, Manhattan, and unnormalized Dot Product.
+- `similarity_ranking_output.log` — Terminal execution capture of benchmark queries, scores, and extrema analysis.
+- `sample_ranking_results.json` — Persisted structured JSON file containing benchmark query rankings, candidate scores, and citation metadata.
+- `tests/test_similarity_ranker.py` — Automated `unittest` suite (7 tests) validating metric computation, descending score order, extrema identification, client isolation filtering, and end-to-end pipeline execution.
+- `src/corpus_embedder.py` — Production corpus embedding and vector storage pipeline:
+  - Task 1: API-driven embedding generation (OpenAI `text-embedding-3-small` / mock fallback) returning uniform 1536-dimensional vectors.
+  - Task 2: Vector store schema (`EmbeddedChunk`, `VectorStore`) storing each vector with source chunk text, document provenance, and client isolation metadata.
+  - Task 3: Dynamic environment configuration loading (`load_embedding_config`) from `.env` without hardcoded secrets.
+  - Task 4: Verification output generation confirming chunk counts, vector lengths, sample coordinates, and account-isolated semantic retrieval.
+  - Task 5: End-to-end demonstration runner persisting records to `corpus_embedding_records.json` and trace to `corpus_embedding_output.log`.
+- `tests/test_corpus_embedder.py` — Automated `unittest` suite (6 tests) validating environment loading, dimension uniformity, vector storage, metadata retention, client isolation filtering, and JSON roundtrip serialization.
+- `corpus_embedding_output.log` — Verifiable terminal report recording chunk intake, vector dimensions, sample trimmed values, and account-isolated retrieval search.
+- `corpus_embedding_records.json` — Persisted JSON dataset containing stored chunks, vectors, dimensions, and metadata.
+- `src/embedding_demo.py` — Standalone text embedding generation and similarity demonstration engine.
+- `src/embedding_demo.py` — Production text embedding generation and cosine similarity engine supporting both OpenAI API (`text-embedding-3-small`, 1536 dimensions) and offline deterministic semantic cluster projection:
+  - Task 1: Dense embedding vector generation for sample queries, runbooks, and unrelated texts.
+  - Task 2: Vector dimension reporting and strict uniformity verification across all inputs.
+  - Task 3: Cosine similarity computation comparing similar pairs (0.9915) vs. dissimilar pairs (0.0004), confirming high semantic separation (+0.9911).
+  - Task 4: Clarification of vector representation (latent geometric meaning vs. keyword counts and random hashes).
+  - Task 5: Full demonstration runner and report generation.
+- `docs/EMBEDDING_REPRESENTATION.md` — In-depth architectural note detailing what embedding vectors represent, mathematical foundations (unit hypersphere dot products), and contrast against TF-IDF/BM25 and cryptographic hashes.
+- `embedding_similarity_output.log` — Terminal execution capture of embedding generation, dimension reporting, and full pairwise cosine similarity matrix.
+- `tests/test_embedding_demo.py` — Automated `unittest` suite (5 tests) testing dimension shape, L2 normalization, dimension uniformity, similar vs. dissimilar pair separation, and cosine similarity mathematical edge cases.
 - `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine:
   - Task 1: `TokenAwareChunker` measuring and setting chunk size strictly in tokens using BPE tokenizer (`tiktoken` cl100k_base / o200k_base).
   - Task 2: Controlled token overlap repeating exact last N tokens of previous chunk into the next chunk.

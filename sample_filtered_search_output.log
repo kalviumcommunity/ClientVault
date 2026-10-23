@@ -1,0 +1,49 @@
+================================================================================
+  CLIENTVAULT — FILTERED RETRIEVAL & HYBRID SEARCH AUDIT REPORT
+================================================================================
+Timestamp:   2026-10-23T08:43:14.957355+00:00
+Module:      src/filtered_retriever.py
+Framework:   ChromaDB Metadata Where-Filter + BM25/Identifier Lexical Scoring
+
+>> TASK 1 & 2: METADATA FILTERING & COMPARATIVE ANALYSIS
+--------------------------------------------------------------------------------
+  Query:                 "What is the initial response time and priority classification for critical service issues?"
+  Target Client ID:      NEXUS-002
+  Requested K:           3
+  Unfiltered Isolation:  66.67 %
+  Filtered Isolation:    100.0 % (Precision Gain: +33.33 %)
+  Foreign Noise Removed: 1 chunks
+
+  [Unfiltered Retrieval (Cross-Client Pollution Present)]:
+    Rank #1 [NEXUS-002] Doc: 'nexus_sla' | Score: +0.9602 | Snippet: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SER..."
+    Rank #2 [NEXUS-002] Doc: 'nexus_sla' | Score: +0.9128 | Snippet: " operational questions or administrative tasks.   Initial response time <= ..."
+    Rank #3 [ACME-001] Doc: 'acme_onboarding' | Score: +0.6718 | Snippet: " the verification ticket and signs off with cryptographic OTP.  ### Step 3...."
+
+  [Filtered Retrieval (100% Account Isolation Enforced)]:
+    Rank #1 [NEXUS-002] Doc: 'nexus_sla' | Score: +0.9602 | Snippet: "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SER..."
+    Rank #2 [NEXUS-002] Doc: 'nexus_sla' | Score: +0.9128 | Snippet: " operational questions or administrative tasks.   Initial response time <= ..."
+
+>> TASK 3 & 4: HYBRID KEYWORD / EXACT IDENTIFIER MATCHING
+  Query:                 "What are the pre-requisites for routing an onboarding ticket in the SEC-ONB queue?"
+  Identifier Targeted:   'SEC-ONB'
+  Client Scope:          'ACME-001'
+  Pure Vector Top Rank:  Chunk 'acme_onboarding#tok_001' (Vec: +0.9846, Hyb: +0.9846)
+  Hybrid Search Top Rank: Chunk 'acme_onboarding#tok_000' (Vec: +0.9783, Hyb: +0.9668)
+  Matched Identifiers:   ['pre-requisites', 'sec-onb']
+  Analysis:              Hybrid search detected exact ticket queue identifier 'sec-onb' and boosted the precise procedural requirement chunk containing the ticket queue to Rank #1.
+
+>> TASK 4: SECTION SCOPING DEMONSTRATION
+  Query:                 "Who is the contact person for Tier 1 helpdesk and duty manager?"
+  Target Section:        'ESCALATION HIERARCHY'
+  Filtered Results:
+    Rank #1 Section: 'ESCALATION HIERARCHY' | Chunk: 'nexus_sla#tok_001' | Score: +0.9122
+  Analysis:              Section scoping restricted the candidate space strictly to 'ESCALATION HIERARCHY', preventing severity classification chunks from diluting the escalation contacts.
+
+================================================================================
+  PRECISION GAIN & COMPLIANCE SUMMARY
+================================================================================
+  [1] Account Isolation Compliance: Unfiltered: 66.67% -> Filtered: 100.0%
+  [2] Noise Reduction: Removed 1 irrelevant cross-account chunks.
+  [3] Exact Code Routing: High-precision identifiers (e.g. SEC-ONB) successfully matched.
+  [4] Target SLA: Account isolation >= 95% STRICTLY SATISFIED (Achieved 100%).
+================================================================================

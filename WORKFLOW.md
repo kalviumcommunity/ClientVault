@@ -106,6 +106,41 @@ Every unit of analytical or engineering effort begins with an issue to preserve 
 - **PR (Multi-Format Document Loader & Intake)**: [feat: implement multi-format document loader and sample corpus intake](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/multi-format-document-loader)
   - **Base Branch**: `main`
   - **Head Branch**: `feat/multi-format-document-loader`
+- **PR (Filtered Retrieval & Hybrid Lexical Search)**: [feat: implement metadata filtered retrieval, hybrid keyword search, and precision comparison](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/filtered-retrieval-and-hybrid-search)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/filtered-retrieval-and-hybrid-search`
+  - **Review Status**: Pushed and ready for peer review / merge
+- **PR #31 (Vector Database Top-K Semantic Retrieval & K Variance)**: [feat: implement top-k vector retrieval, scores, metadata, and varying K demonstration](https://github.com/kalviumcommunity/ClientVault/pull/31)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/topk-vector-retrieval`
+  - **Review Status**: Merged into `main`
+- **PR (Corpus Vector Database Indexing & Audit)**: [feat: implement corpus vector database indexing, count validation, and spot-check audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-vector-indexing)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/corpus-vector-indexing`
+  - **Review Status**: Merged into `main`
+- **PR (Vector Database Collection Setup & Readback Audit)**: [feat: implement vector database collection setup, schema validation, and readback audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/vector-database-setup)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/vector-database-setup`
+  - **Review Status**: Merged into `main`
+- **PR (Retrieval Relevance Sanity Checks & Quality Audit)**: [feat: implement retrieval sanity checks, related vs unrelated ranking verification, and quality audit](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/retrieval-sanity-checks)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/retrieval-sanity-checks`
+  - **Review Status**: Merged into `main`
+- **PR (Scalable Batch Embedding Pipeline & Cost Tracking)**: [feat: implement scalable batch embedding pipeline with retries, caching, and cost tracking](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/batch-embedding-pipeline)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/batch-embedding-pipeline`
+  - **Review Status**: Merged into `main`
+- **PR (Semantic Similarity Ranking & Vector Retrieval)**: [feat: implement semantic similarity ranking, metric justification, and extrema analysis](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/similarity-ranking-and-retrieval)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/similarity-ranking-and-retrieval`
+  - **Review Status**: Pushed and ready for peer review / merge
+- **PR (Corpus Embedding Generation & Vector Storage)**: [feat: implement corpus embedding generation, vector storage, and metadata persistence](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/corpus-embedding-storage)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/corpus-embedding-storage`
+  - **Review Status**: Pushed and ready for peer review / merge
+- **PR (Text Embeddings & Semantic Similarity)**: [feat: implement text embedding generation, vector dimension reporting, and semantic similarity](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/text-embeddings-and-similarity)
+  - **Base Branch**: `main`
+  - **Head Branch**: `feat/text-embeddings-and-similarity`
   - **Review Status**: Pushed and ready for peer review / merge
 - **PR (Chunk Metadata & Provenance)**: [feat: implement chunk metadata tagging and source provenance verification](https://github.com/kalviumcommunity/ClientVault/pull/new/feat/chunk-metadata-and-provenance)
   - **Base Branch**: `main`
