@@ -18,6 +18,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 
 from dotenv import load_dotenv
@@ -41,6 +42,22 @@ app = FastAPI(
     title="ClientVault RAG API",
     description="Grounded answer generation with source citations for client-specific knowledge bases.",
     version="1.0.0",
+)
+
+# ---------------------------------------------------------------------------
+# CORS — allow the dev frontend (localhost:3000) and any production origin
+# listed in RAG_API_CORS_ORIGINS (comma-separated).
+# NEVER use allow_origins=["*"] in production with credentials.
+# ---------------------------------------------------------------------------
+_raw_origins = os.getenv("RAG_API_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+CORS_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
 )
 
 # ---------------------------------------------------------------------------
