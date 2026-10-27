@@ -1,0 +1,118 @@
+{
+  "dataset_id": "retrieval_eval_queries_v1",
+  "description": "Labelled retrieval evaluation queries for ClientVault. Labels are derived from the actual indexed corpus (corpus_embedding_records.json, built from data/sample_corpus/ via TokenAwareChunker) and use the exact chunk_id values stored in the vector database. Each label cites the source passage that justifies relevance.",
+  "label_source": {
+    "records_file": "corpus_embedding_records.json",
+    "chunking_strategy": "token_aware_overlap",
+    "indexed_documents": [
+      "data/sample_corpus/acme_onboarding.md",
+      "data/sample_corpus/nexus_sla.txt",
+      "data/sample_corpus/vertex_dr.html"
+    ],
+    "valid_chunk_ids": [
+      "acme_onboarding#tok_000",
+      "acme_onboarding#tok_001",
+      "acme_onboarding#tok_002",
+      "nexus_sla#tok_000",
+      "nexus_sla#tok_001",
+      "vertex_dr#tok_000"
+    ]
+  },
+  "metric_notes": {
+    "recall_at_k": "|top-k retrieved ∩ relevant| / |relevant|. Undefined (null) when a query has no relevant labels; such queries are excluded from macro averages.",
+    "precision_at_k": "|top-k retrieved ∩ relevant| / |chunks actually returned| (returned ≤ k after score thresholding). 0.0 when nothing is returned for an in-domain query. Undefined (null) for queries with no relevant labels.",
+    "unsupported_queries": "Queries with empty relevant_chunk_ids are out-of-domain unsupported queries. They are never scored for recall/precision; safe rejection (zero chunks returned) is reported separately."
+  },
+  "queries": [
+    {
+      "query_id": "REQ-01",
+      "query": "Which ServiceNow ticket queue and email domain are required before starting ACME client onboarding?",
+      "intent": "Locate onboarding pre-requisites (SEC-ONB queue, @acme-logistics.com domain).",
+      "target_client_id": "ACME-001",
+      "relevant_chunk_ids": ["acme_onboarding#tok_000"],
+      "is_out_of_domain": false,
+      "label_evidence": "acme_onboarding#tok_000 §2 Pre-Requisites: 'Requester email domain must strictly match `@acme-logistics.com`.' and 'Valid ticket reference in ServiceNow queue `SEC-ONB`.'"
+    },
+    {
+      "query_id": "REQ-02",
+      "query": "What is the dual-operator sign-off procedure and how long must new credentials stay confined to the staging sandbox?",
+      "intent": "Provisioning controls: dual-operator authorization plus 48-hour Staging VPC sandbox confinement.",
+      "target_client_id": "ACME-001",
+      "relevant_chunk_ids": ["acme_onboarding#tok_001", "acme_onboarding#tok_002"],
+      "is_out_of_domain": false,
+      "label_evidence": "acme_onboarding#tok_001 §3.2: 'Dual-operator authorization is strictly required'; acme_onboarding#tok_002 §3.3: 'bound strictly to the Staging VPC sandbox for the first 48 hours'."
+    },
+    {
+      "query_id": "REQ-03",
+      "query": "What should the support engineer do when an onboarding request comes from a personal gmail address?",
+      "intent": "Sponsor-verification rejection rule for generic email domains.",
+      "target_client_id": "ACME-001",
+      "relevant_chunk_ids": ["acme_onboarding#tok_001"],
+      "is_out_of_domain": false,
+      "label_evidence": "acme_onboarding#tok_001 §3.1 Sponsor Verification: 'Requests from generic domains (gmail, yahoo) must be rejected immediately.'"
+    },
+    {
+      "query_id": "REQ-04",
+      "query": "What is the guaranteed initial response time for a Severity 1 critical outage at Nexus Financial?",
+      "intent": "Sev-1 response SLA threshold (<= 15 minutes).",
+      "target_client_id": "NEXUS-002",
+      "relevant_chunk_ids": ["nexus_sla#tok_000"],
+      "is_out_of_domain": false,
+      "label_evidence": "nexus_sla#tok_000 §1: 'Severity 1 (Critical Outage): Core transaction settlement system down. Initial response time <= 15 minutes.'"
+    },
+    {
+      "query_id": "REQ-05",
+      "query": "Who are the Level 1 and Level 2 escalation contacts for Nexus support incidents?",
+      "intent": "Escalation hierarchy contacts (Tier-1 Service Desk, Client Reliability Engineer).",
+      "target_client_id": "NEXUS-002",
+      "relevant_chunk_ids": ["nexus_sla#tok_001"],
+      "is_out_of_domain": false,
+      "label_evidence": "nexus_sla#tok_001 §2: 'Level 1: Tier-1 Service Desk Operations (Desk-Nexus@clientvault.internal)' and 'Level 2: Designated Client Reliability Engineer'."
+    },
+    {
+      "query_id": "REQ-06",
+      "query": "What service credit penalty applies when Nexus misses its Severity 1 response commitment?",
+      "intent": "SLA penalty clause for missed Sev-1 response (5% monthly credit).",
+      "target_client_id": "NEXUS-002",
+      "relevant_chunk_ids": ["nexus_sla#tok_001"],
+      "is_out_of_domain": false,
+      "label_evidence": "nexus_sla#tok_001 §3: 'Failure to meet Sev-1 response commitments incurs a 5% monthly service credit deduction per SLA Schedule B.'"
+    },
+    {
+      "query_id": "REQ-07",
+      "query": "Under what conditions must a Vertex Health database failover to the secondary region be initiated?",
+      "intent": "DR trigger criteria (latency > 5000ms or 3 consecutive heartbeat timeouts).",
+      "target_client_id": "VERTEX-003",
+      "relevant_chunk_ids": ["vertex_dr#tok_000"],
+      "is_out_of_domain": false,
+      "label_evidence": "vertex_dr#tok_000 §1 Trigger Criteria: 'Failover ... must initiate only when the primary cluster experiences unrecoverable latency exceeding 5000ms or 3 consecutive heartbeat timeouts.'"
+    },
+    {
+      "query_id": "REQ-08",
+      "query": "Which CLI command promotes the replica cluster during a Vertex disaster recovery failover?",
+      "intent": "Exact failover promoter command (vertex-cli db failover).",
+      "target_client_id": "VERTEX-003",
+      "relevant_chunk_ids": ["vertex_dr#tok_000"],
+      "is_out_of_domain": false,
+      "label_evidence": "vertex_dr#tok_000 §2 Execution Sequence: 'Execute database promoter script: vertex-cli db failover --cluster prd-vtx-01 --force-replica .'"
+    },
+    {
+      "query_id": "REQ-09",
+      "query": "What initial response time is promised for a Severity 3 minor defect or general inquiry?",
+      "intent": "Sev-3 response window (<= 4 business hours); wording overlaps Sev-1/Sev-2 rows in the same table.",
+      "target_client_id": "NEXUS-002",
+      "relevant_chunk_ids": ["nexus_sla#tok_000"],
+      "is_out_of_domain": false,
+      "label_evidence": "nexus_sla#tok_000 §1: 'Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks. Initial response time <= 4 business hours.'"
+    },
+    {
+      "query_id": "REQ-10",
+      "query": "What is the corporate reimbursement policy for executive travel and hotel expenses?",
+      "intent": "Out-of-domain unsupported query (HR policy absent from the knowledge base); expects safe rejection.",
+      "target_client_id": null,
+      "relevant_chunk_ids": [],
+      "is_out_of_domain": true,
+      "label_evidence": "No indexed document covers travel/expense policy; label intentionally empty. Verified against all 6 indexed chunks in corpus_embedding_records.json."
+    }
+  ]
+}
