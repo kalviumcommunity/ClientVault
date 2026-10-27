@@ -163,11 +163,13 @@ def generate_answer(
     # Check LLM availability
     config = load_llm_config()
     api_key = config.get("api_key", "")
-    is_configured = bool(api_key) and api_key != "your_openai_api_key_here"
+    is_local = config.get("is_local_endpoint", False)
+    is_configured = bool(api_key) and api_key != "your_openai_api_key_here" and not api_key.startswith("local-")
 
     # Deterministic mock fallback
     if force_mock or not is_configured:
-        logger.info("API key not configured — using deterministic context summarization fallback")
+        logger.info("LLM API not available (key=%s, local=%s) — using deterministic context summarization fallback",
+                     "set" if api_key else "unset", is_local)
         first = context.citations[0]
         lines = [
             f"Based on the retrieved knowledge base entry for {first['client_id']}:",
@@ -269,7 +271,8 @@ def answer_query(
         query=query,
         client_id=client_id,
         context=context,
-        force_mock=force_mock or not load_llm_config().get("is_configured"),
+        force_mock=force_mock or not (bool(load_llm_config().get("api_key","")) and 
+                    load_llm_config().get("api_key","") != "your_openai_api_key_here"),
     )
 
     elapsed_ms = (time.perf_counter() - t0) * 1000

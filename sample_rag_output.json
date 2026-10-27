@@ -1,10 +1,10 @@
 {
   "query": "What is the initial response time for a Severity 1 critical outage?",
   "client_id": "NEXUS-002",
-  "answer": "Based on the retrieved knowledge base entry for NEXUS-002:\n\nSource document: nexus_sla\nSection: INCIDENT SEVERITY CLASSIFICATIONS, Page: 1\n\n- Relevant passage from nexus_sla (\u00a7INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8816]\n- Relevant passage from nexus_service_level_agreement (\u00a7INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8719]\n- Relevant passage from nexus_sla (\u00a7ESCALATION HIERARCHY, p.1) [score: 0.7024]\n\nReview the cited sources above for the complete procedure.",
+  "answer": "INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook.",
   "insufficient_evidence": false,
-  "from_mock": true,
-  "latency_ms": 78.42,
+  "from_mock": false,
+  "latency_ms": 5116.8,
   "retrieved_chunks": [
     {
       "rank": 1,

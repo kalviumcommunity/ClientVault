@@ -5,8 +5,8 @@
   Client ID:                 NEXUS-002
   Chunks retrieved:          5
   Insufficient evidence:     False
-  Answer source:             Mock Fallback
-  Total pipeline latency:    78.4 ms
+  Answer source:             LLM
+  Total pipeline latency:    5116.8 ms
 
 --------------------------------------------------------------------------------
   Retrieved Sources:
@@ -34,15 +34,6 @@
 --------------------------------------------------------------------------------
   Generated Answer:
 --------------------------------------------------------------------------------
-  Based on the retrieved knowledge base entry for NEXUS-002:
-
-Source document: nexus_sla
-Section: INCIDENT SEVERITY CLASSIFICATIONS, Page: 1
-
-- Relevant passage from nexus_sla (§INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8816]
-- Relevant passage from nexus_service_level_agreement (§INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8719]
-- Relevant passage from nexus_sla (§ESCALATION HIERARCHY, p.1) [score: 0.7024]
-
-Review the cited sources above for the complete procedure.
+  INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook.
 
 ================================================================================
