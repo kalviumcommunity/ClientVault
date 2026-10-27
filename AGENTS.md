@@ -472,7 +472,7 @@ Update durable records:
 - In multi-turn history management, the root system prompt is inviolable and never trimmed.
 - History trimming operates on oldest turns first to maximize recent operational context.
 - For grounded, factual retrieval tasks, configure: `temperature=0.0` (greedy decoding), `max_tokens=150–250` (budget capping), `top_p=1.0` (do not alter alongside temp 0), and optional `stop=["\n\n\n", "User:"]` to guard boundary leaks.
-- `gpt-4o-mini` pricing is $0.150/1M input tokens and $0.600/1M output tokens (o200k_base tokenizer).
+- `gpt-4o-yicing is $0.150/1M input tokens and $0.600/1M output tokens (o200k_base tokenizer).
 - Code, punctuation, and dense UUIDs consume significantly more tokens per character (~1.8–2.9 chars/token) compared to standard English prose (~4.5–7.4 chars/token).
 - Chosen system prompt mandates exact fallback: `"INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook."`
 - System prompt forces structured citation: `[Source: <Doc-ID>, Section: <Sec>, Page: <P>]`.
