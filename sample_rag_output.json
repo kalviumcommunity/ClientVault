@@ -1,0 +1,107 @@
+{
+  "query": "What is the initial response time for a Severity 1 critical outage?",
+  "client_id": "NEXUS-002",
+  "answer": "Based on the retrieved knowledge base entry for NEXUS-002:\n\nSource document: nexus_sla\nSection: INCIDENT SEVERITY CLASSIFICATIONS, Page: 1\n\n- Relevant passage from nexus_sla (\u00a7INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8816]\n- Relevant passage from nexus_service_level_agreement (\u00a7INCIDENT SEVERITY CLASSIFICATIONS, p.1) [score: 0.8719]\n- Relevant passage from nexus_sla (\u00a7ESCALATION HIERARCHY, p.1) [score: 0.7024]\n\nReview the cited sources above for the complete procedure.",
+  "insufficient_evidence": false,
+  "from_mock": true,
+  "latency_ms": 78.42,
+  "retrieved_chunks": [
+    {
+      "rank": 1,
+      "chunk_id": "nexus_sla#tok_000",
+      "client_id": "NEXUS-002",
+      "document_id": "nexus_sla",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "hybrid_score": 0.8816,
+      "content_snippet": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document Code: SLA-NEX-2..."
+    },
+    {
+      "rank": 2,
+      "chunk_id": "nexus_service_level_agreement#tok_000",
+      "client_id": "NEXUS-002",
+      "document_id": "nexus_service_level_agreement",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "hybrid_score": 0.8719,
+      "content_snippet": "CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document Code: SLA-NEX-2026 | Effective Date: 2026-01-01  1. INCIDENT SEVERITY CLASSIFICA..."
+    },
+    {
+      "rank": 3,
+      "chunk_id": "nexus_sla#tok_001",
+      "client_id": "NEXUS-002",
+      "document_id": "nexus_sla",
+      "section": "ESCALATION HIERARCHY",
+      "page": 1,
+      "hybrid_score": 0.7024,
+      "content_snippet": " operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS FINANCIAL TECH ---  2. ESCALATION HIERARCHY Level 1: Tier-1 Service Desk Operati..."
+    },
+    {
+      "rank": 4,
+      "chunk_id": "nexus_database_failover_runbook#tok_000",
+      "client_id": "NEXUS-002",
+      "document_id": "nexus_database_failover_runbook",
+      "section": "Nexus Financial Technologies - Databa...",
+      "page": 1,
+      "hybrid_score": 0.6767,
+      "content_snippet": "# Nexus Financial Technologies - Database High Availability & Failover Protocol Document ID: SOP-DR-004 | Revision: 4.2 Client Identifier: NEXUS-002 | Scope: Production Transaction Ledger  ## 1. High ..."
+    },
+    {
+      "rank": 5,
+      "chunk_id": "nexus_payment_gateway_runbook#tok_000",
+      "client_id": "NEXUS-002",
+      "document_id": "nexus_payment_gateway_runbook",
+      "section": "Circuit Breaker Trigger Thresholds",
+      "page": 1,
+      "hybrid_score": 0.6755,
+      "content_snippet": "Nexus Financial - Payment Gateway Runbook  Nexus Payment Gateway Operations & Circuit Breaker Runbook  Document ID: SOP-PAY-003 | Client Identifier: NEXUS-002  1. Circuit Breaker Trigger Thresholds  T..."
+    }
+  ],
+  "citations": [
+    {
+      "rank": 1,
+      "chunk_id": "nexus_sla#tok_000",
+      "document_id": "nexus_sla",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "client_id": "NEXUS-002",
+      "hybrid_score": 0.8816
+    },
+    {
+      "rank": 2,
+      "chunk_id": "nexus_service_level_agreement#tok_000",
+      "document_id": "nexus_service_level_agreement",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "client_id": "NEXUS-002",
+      "hybrid_score": 0.8719
+    },
+    {
+      "rank": 3,
+      "chunk_id": "nexus_sla#tok_001",
+      "document_id": "nexus_sla",
+      "section": "ESCALATION HIERARCHY",
+      "page": 1,
+      "client_id": "NEXUS-002",
+      "hybrid_score": 0.7024
+    },
+    {
+      "rank": 4,
+      "chunk_id": "nexus_database_failover_runbook#tok_000",
+      "document_id": "nexus_database_failover_runbook",
+      "section": "Nexus Financial Technologies - Databa...",
+      "page": 1,
+      "client_id": "NEXUS-002",
+      "hybrid_score": 0.6767
+    },
+    {
+      "rank": 5,
+      "chunk_id": "nexus_payment_gateway_runbook#tok_000",
+      "document_id": "nexus_payment_gateway_runbook",
+      "section": "Circuit Breaker Trigger Thresholds",
+      "page": 1,
+      "client_id": "NEXUS-002",
+      "hybrid_score": 0.6755
+    }
+  ]
+}
