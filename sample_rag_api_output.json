@@ -1,0 +1,49 @@
+{
+  "answer": "Grounded Answer (Sufficient Evidence):\n\n- Source [1]: nexus_service_level_agreement, Section INCIDENT SEVERITY CLASSIFICATIONS (score: 0.9719)\n- Source [2]: nexus_sla, Section ESCALATION HIERARCHY (score: 0.9692)\n- Source [3]: nexus_sla, Section INCIDENT SEVERITY CLASSIFICATIONS (score: 0.7908)\n- Source [4]: nexus_compliance_guide, Section Nexus Financial Technologies - Regula... (score: 0.5840)\n- Source [5]: nexus_partner_onboarding, Section INSTITUTIONAL INTAKE VERIFICATION (score: 0.5661)\n\nThe above sources provide sufficient relevant context.",
+  "status": "answered",
+  "sources": [
+    {
+      "marker": "[1]",
+      "chunk_id": "nexus_service_level_agreement#tok_000",
+      "document_id": "nexus_service_level_agreement",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "score": 0.9719
+    },
+    {
+      "marker": "[2]",
+      "chunk_id": "nexus_sla#tok_001",
+      "document_id": "nexus_sla",
+      "section": "ESCALATION HIERARCHY",
+      "page": 1,
+      "score": 0.9692
+    },
+    {
+      "marker": "[3]",
+      "chunk_id": "nexus_sla#tok_000",
+      "document_id": "nexus_sla",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "score": 0.7908
+    },
+    {
+      "marker": "[4]",
+      "chunk_id": "nexus_compliance_guide#tok_000",
+      "document_id": "nexus_compliance_guide",
+      "section": "Nexus Financial Technologies - Regula...",
+      "page": 1,
+      "score": 0.584
+    },
+    {
+      "marker": "[5]",
+      "chunk_id": "nexus_partner_onboarding#tok_000",
+      "document_id": "nexus_partner_onboarding",
+      "section": "INSTITUTIONAL INTAKE VERIFICATION",
+      "page": 1,
+      "score": 0.5661
+    }
+  ],
+  "total_sources": 5,
+  "threshold_used": 0.6,
+  "refusal_reason": null
+}
