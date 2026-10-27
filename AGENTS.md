@@ -226,7 +226,7 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Fixed fallback tokenizer decoding in `TokenAwareChunker` (`src/chunker.py`) to prevent lossy hash token decoding, added resilient token count fallbacks to `count_tokens` (`src/token_cost_estimator.py`), verified complete test suite pass (142 tests passing), merged all changes into `main`, and pushed directly to `origin/main`.
+**Last change:** Built premium RAG chat UI (`feat/rag-chat-ui`, commit `212c714`): multi-page React SPA (Dashboard, Clients, Knowledge Search, Documents, Upload), animated thinking orb, real backend integration via `POST /query`, multi-turn conversation history, all UI states (idle/loading/answered/refused/error), expandable source panels, accessibility (aria, skip-link, reduced-motion), CORSMiddleware on FastAPI with env-controlled allowlist, and sample interaction documentation. Vite build: ✅ 39 modules, 0 errors. 57 Python tests passing (6 pre-existing failures in token_cost_estimator unrelated to this change).
 
 **Date / iteration:** Bug Fix & Main Integration Sprint.
 
