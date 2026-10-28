@@ -1,0 +1,28 @@
+================================================================================
+  ClientVault — Grounded Answer Generation Comparison
+================================================================================
+  Query:              What is the initial response time for a Severity 1 critical outage?
+  Insufficient evid.: False
+
+--------------------------------------------------------------------------------
+  [Direct LLM] (no retrieval context)
+--------------------------------------------------------------------------------
+  Latency: 0.0 ms
+  Answer:  Direct LLM Answer (Mock Mode): I don't have specific information about that without accessing the knowledge base.
+
+--------------------------------------------------------------------------------
+  [Grounded RAG] (retrieval + context injection)
+--------------------------------------------------------------------------------
+  Latency: 365.2 ms
+  Sources: [1] nexus_sla#tok_000, [2] nexus_service_level_agreement#tok_000, [3] nexus_sla#tok_001, [4] nexus_database_failover_runbook#tok_000, [5] nexus_payment_gateway_runbook#tok_000
+  Answer:  Grounded Answer (Mock Mode):
+
+- Source [1] nexus_sla#tok_000: relevant passage found in nexus_sla
+- Source [2] nexus_service_level_agreement#tok_000: relevant passage found in nexus_service_level_agreement
+- Source [3] nexus_sla#tok_001: relevant passage found in nexus_sla
+- Source [4] nexus_database_failover_runbook#tok_000: relevant passage found in nexus_database_failover_runbook
+- Source [5] nexus_payment_gateway_runbook#tok_000: relevant passage found in nexus_payment_gateway_runbook
+
+Review the cited sources above for the complete procedure.
+
+================================================================================
