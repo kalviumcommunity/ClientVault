@@ -1,0 +1,15 @@
+{
+  "query": "What is the initial response time for a Severity 1 critical outage?",
+  "direct_llm_answer": "Direct LLM Answer (Mock Mode): I don't have specific information about that without accessing the knowledge base.",
+  "grounded_answer": "Grounded Answer (Mock Mode):\n\n- Source [1] nexus_sla#tok_000: relevant passage found in nexus_sla\n- Source [2] nexus_service_level_agreement#tok_000: relevant passage found in nexus_service_level_agreement\n- Source [3] nexus_sla#tok_001: relevant passage found in nexus_sla\n- Source [4] nexus_database_failover_runbook#tok_000: relevant passage found in nexus_database_failover_runbook\n- Source [5] nexus_payment_gateway_runbook#tok_000: relevant passage found in nexus_payment_gateway_runbook\n\nReview the cited sources above for the complete procedure.",
+  "grounded_latency_ms": 365.2,
+  "direct_latency_ms": 0.0,
+  "insufficient_evidence": false,
+  "sources_used": [
+    "[1] nexus_sla#tok_000",
+    "[2] nexus_service_level_agreement#tok_000",
+    "[3] nexus_sla#tok_001",
+    "[4] nexus_database_failover_runbook#tok_000",
+    "[5] nexus_payment_gateway_runbook#tok_000"
+  ]
+}
