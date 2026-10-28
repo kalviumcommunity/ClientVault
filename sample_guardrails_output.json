@@ -1,0 +1,55 @@
+{
+  "query": "What is the Sev-1 response time?",
+  "client_id": "NEXUS-002",
+  "passed_guard": false,
+  "refusal_reason": "Only 3/5 chunks above threshold 0.6 (highest: 0.9719)",
+  "refusal_message": "I don't have enough reliable context to answer that. The retrieved evidence does not contain sufficient relevant information to provide a grounded answer.",
+  "threshold_used": 0.6,
+  "total_chunks": 5,
+  "chunks_above_threshold": 3,
+  "highest_score": 0.9719,
+  "lowest_score": 0.5675,
+  "answer": "I don't have enough reliable context to answer that. The retrieved evidence does not contain sufficient relevant information to provide a grounded answer.",
+  "sources": [
+    {
+      "marker": "[1]",
+      "chunk_id": "nexus_service_level_agreement#tok_000",
+      "document_id": "nexus_service_level_agreement",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "score": 0.9719
+    },
+    {
+      "marker": "[2]",
+      "chunk_id": "nexus_sla#tok_001",
+      "document_id": "nexus_sla",
+      "section": "ESCALATION HIERARCHY",
+      "page": 1,
+      "score": 0.9693
+    },
+    {
+      "marker": "[3]",
+      "chunk_id": "nexus_sla#tok_000",
+      "document_id": "nexus_sla",
+      "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+      "page": 1,
+      "score": 0.8257
+    },
+    {
+      "marker": "[4]",
+      "chunk_id": "nexus_compliance_guide#tok_000",
+      "document_id": "nexus_compliance_guide",
+      "section": "Nexus Financial Technologies - Regula...",
+      "page": 1,
+      "score": 0.5844
+    },
+    {
+      "marker": "[5]",
+      "chunk_id": "nexus_partner_onboarding#tok_000",
+      "document_id": "nexus_partner_onboarding",
+      "section": "INSTITUTIONAL INTAKE VERIFICATION",
+      "page": 1,
+      "score": 0.5675
+    }
+  ]
+}

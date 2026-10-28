@@ -1,0 +1,240 @@
+{
+  "total_queries": 10,
+  "in_domain_queries": 9,
+  "out_of_domain_queries": 1,
+  "macro_avg_recall": 0.9444,
+  "macro_avg_precision": 0.2,
+  "safe_rejection_rate": 0.0,
+  "queries_with_recall_zero": 0,
+  "queries_with_precision_zero": 0,
+  "per_query": [
+    {
+      "query_id": "REQ-01",
+      "query": "Which ServiceNow ticket queue and email domain are required before starting ACME client onboarding?",
+      "target_client_id": "ACME-001",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "acme_onboarding#tok_000"
+      ],
+      "retrieved_chunk_ids": [
+        "acme_onboarding_guide#tok_000",
+        "acme_onboarding#tok_000",
+        "acme_onboarding#tok_001",
+        "acme_warehouse_api_runbook#tok_000",
+        "acme_warehouse_api_runbook#tok_001"
+      ],
+      "hits_at_k": [
+        "acme_onboarding#tok_000"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-02",
+      "query": "What is the dual-operator sign-off procedure and how long must new credentials stay confined to the staging sandbox?",
+      "target_client_id": "ACME-001",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "acme_onboarding#tok_001",
+        "acme_onboarding#tok_002"
+      ],
+      "retrieved_chunk_ids": [
+        "acme_onboarding#tok_001",
+        "acme_onboarding_guide#tok_000",
+        "acme_warehouse_api_runbook#tok_000",
+        "acme_onboarding#tok_000",
+        "acme_warehouse_api_runbook#tok_001"
+      ],
+      "hits_at_k": [
+        "acme_onboarding#tok_001"
+      ],
+      "return_count": 5,
+      "recall_at_k": 0.5,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-03",
+      "query": "What should the support engineer do when an onboarding request comes from a personal gmail address?",
+      "target_client_id": "ACME-001",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "acme_onboarding#tok_001"
+      ],
+      "retrieved_chunk_ids": [
+        "acme_onboarding_guide#tok_000",
+        "acme_onboarding#tok_001",
+        "acme_onboarding#tok_000",
+        "acme_warehouse_api_runbook#tok_000",
+        "acme_warehouse_api_runbook#tok_001"
+      ],
+      "hits_at_k": [
+        "acme_onboarding#tok_001"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-04",
+      "query": "What is the guaranteed initial response time for a Severity 1 critical outage at Nexus Financial?",
+      "target_client_id": "NEXUS-002",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "nexus_sla#tok_000"
+      ],
+      "retrieved_chunk_ids": [
+        "nexus_sla#tok_000",
+        "nexus_service_level_agreement#tok_000",
+        "nexus_sla#tok_001",
+        "nexus_database_failover_runbook#tok_000",
+        "nexus_payment_gateway_runbook#tok_000"
+      ],
+      "hits_at_k": [
+        "nexus_sla#tok_000"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-05",
+      "query": "Who are the Level 1 and Level 2 escalation contacts for Nexus support incidents?",
+      "target_client_id": "NEXUS-002",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "nexus_sla#tok_001"
+      ],
+      "retrieved_chunk_ids": [
+        "nexus_sla#tok_000",
+        "nexus_service_level_agreement#tok_000",
+        "nexus_sla#tok_001",
+        "nexus_compliance_guide#tok_000",
+        "nexus_partner_onboarding#tok_000"
+      ],
+      "hits_at_k": [
+        "nexus_sla#tok_001"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-06",
+      "query": "What service credit penalty applies when Nexus misses its Severity 1 response commitment?",
+      "target_client_id": "NEXUS-002",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "nexus_sla#tok_001"
+      ],
+      "retrieved_chunk_ids": [
+        "nexus_service_level_agreement#tok_000",
+        "nexus_sla#tok_000",
+        "nexus_sla#tok_001",
+        "nexus_compliance_guide#tok_000",
+        "nexus_partner_onboarding#tok_000"
+      ],
+      "hits_at_k": [
+        "nexus_sla#tok_001"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-07",
+      "query": "Under what conditions must a Vertex Health database failover to the secondary region be initiated?",
+      "target_client_id": "VERTEX-003",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "vertex_dr#tok_000"
+      ],
+      "retrieved_chunk_ids": [
+        "vertex_dr#tok_000",
+        "vertex_ehr_disaster_recovery#tok_000",
+        "vertex_telehealth_outage_runbook#tok_000",
+        "vertex_hipaa_security_policy#tok_000",
+        "vertex_telehealth_outage_runbook#tok_001"
+      ],
+      "hits_at_k": [
+        "vertex_dr#tok_000"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-08",
+      "query": "Which CLI command promotes the replica cluster during a Vertex disaster recovery failover?",
+      "target_client_id": "VERTEX-003",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "vertex_dr#tok_000"
+      ],
+      "retrieved_chunk_ids": [
+        "vertex_dr#tok_000",
+        "vertex_ehr_disaster_recovery#tok_000",
+        "vertex_telehealth_outage_runbook#tok_000",
+        "vertex_hipaa_security_policy#tok_000",
+        "vertex_telehealth_outage_runbook#tok_001"
+      ],
+      "hits_at_k": [
+        "vertex_dr#tok_000"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-09",
+      "query": "What initial response time is promised for a Severity 3 minor defect or general inquiry?",
+      "target_client_id": "NEXUS-002",
+      "is_out_of_domain": false,
+      "relevant_chunk_ids": [
+        "nexus_sla#tok_000"
+      ],
+      "retrieved_chunk_ids": [
+        "nexus_sla#tok_000",
+        "nexus_service_level_agreement#tok_000",
+        "nexus_sla#tok_001",
+        "nexus_compliance_guide#tok_000",
+        "nexus_partner_onboarding#tok_000"
+      ],
+      "hits_at_k": [
+        "nexus_sla#tok_000"
+      ],
+      "return_count": 5,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "safe_rejected": null
+    },
+    {
+      "query_id": "REQ-10",
+      "query": "What is the corporate reimbursement policy for executive travel and hotel expenses?",
+      "target_client_id": null,
+      "is_out_of_domain": true,
+      "relevant_chunk_ids": [],
+      "retrieved_chunk_ids": [
+        "acme_incident_escalation#tok_000",
+        "vertex_hipaa_security_policy#tok_000",
+        "acme_incident_escalation#tok_001",
+        "acme_service_level_agreement#tok_001",
+        "nexus_database_failover_runbook#tok_001"
+      ],
+      "hits_at_k": [],
+      "return_count": 5,
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "safe_rejected": false
+    }
+  ],
+  "failure_analysis": "FAILURE ANALYSIS \u2014 queries with recall<1.0 (1/9)\n\n  [REQ-02] recall=0.5, precision=0.2\n    query: What is the dual-operator sign-off procedure and how long must new credentials s\n    relevant: ['acme_onboarding#tok_001', 'acme_onboarding#tok_002']\n    retrieved: ['acme_onboarding#tok_001', 'acme_onboarding_guide#tok_000', 'acme_warehouse_api_runbook#tok_000', 'acme_onboarding#tok_000', 'acme_warehouse_api_runbook#tok_001']\n    hits: ['acme_onboarding#tok_001']\n    likely causes: missed relevant chunk(s) {'acme_onboarding#tok_002'}\n\nOut-of-domain safe rejection: 0/1 (0.0%)"
+}

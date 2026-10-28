@@ -1,0 +1,53 @@
+{
+  "upload": {
+    "status": "indexed",
+    "filename": "demo_upload.md",
+    "safe_filename": "demo_upload.md",
+    "document_id": "demo_upload",
+    "chunks_created": 1,
+    "chunks_indexed": 1,
+    "errors": [],
+    "notes": "Document processed with client_id='UPLOAD'. New chunks available immediately via /query."
+  },
+  "query": {
+    "answer": "Grounded Answer (Sufficient Evidence):\n\n- Source [1]: demo_upload, Section ACME Logistics - Emergency Firewall A... (score: 0.8770)\n- Source [2]: test_upload, Section Test Document (score: 0.3698)\n- Source [3]: shape_test, Section Test (score: 0.3631)\n- Source [4]: test_doc, Section General (score: 0.3624)\n\nThe above sources provide sufficient relevant context.",
+    "status": "answered",
+    "sources": [
+      {
+        "marker": "[1]",
+        "chunk_id": "demo_upload#tok_000",
+        "document_id": "demo_upload",
+        "section": "ACME Logistics - Emergency Firewall A...",
+        "page": 1,
+        "score": 0.877
+      },
+      {
+        "marker": "[2]",
+        "chunk_id": "test_upload#tok_000",
+        "document_id": "test_upload",
+        "section": "Test Document",
+        "page": 1,
+        "score": 0.3698
+      },
+      {
+        "marker": "[3]",
+        "chunk_id": "shape_test#tok_000",
+        "document_id": "shape_test",
+        "section": "Test",
+        "page": 1,
+        "score": 0.3631
+      },
+      {
+        "marker": "[4]",
+        "chunk_id": "test_doc#tok_000",
+        "document_id": "test_doc",
+        "section": "General",
+        "page": 1,
+        "score": 0.3624
+      }
+    ],
+    "total_sources": 4,
+    "threshold_used": 0.6,
+    "refusal_reason": null
+  }
+}
