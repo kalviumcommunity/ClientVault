@@ -7,6 +7,7 @@ needed). Only the server-error case patches the pipeline.
 
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -29,6 +30,17 @@ class TestRagApi(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(rag_api.app)
+        cls._log = rag_api.REQUEST_LOG
+        cls._tmp = tempfile.TemporaryDirectory()
+        rag_api.REQUEST_LOG = rag_api.RequestLogger(Path(cls._tmp.name) / "requests.jsonl")
+
+    @classmethod
+    def tearDownClass(cls):
+        rag_api.REQUEST_LOG = cls._log
+        cls._tmp.cleanup()
+
+    def setUp(self):
+        rag_api.CACHE.clear()
 
     def test_health(self):
         r = self.client.get("/health")

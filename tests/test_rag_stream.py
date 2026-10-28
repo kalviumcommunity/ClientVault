@@ -8,6 +8,7 @@ failure and live-LLM cases patch collaborators.
 import json
 import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -44,9 +45,18 @@ class TestQueryStream(unittest.TestCase):
         cls._delay = rag_api.STREAM_TOKEN_DELAY_MS
         rag_api.STREAM_TOKEN_DELAY_MS = 0
 
+        cls._log = rag_api.REQUEST_LOG
+        cls._tmp = tempfile.TemporaryDirectory()
+        rag_api.REQUEST_LOG = rag_api.RequestLogger(Path(cls._tmp.name) / "requests.jsonl")
+
     @classmethod
     def tearDownClass(cls):
         rag_api.STREAM_TOKEN_DELAY_MS = cls._delay
+        rag_api.REQUEST_LOG = cls._log
+        cls._tmp.cleanup()
+
+    def setUp(self):
+        rag_api.CACHE.clear()
 
     def stream(self, payload):
         r = self.client.post("/query/stream", json=payload)
@@ -61,7 +71,8 @@ class TestQueryStream(unittest.TestCase):
         self.assertEqual(types[-1], "done")
         self.assertGreater(types.count("token"), 1)  # progressive, not one blob
         self.assertEqual(set(types[1:-1]), {"token"})
-        self.assertEqual(events[-1], {"type": "done", "status": "answered", "mode": "offline"})
+        self.assertEqual({k: events[-1][k] for k in ("type", "status", "mode", "cache_hit")},
+                         {"type": "done", "status": "answered", "mode": "offline", "cache_hit": False})
 
     def test_streamed_text_matches_non_streaming_answer(self):
         _, events = self.stream(ANSWERABLE)
@@ -88,7 +99,7 @@ class TestQueryStream(unittest.TestCase):
         self.assertTrue(refusal["reason"])
         for c in refusal["candidates"]:
             self.assertLess(c["score"], refusal["threshold"])
-        self.assertEqual(events[1], {"type": "done", "status": "refused"})
+        self.assertEqual((events[1]["status"], events[1]["cache_hit"]), ("refused", False))
 
     def test_blank_question_is_rejected_before_streaming(self):
         r = self.client.post("/query/stream", json={"question": "  "})

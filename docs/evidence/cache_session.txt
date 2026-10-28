@@ -1,0 +1,36 @@
+# Live session against uvicorn src.rag_api:app (offline mode, RAG_API_STREAM_DELAY_MS=40), recorded 2026-10-28T14:00:28+0530
+ #  step                           endpoint       HTTP X-Cache    latency  req id    status
+ 1  stream                         /query/stream   200    MISS     3359ms  610bcc96  answered
+ 2  stream (repeat)                /query/stream   200     HIT       16ms  ce8915a6  answered
+ 3  stream (case/space variant)    /query/stream   200     HIT       14ms  1245d7bc  answered
+ 4  stream (other client)          /query/stream   200    MISS     2958ms  dfba657f  answered
+ 5  query                          /query          200    MISS       21ms  59eefba3  answered
+ 6  query (repeat)                 /query          200     HIT        4ms  f861f6ce  answered
+ 7  stream refusal                 /query/stream   200    MISS       31ms  5f55634a  refused
+ 8  stream refusal (repeat)        /query/stream   200     HIT        8ms  3933859d  refused
+ 9  invalid (blank question)       /query          422       -        3ms  -         rejected (422)
+10  stream, client disconnects     /query/stream   200    MISS      208ms  74423f38  client closed connection after 5 events
+11  stream (after disconnect)      /query/stream   200    MISS     3054ms  1214fed7  answered
+12  stream (repeat)                /query/stream   200     HIT       13ms  1c74930d  answered
+13  stream severity                /query/stream   200    MISS     2779ms  e949d806  answered
+14  stream severity (repeat)       /query/stream   200     HIT       11ms  7b18c838  answered
+
+# (between sessions: the chat UI asked the escalation question twice — MISS, then HIT; API restarted before that, clearing the in-memory cache)
+
+# Session 2
+# Live session against uvicorn src.rag_api:app (offline mode, RAG_API_STREAM_DELAY_MS=40), recorded 2026-10-28T14:03:21+0530
+ #  step                           endpoint       HTTP X-Cache    latency  req id    status
+ 1  stream                         /query/stream   200     HIT       27ms  2623df69  answered
+ 2  stream (repeat)                /query/stream   200     HIT       12ms  1ce8b347  answered
+ 3  stream (case/space variant)    /query/stream   200     HIT       17ms  23aa0e63  answered
+ 4  stream (other client)          /query/stream   200    MISS     2960ms  06d99b0a  answered
+ 5  query                          /query          200    MISS       32ms  4823b7ec  answered
+ 6  query (repeat)                 /query          200     HIT        5ms  07de5941  answered
+ 7  stream refusal                 /query/stream   200    MISS       25ms  448fa6b4  refused
+ 8  stream refusal (repeat)        /query/stream   200     HIT        4ms  6596d0d6  refused
+ 9  invalid (blank question)       /query          422       -        5ms  -         rejected (422)
+10  stream, client disconnects     /query/stream   200    MISS      217ms  6b8ee0a3  client closed connection after 5 events
+11  stream (after disconnect)      /query/stream   200    MISS     3077ms  be9ea20e  answered
+12  stream (repeat)                /query/stream   200     HIT       14ms  0b66300f  answered
+13  stream severity                /query/stream   200    MISS     2816ms  d338e493  answered
+14  stream severity (repeat)       /query/stream   200     HIT       12ms  66ddcd42  answered

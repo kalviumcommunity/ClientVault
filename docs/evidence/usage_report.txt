@@ -1,0 +1,31 @@
+==============================================================================
+  ClientVault RAG API — Usage Report
+==============================================================================
+  Window:            2026-10-28T08:30:28.510Z  →  2026-10-28T08:33:35.537Z
+  Total requests:    32   by endpoint: {'/query/stream': 26, '/query': 6}
+  By status:         {'answered': 23, 'refused': 5, 'rejected': 2, 'client_disconnected': 2}
+
+  Cache:             14 hits / 30 lookups (hit rate 46.7%), saved ≈ $0.003538
+  Tokens:            input 15003, output 1406, embedding 128   (sources: {'tiktoken-estimate': 14, 'cache': 14, 'none': 4})
+  Cost (estimated):  $0.003097   billed: $0.000000   LLM calls: 0
+  Latency (ms):      avg 934.59, p50 18.36, p95 3328.5   | hit avg 8.58, miss avg 1744.84
+  Errors:            2
+    - 2026-10-28T08:30:38.130Z /query [rejected] Value error, question must be a non-empty string (req 42694d470e5f43d4a7b38b855a33297e)
+    - 2026-10-28T08:33:27.386Z /query [rejected] Value error, question must be a non-empty string (req 9d627409646146a7911f61a823b7c108)
+
+  Usage over time (per minute):
+    period         requests   hits    est. cost    avg ms  errors
+    2026-10-28T08:30       14      6    $0.001399     958.1       1
+    2026-10-28T08:31        2      1    $0.000356   1726.21       0
+    2026-10-28T08:32        2      0    $0.000298    1459.3       0
+    2026-10-28T08:33       14      7    $0.001043    708.57       1
+
+  Most repeated questions:
+     10 × What is the escalation path for a P1 database outage?
+      8 × What are the P1 incident severity response times?
+      6 × How do we fail over the Nexus primary database?
+      4 × What is the best pizza topping in Naples?
+      2 × hi
+==============================================================================
+
+JSON summary written to docs/evidence/usage_report.json

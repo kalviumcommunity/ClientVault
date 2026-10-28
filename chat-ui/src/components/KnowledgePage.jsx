@@ -14,7 +14,7 @@
  * - Keyboard accessible; respects prefers-reduced-motion
  */
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { AlertTriangle, Loader2, Lock, RotateCcw, Search, Square, X } from 'lucide-react'
+import { AlertTriangle, Loader2, Lock, RotateCcw, Search, Square, X, Zap } from 'lucide-react'
 import MorphOrb from '@/components/ui/ai-thiking-orb-and-input'
 import { Button } from '@/components/ui/button'
 import { readSSE } from '@/lib/sse'
@@ -103,6 +103,26 @@ function AnswerText({ text, sources, onCite }) {
   })
 }
 
+/** Cache / usage / request-id line from the stream's `done` event (debugging aid). */
+function RequestMeta({ meta }) {
+  if (!meta?.requestId) return null
+  const u = meta.usage || {}
+  const tokens = (u.input_tokens || 0) + (u.output_tokens || 0)
+  const cost = typeof u.estimated_cost_usd === 'number' ? `$${u.estimated_cost_usd.toFixed(6)}` : null
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+      {meta.cacheHit
+        ? <span className="inline-flex items-center gap-1 text-success"><Zap className="size-3" aria-hidden="true" /> Served from cache</span>
+        : tokens > 0 && cost && (
+          <span title={u.llm_called ? 'Billed model usage' : 'No model was called; equivalent cost if it had been'}>
+            ~{tokens.toLocaleString()} tokens · est. {cost}{!u.llm_called && ' (not billed)'}
+          </span>
+        )}
+      <span className="font-mono" title={`Request ID ${meta.requestId}`}>req {meta.requestId.slice(0, 8)}</span>
+    </p>
+  )
+}
+
 // ------------------------------------------------------------------ //
 // Single conversation turn displayed in the history list              //
 // ------------------------------------------------------------------ //
@@ -164,6 +184,8 @@ function TurnCard({ turn, onRetry, onStop }) {
             {streaming && <span className="stream-caret" aria-hidden="true" />}
           </div>
 
+          {turn.status === 'answered' && <RequestMeta meta={turn.meta} />}
+
           {streaming && (
             <div>
               <Button variant="outline" size="xs" className="rounded-full" onClick={onStop}>
@@ -199,6 +221,7 @@ function TurnCard({ turn, onRetry, onStop }) {
           {turn.answer && (
             <div className={`${ANSWER_CARD} text-muted-foreground`}>{turn.answer}</div>
           )}
+          <RequestMeta meta={turn.meta} />
           {turn.refusalReason && (
             <div className="flex gap-2 bg-warning/10 border border-warning/30 rounded-lg p-3 text-xs text-warning max-w-[90%]">
               <AlertTriangle className="size-3.5 shrink-0 mt-px" aria-hidden="true" />
@@ -350,6 +373,9 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
           settle('refused')
           break
         case 'done':
+          if (typeof event.request_id === 'string') {
+            update({ meta: { requestId: event.request_id, cacheHit: event.cache_hit === true, usage: event.usage } })
+          }
           if (event.status === 'answered') {
             if (!received.answer.trim()) throw new Error('The stream finished without any answer text.')
             update({ status: 'answered' })
