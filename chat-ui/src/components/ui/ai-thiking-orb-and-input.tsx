@@ -4,7 +4,9 @@
  * Adapted from 21st.dev "ai-thiking-orb-and-input" by @anark17r for use as the
  * Knowledge Search composer:
  * - The request starts on submit (not after the launch animation) and its real
- *   outcome drives the ending: only "answered" gets the green resolve.
+ *   outcome drives the ending: only "answered" gets the green resolve;
+ *   "streaming" (retrieval returned, answer still arriving) returns to the pill
+ *   quickly so the caller can show the answer as it streams.
  * - No placeholder/fallback answer text; the answer, sources, refusal or error
  *   are rendered by the caller in the conversation thread.
  * - A single generic status label; the API reports no pipeline stages, so the
@@ -16,7 +18,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
 /* ───────────────────────────── copy ───────────────────────────── */
-export type ComposerOutcome = "answered" | "refused" | "error" | "cancelled";
+export type ComposerOutcome = "answered" | "streaming" | "refused" | "error" | "cancelled";
 
 const COPY = {
   placeholder: "Ask about a procedure, SLA, or runbook…",
@@ -24,6 +26,7 @@ const COPY = {
   send: "Ask",
   outcome: {
     answered: "Answer ready",
+    streaming: "Sources retrieved",
     refused: "Insufficient evidence",
     error: "Request failed",
     cancelled: "Cancelled",
@@ -40,6 +43,8 @@ export interface MorphOrbProps {
   onSubmit: (text: string) => Promise<ComposerOutcome>;
   /** Called when the user presses Escape mid-request. */
   onCancel?: () => void;
+  /** Blocks new submissions (e.g. while an answer is still streaming). */
+  disabled?: boolean;
   placeholder?: string;
   maxLength?: number;
   ariaLabel?: string;
@@ -192,6 +197,10 @@ const R_CONDENSE: Track[] = [
   T("orb.alpha", 1, 0, 0, 250, E.out),
   T("sOp", 1, 0, 0, 250, E.out),
 ];
+
+/* If the request answers while the orb is still flying in, cut the intro short
+   (after this much of it) so a streaming answer is visible as it arrives. */
+const MIN_INTRO_MS = 550;
 
 const FADE = ["oGlow", "oAur", "oPill", "oBall", "oGreen", "oRing", "oInput", "oHalo", "sOp", "orb.alpha", "trail"];
 
@@ -587,20 +596,48 @@ function createRuntime(env: Env): Runtime {
       await play(tracks, sig);
       if (sig.aborted) throw ABORT;
     };
+
+    /* intro (launch + assemble) can be cut short once the request settles */
+    const intro = new AbortController();
+    sig.addEventListener("abort", () => intro.abort(), { once: true });
+    let inIntro = true, early: ComposerOutcome | undefined;
+    const t0Intro = performance.now();
+    void cfg.request.then((o) => {
+      if (!inIntro) return;
+      const wait = MIN_INTRO_MS / env.getSpeed() - (performance.now() - t0Intro);
+      window.setTimeout(() => { if (inIntro) { early = o; intro.abort(); } }, Math.max(0, wait));
+    });
+    const goIntro = async (tracks: Track[]) => {
+      await play(tracks, intro.signal);
+      if (sig.aborted) throw ABORT;
+    };
+
     try {
       env.ui.setPhase("launch");
       hist.length = 0;
       if (!reduced) {
-        await go(launchTracks(geo));
-        setNow("r", ORB_D / 2);
-        env.ui.setPhase("assemble");
-        await go(ASSEMBLE);
+        await goIntro(launchTracks(geo));
+        if (!early) {
+          setNow("r", ORB_D / 2);
+          env.ui.setPhase("assemble");
+          await goIntro(ASSEMBLE);
+        }
       } else {
-        await go(R_OUT);
-        setNow("u", 1); setNow("w", ORB_D); setNow("h", ORB_D); setNow("r", ORB_D / 2);
-        setNow("sTy", 0); setNow("orb.k", 1); setNow("orb.spin", 0);
-        env.ui.setPhase("assemble");
-        await go(R_IN);
+        await goIntro(R_OUT);
+        if (!early) {
+          setNow("u", 1); setNow("w", ORB_D); setNow("h", ORB_D); setNow("r", ORB_D / 2);
+          setNow("sTy", 0); setNow("orb.k", 1); setNow("orb.spin", 0);
+          env.ui.setPhase("assemble");
+          await goIntro(R_IN);
+        }
+      }
+      inIntro = false;
+
+      if (early) {
+        // Settled mid-intro: go straight back to the pill; the caller shows the result.
+        env.ui.live(COPY.outcome[early]);
+        void toIdle("esc");
+        return;
       }
 
       /* think — until the request settled AND the minimum time elapsed */
@@ -638,7 +675,8 @@ function createRuntime(env: Env): Runtime {
         if (sig.aborted) throw ABORT;
         void toIdle("reset");
       } else {
-        await sleep(700 / env.getSpeed(), sig);
+        // "streaming": hand over quickly so the answer is visible as it arrives
+        await sleep((outcome === "streaming" ? 250 : 700) / env.getSpeed(), sig);
         if (sig.aborted) throw ABORT;
         void toIdle("esc");
       }
@@ -854,7 +892,7 @@ export default function MorphOrb(props: MorphOrbProps) {
     const rt = rtRef.current;
     if (!rt || rt.busy() || phaseRef.current !== "idle") return;
     const text = value.trim();
-    if (!text) { shake(); return; }
+    if (!text || propsRef.current.disabled) { shake(); return; }
     // Start the real request now; the animation runs alongside it.
     const request = Promise.resolve()
       .then(() => propsRef.current.onSubmit(text))
@@ -862,7 +900,7 @@ export default function MorphOrb(props: MorphOrbProps) {
     rt.start({ request, minThink: propsRef.current.minThinkMs ?? 600 });
   };
 
-  const ready = value.trim().length > 0;
+  const ready = value.trim().length > 0 && !props.disabled;
 
   const labelInner = (name: string) => {
     const tone = OUTCOME_TONE[name];
@@ -914,7 +952,7 @@ export default function MorphOrb(props: MorphOrbProps) {
               onChange={onChange}
               onKeyDown={onKeyDown}
             />
-            <button type="submit" className="mo-send" aria-label={ready ? "Submit question" : "Type a question to submit"} data-ready={ready ? "" : undefined}>
+            <button type="submit" className="mo-send" aria-label={props.disabled ? "Wait for the current answer to finish" : ready ? "Submit question" : "Type a question to submit"} aria-disabled={!ready} data-ready={ready ? "" : undefined}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M12 19V5" />
                 <path d="M5.5 11.5L12 5l6.5 6.5" />

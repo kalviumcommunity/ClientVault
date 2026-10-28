@@ -161,21 +161,46 @@
 .answer-fade  { animation: fadeInUp 0.4s ease-out; }
 .content-fade { animation: fadeIn 0.35s ease-out; }
 
-.source-chip {
+/* Citation list (SourcePanel) */
+.source-card {
   background: var(--secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 10px;
   font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: border-color 0.15s;
+  scroll-margin: 96px 0 200px;
 }
-.source-chip:hover { border-color: var(--iri-violet); }
-.source-chip:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+.source-card:hover, .source-card[data-open] { border-color: color-mix(in oklab, var(--iri-violet) 55%, transparent); }
+.source-card-head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 8px 12px; border-radius: inherit; cursor: pointer; text-align: left;
 }
-.source-chip .score { font-size: 10px; color: var(--muted-foreground); }
+.source-card-head:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.source-card[data-open] .source-chevron { transform: rotate(90deg); }
+.source-card .score { font-size: 10px; color: var(--muted-foreground); }
+.source-card-body { padding: 0 12px 12px 34px; }
+.source-text {
+  margin: 0; padding: 8px 10px; max-height: 16rem; overflow: auto;
+  white-space: pre-wrap; word-break: break-word; line-height: 1.55;
+  color: var(--foreground); background: var(--background);
+  border-left: 2px solid var(--iri-violet); border-radius: 6px;
+}
+
+/* Citation markers inside answers */
+.citation-marker {
+  display: inline; padding: 0 2px; margin: 0 1px; border-radius: 4px;
+  font: inherit; font-weight: 500; color: #c4b5fd; cursor: pointer;
+  background: color-mix(in oklab, var(--iri-violet) 18%, transparent);
+}
+.citation-marker:hover { background: color-mix(in oklab, var(--iri-violet) 32%, transparent); }
+.citation-marker:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+
+/* Streaming caret */
+@keyframes caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.stream-caret {
+  display: inline-block; width: 7px; height: 1.05em; margin-left: 2px; vertical-align: text-bottom;
+  background: var(--foreground); border-radius: 1px; animation: caret-blink 1s steps(1) infinite;
+}
 
 /* ------------------------------------------------------------------ */
 /* Reduced motion: disable all animations                              */
@@ -343,6 +368,7 @@
 .mo-tone-refused { color: var(--iri-amber); }
 .mo-tone-error { color: #f87171; }
 .mo-tone-cancelled { color: var(--text-2); }
+.mo-tone-streaming { color: var(--text-1); }
 .mo-dots { display: inline-flex; gap: 3px; align-items: center; padding-top: 3px; }
 .mo-dots i { width: 3px; height: 3px; border-radius: 50%; background: var(--text-2); opacity: .25; animation: mo-dot 1.2s ease-in-out infinite; }
 .mo-dots i:nth-child(2) { animation-delay: .16s; }

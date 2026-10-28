@@ -1,14 +1,18 @@
 /**
- * SourcePanel — Expandable source-evidence display.
+ * SourcePanel — citation list for one answer.
  *
- * Renders source chips returned by the RAG API. Each chip is keyboard-
- * accessible. Expanding a chip reveals chunk_id, section, page, and score.
- * No source fields are invented; only what the API returns is shown.
+ * Each source shows its marker ([1]), document, chunk ID, section/page and
+ * score; expanding it reveals the retrieved chunk text exactly as the API
+ * returned it. Answer citation markers open and scroll to the matching card
+ * (ids: `${idPrefix}-${index}`). No source fields are invented.
  */
+import { ChevronRight, FileText } from 'lucide-react'
+
 export default function SourcePanel({
   sources,
-  expandedSource,
+  openSources,
   onToggle,
+  idPrefix,
   title = 'Sources',
   emptyText = 'No source evidence was returned for this answer.',
 }) {
@@ -21,53 +25,60 @@ export default function SourcePanel({
   }
 
   return (
-    <div className="content-fade">
+    <section className="content-fade" aria-label={title}>
       <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
         {title} ({sources.length})
       </p>
-      <div className="flex flex-wrap items-start gap-2">
+      <ol className="space-y-1.5">
         {sources.map((s, i) => {
-          const isOpen = expandedSource === i
+          const isOpen = openSources.has(i)
           const docName = s.document_id?.split('/').pop() || s.document_id || 'document'
-          const pct = s.score != null ? Math.round(s.score * 100) : null
+          const pct = typeof s.score === 'number' ? Math.round(s.score * 100) : null
+          const location = [s.section, s.page != null ? `p. ${s.page}` : null].filter(Boolean).join(' · ')
+          const cardId = `${idPrefix}-${i}`
 
           return (
-            <div
-              key={i}
-              className="source-chip"
-              role="button"
-              tabIndex={0}
-              aria-expanded={isOpen}
-              aria-label={`Source ${i + 1}: ${docName}${pct != null ? `, ${pct}% match` : ''}`}
-              onClick={() => onToggle(i)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(i) }
-              }}
-            >
-              {/* Chip header row */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-medium text-violet-300">{s.marker}</span>
-                <span className="text-foreground font-medium">{docName}</span>
-                {pct != null && (
-                  <span className="score ml-auto">
-                    {pct}%
+            <li key={s.chunk_id || i} id={cardId} className="source-card" data-open={isOpen || undefined}>
+              <button
+                type="button"
+                className="source-card-head"
+                aria-expanded={isOpen}
+                aria-controls={`${cardId}-text`}
+                onClick={() => onToggle(i)}
+              >
+                <ChevronRight className="size-3.5 shrink-0 text-muted-foreground transition-transform source-chevron" aria-hidden="true" />
+                <span className="font-mono font-medium text-violet-300 shrink-0">{s.marker}</span>
+                <span className="min-w-0 flex-1 text-left">
+                  <span className="block text-foreground font-medium truncate">{docName}</span>
+                  <span className="block text-muted-foreground truncate">
+                    <span className="font-mono">{s.chunk_id}</span>{location && <> · {location}</>}
                   </span>
-                )}
-              </div>
+                </span>
+                {pct != null && <span className="score shrink-0">{pct}%</span>}
+              </button>
 
-              {/* Expanded detail */}
               {isOpen && (
-                <div className="mt-2 pt-2 border-t border-border text-xs text-muted-foreground space-y-1 content-fade break-all">
-                  {s.chunk_id  && <div><span className="font-medium text-foreground/70">Chunk:</span> {s.chunk_id}</div>}
-                  {s.section   && <div><span className="font-medium text-foreground/70">Section:</span> {s.section}</div>}
-                  {s.page != null && <div><span className="font-medium text-foreground/70">Page:</span> {s.page}</div>}
-                  {s.score != null && <div><span className="font-medium text-foreground/70">Score:</span> {s.score.toFixed(4)}</div>}
+                <div id={`${cardId}-text`} className="source-card-body content-fade">
+                  {typeof s.text === 'string' && s.text.trim()
+                    ? (
+                      <>
+                        <p className="flex items-center gap-1.5 mb-1.5 text-muted-foreground">
+                          <FileText className="size-3.5" aria-hidden="true" /> Retrieved chunk text
+                        </p>
+                        <blockquote className="source-text">{s.text}</blockquote>
+                      </>
+                    )
+                    : <p className="text-muted-foreground">The API did not return text for this source.</p>
+                  }
+                  {typeof s.score === 'number' && (
+                    <p className="mt-1.5 text-muted-foreground">Relevance score: {s.score.toFixed(4)}</p>
+                  )}
                 </div>
               )}
-            </div>
+            </li>
           )
         })}
-      </div>
-    </div>
+      </ol>
+    </section>
   )
 }
