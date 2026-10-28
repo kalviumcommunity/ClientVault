@@ -7,6 +7,9 @@ Produces the event sequence the chat UI renders progressively:
     token*     -> answer text, in order
     done       -> {"status": "answered", "mode": "live" | "offline"}
 
+In live mode a `usage` event (model-reported prompt/completion tokens) may
+precede `done`; the API consumes it and does not forward it to clients.
+
 or, when the guardrail rejects the evidence:
 
     refusal    -> refusal message, reason, below-threshold candidates
@@ -56,14 +59,15 @@ def build_context_text(sources: List[Dict[str, Any]]) -> str:
     )
 
 
-def stream_llm_tokens(
-    question: str,
-    client_id: Optional[str],
-    sources: List[Dict[str, Any]],
-    config: Dict[str, Any],
-) -> Iterator[str]:
-    """Forward content deltas from a streaming chat completion."""
-    client = create_client(base_url=config["base_url"], api_key=config["api_key"])
+def generation_mode(force_mock: bool) -> Dict[str, str]:
+    """Which generator a streamed answer will use: {"mode": "live"|"offline", "model": ...}."""
+    config = load_llm_config()
+    live = not force_mock and live_llm_available(config)
+    return {"mode": "live" if live else "offline", "model": config.get("model", "gpt-4o-mini")}
+
+
+def build_messages(question: str, client_id: Optional[str], sources: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    """Grounded chat prompt (system + user with retrieved context)."""
     first = sources[0]
     user_message = render_support_chat_messages(
         client_id=client_id or "ALL",
@@ -74,18 +78,38 @@ def stream_llm_tokens(
         context=build_context_text(sources),
         question=question,
     )[-1]["content"]
-    messages = [
+    return [
         {"role": "system", "content": load_default_system_prompt()},
         {"role": "user", "content": user_message},
     ]
+
+
+def stream_llm_tokens(
+    question: str,
+    client_id: Optional[str],
+    sources: List[Dict[str, Any]],
+    config: Dict[str, Any],
+    usage_sink: Optional[Dict[str, int]] = None,
+) -> Iterator[str]:
+    """Forward content deltas from a streaming chat completion.
+
+    If the model reports usage (stream_options.include_usage), it is written
+    to usage_sink.
+    """
+    client = create_client(base_url=config["base_url"], api_key=config["api_key"])
     stream = client.chat.completions.create(
         model=config["model"],
-        messages=messages,
+        messages=build_messages(question, client_id, sources),
         temperature=0.0,
         max_tokens=500,
         stream=True,
+        stream_options={"include_usage": True},
     )
     for chunk in stream:
+        usage = getattr(chunk, "usage", None)
+        if usage is not None and usage_sink is not None:
+            usage_sink["prompt_tokens"] = usage.prompt_tokens
+            usage_sink["completion_tokens"] = usage.completion_tokens
         if not chunk.choices:
             continue
         delta = chunk.choices[0].delta.content
@@ -132,9 +156,10 @@ def stream_rag_events(
     yield {"type": "citations", "sources": result.sources, "threshold": result.threshold_used}
 
     config = load_llm_config()
+    model_usage: Dict[str, int] = {}
     if not force_mock and live_llm_available(config):
         mode = "live"
-        tokens = stream_llm_tokens(question, client_id, result.sources, config)
+        tokens = stream_llm_tokens(question, client_id, result.sources, config, model_usage)
     else:
         mode = "offline"
         tokens = paced_tokens(result.answer, token_delay_s)
@@ -143,4 +168,6 @@ def stream_rag_events(
     for token in tokens:
         yield {"type": "token", "text": token}
 
+    if model_usage:
+        yield {"type": "usage", **model_usage}
     yield {"type": "done", "status": "answered", "mode": mode}
