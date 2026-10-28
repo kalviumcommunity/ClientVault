@@ -1,0 +1,39 @@
+================================================================================
+  ClientVault — End-to-End RAG Pipeline Report
+================================================================================
+  Query:                     What is the initial response time for a Severity 1 critical outage?
+  Client ID:                 NEXUS-002
+  Chunks retrieved:          5
+  Insufficient evidence:     False
+  Answer source:             LLM
+  Total pipeline latency:    5116.8 ms
+
+--------------------------------------------------------------------------------
+  Retrieved Sources:
+--------------------------------------------------------------------------------
+  [1] nexus_sla#tok_000  (score: 0.8816)
+       Client: NEXUS-002  Doc: nexus_sla  Section: INCIDENT SEVERITY CLASSIFICATIONS  Page: 1
+       [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Clie...
+
+  [2] nexus_service_level_agreement#tok_000  (score: 0.8719)
+       Client: NEXUS-002  Doc: nexus_service_level_agreement  Section: INCIDENT SEVERITY CLASSIFICATIONS  Page: 1
+       CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document ...
+
+  [3] nexus_sla#tok_001  (score: 0.7024)
+       Client: NEXUS-002  Doc: nexus_sla  Section: ESCALATION HIERARCHY  Page: 1
+        operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS ...
+
+  [4] nexus_database_failover_runbook#tok_000  (score: 0.6767)
+       Client: NEXUS-002  Doc: nexus_database_failover_runbook  Section: Nexus Financial Technologies - Databa...  Page: 1
+       # Nexus Financial Technologies - Database High Availability & Failover Protocol Document ID: SOP-DR-004 | Revision: 4.2 ...
+
+  [5] nexus_payment_gateway_runbook#tok_000  (score: 0.6755)
+       Client: NEXUS-002  Doc: nexus_payment_gateway_runbook  Section: Circuit Breaker Trigger Thresholds  Page: 1
+       Nexus Financial - Payment Gateway Runbook  Nexus Payment Gateway Operations & Circuit Breaker Runbook  Document ID: SOP-...
+
+--------------------------------------------------------------------------------
+  Generated Answer:
+--------------------------------------------------------------------------------
+  INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook.
+
+================================================================================
