@@ -1,184 +1,124 @@
 # ClientVault Chat UI — Sample Interaction & Evidence
 
-> **Date:** 2026-10-27  
-> **Branch:** `feat/rag-chat-ui`  
-> **API mode:** `RAG_API_FORCE_MOCK=true` (mock grounded responses — real API integration active, credentials required for live run)
+> **Captured:** 2026-10-28 · **Branch:** `feat/rag-chat-ui`
+> **Backend:** live `uvicorn src.rag_api:app` on `:8000`, called by the Vite dev UI on `:3000` through the `/api` proxy.
+> **Mode:** `RAG_API_FORCE_MOCK=true` (the default) with no `OPENAI_API_KEY`. Retrieval, hybrid scoring,
+> account filtering and the relevance guardrail all run for real over the indexed corpus; embeddings use the
+> deterministic offline model, and the "answer" is the guardrail module's offline grounded summary (a list of
+> the passages that cleared the threshold), not LLM prose. With a key and `RAG_API_FORCE_MOCK=false` the same UI
+> renders live-model answers unchanged.
+
+Every response and screenshot below comes from a real run. Raw HTTP captures are in
+[`docs/evidence/rag_api_live_responses.txt`](evidence/rag_api_live_responses.txt).
 
 ---
 
-## Scenario 1 — Grounded Answer with Source Citations
+## 1. Grounded answer with sources
 
-**Client selected:** `NEXUS-002` (Nexus Financial Technologies)  
-**Question:** "What is the escalation path for a P1 database outage?"
+![Grounded answer with expanded source](screenshots/01-grounded-answer-with-sources.jpg)
 
-**Backend `POST /query` request:**
-```json
-{
-  "question": "What is the escalation path for a P1 database outage?",
-  "client_id": "NEXUS-002",
-  "k": 5
-}
+**Client:** `NEXUS-002` · **Question:** "What is the escalation path for a P1 database outage?"
+
+```http
+POST /query
+{"question": "What is the escalation path for a P1 database outage?", "client_id": "NEXUS-002", "k": 5}
 ```
 
-**Backend `POST /query` response (mock):**
+Response (HTTP 200, abridged to 2 of 5 sources):
+
 ```json
 {
-  "answer": "For a P1 database outage at Nexus Financial Technologies:\n\n1. Immediately notify the on-call DBA via PagerDuty (SOP-DB-FAIL-04).\n2. Escalate to the Nexus Tier-2 infrastructure team within 15 minutes if unresolved.\n3. Open a Priority-1 ticket in SEC-ONB queue and attach diagnostic output.\n4. File a Post-Incident Review (PIR) within 1 hour of resolution.\n\nReference: nexus_database_failover_runbook.md — §Escalation, p. 3. [src1]",
+  "answer": "Grounded Answer (Sufficient Evidence):\n\n- Source [1]: nexus_database_failover_runbook, Section Nexus Financial Technologies - Databa... (score: 0.7395)\n- Source [2]: nexus_payment_gateway_runbook, Section Circuit Breaker Trigger Thresholds (score: 0.6913)\n...\n\nThe above sources provide sufficient relevant context.",
   "status": "answered",
   "sources": [
-    {
-      "marker": "[src1]",
-      "chunk_id": "nexus_database_failover_runbook_chunk_003",
-      "document_id": "data/corpus/nexus_database_failover_runbook.md",
-      "section": "Escalation",
-      "page": 3,
-      "score": 0.9231
-    },
-    {
-      "marker": "[src2]",
-      "chunk_id": "nexus_database_failover_runbook_chunk_007",
-      "document_id": "data/corpus/nexus_database_failover_runbook.md",
-      "section": "Recovery Steps",
-      "page": 7,
-      "score": 0.8104
-    },
-    {
-      "marker": "[src3]",
-      "chunk_id": "nexus_service_level_agreement_chunk_002",
-      "document_id": "data/corpus/nexus_service_level_agreement.txt",
-      "section": "P1 Response SLA",
-      "page": 2,
-      "score": 0.7642
-    }
+    {"marker": "[1]", "chunk_id": "nexus_database_failover_runbook#tok_000", "document_id": "nexus_database_failover_runbook", "section": "Nexus Financial Technologies - Databa...", "page": 1, "score": 0.7395},
+    {"marker": "[2]", "chunk_id": "nexus_payment_gateway_runbook#tok_000", "document_id": "nexus_payment_gateway_runbook", "section": "Circuit Breaker Trigger Thresholds", "page": 1, "score": 0.6913}
   ],
-  "total_sources": 3,
+  "total_sources": 5,
   "threshold_used": 0.6,
   "refusal_reason": null
 }
 ```
 
-**UI state:** `answered` — answer displayed with 3 expandable source chips  
-**Account isolation:** ✓ All sources scoped to `NEXUS-002` only
+The UI shows the answer as returned (citation markers `[1]`–`[5]` preserved) and one chip per source.
+Expanding a chip reveals exactly the returned `chunk_id`, `section`, `page` and `score`; nothing is added.
+All five sources are `nexus_*` documents (account isolation).
 
----
+## 2. Follow-up question → safe refusal
 
-## Scenario 2 — Safe Refusal (Insufficient Context)
+![Follow-up refusal](screenshots/02-followup-refusal.jpg)
 
-**Client selected:** `NEXUS-002`  
-**Question:** "What is the weather forecast for New York?"
+**Question (same thread):** "What is the best pizza topping in Naples?"
 
-**Backend `POST /query` response (mock):**
 ```json
 {
   "answer": "I don't have enough reliable context to answer that. The retrieved evidence does not contain sufficient relevant information to provide a grounded answer.",
   "status": "refused",
-  "sources": [],
-  "total_sources": 0,
+  "refusal_reason": "Only 0/5 chunks above threshold 0.6 (highest: 0.3831); No chunks meet minimum score threshold 0.6",
   "threshold_used": 0.6,
-  "refusal_reason": "No chunks scored above the relevance threshold of 0.60. Highest score: 0.23."
+  "total_sources": 5
 }
 ```
 
-**UI state:** `refused` — refusal message shown; refusal reason in amber panel; sources panel shows "No source evidence was returned"  
-**Hallucination guardrail:** ✓ Active — fabrication prevented
+The backend's refusal message and reason are shown verbatim. The five retrieved chunks are labelled
+**"Retrieved candidates — below relevance threshold, not used as evidence"** so they are never mistaken for
+supporting evidence. The previous turn stays in the history.
+
+## 3. Backend unavailable → error + retry
+
+![Backend down error with retry](screenshots/03-backend-down-error-retry.jpg)
+
+The API server was stopped and a question submitted. The Vite proxy returned HTTP 500 and the turn showed an
+error with **↻ Retry**. (This screenshot predates the message wording change; the current text is
+"The RAG API is unavailable or failed to respond (HTTP 500). Try again.") After restarting the API, Retry
+replaced the failed turn in place with the real response: a refusal, because the best match scored 0.5261,
+below the 0.6 threshold.
+
+## 4. Loading state
+
+![Thinking orb](screenshots/04-loading-thinking-orb.jpg)
+
+To hold the loading state long enough to screenshot, `window.fetch` was wrapped in the browser to wait
+4 s before making the **real** request. The orb, the disabled input ("Searching…") and the disabled Ask button
+are shown, and `role="status"` announces "Searching knowledge base". The orb label is visual feedback only; the
+UI does not claim specific backend stages.
+
+## 5. Mobile (375 px)
+
+![Mobile layout](screenshots/05-mobile-375px.jpg)
+
+No horizontal scroll (`scrollWidth == clientWidth == 375`); the top nav wraps and the pill input stays docked.
 
 ---
 
-## Scenario 3 — Backend API Error
+## UI state coverage (verified in the browser on 2026-10-28)
 
-**Simulated:** network failure or server 500  
-**UI state:** `error` — red error panel with "↻ Retry" button; input restored; duplicate submission blocked
+| State | How it was produced | Result |
+|---|---|---|
+| Idle / blank input | Empty input | Ask button disabled; blank never submitted |
+| Loading | Real request, delayed 4 s in-browser | Orb + `role=status`; input and button disabled |
+| Answered with citations | Real API | Answer + 5 expandable source chips |
+| Refused | Real API, out-of-domain question | Verbatim refusal + reason; candidates labelled below-threshold |
+| Validation error | Real API, `"   "` sent via `queryRAG` | "Invalid question: Value error, question must be a non-empty string" |
+| Server / backend down | API process stopped | Error turn + Retry; Retry succeeded after restart |
+| Network failure | `fetch` rejected with `TypeError` in-browser | "Network error — could not reach the RAG API…" |
+| Timeout | Response delayed 40 s in-browser | Aborted at 30 s: "Request timed out…" + Retry; input re-enabled |
+| Malformed / empty / unknown `status` | Stubbed responses in-browser | "The server returned an empty or malformed response." (never shown as success) |
+| Navigate away mid-request | Left Knowledge Search during a request | Turn becomes "Request cancelled…" + Retry, no stuck orb |
+| History across navigation | Knowledge → Documents → Knowledge | Thread preserved |
+| Per-client threads | Switched NEXUS-002 → ACME-001 → back | Separate threads; no cross-account evidence |
+| Clear conversation | Clicked Clear | Thread emptied; in-flight request cancelled silently |
 
----
+**Not verified in a browser:** `prefers-reduced-motion` could not be emulated in the test browser. The global
+CSS rule in `chat-ui/src/index.css` (present in the production bundle) neutralises all animations, and
+auto-scroll switches to `behavior: 'auto'` under that preference.
 
-## Scenario 4 — Multi-Turn Conversation
-
-Turn 1: "What SLA commitments apply to NEXUS-002?"  
-→ Answered with sources from `nexus_service_level_agreement.txt`
-
-Turn 2: "What happens if those SLAs are breached?"  
-→ Follow-up answered using the same client scope without resetting history
-
-Turn 3: User clicks "✕ Clear conversation" → history cleared, input focused
-
----
-
-## UI Component Evidence
-
-### Architecture
+## Request flow
 
 ```
-App.jsx
-├── TopNav.jsx           — Persistent navigation (Dashboard/Clients/Knowledge/Documents/Upload)
-├── DashboardPage.jsx    — KPI targets, corpus health, client quick-select
-├── ClientsPage.jsx      — Account browser, account isolation lock
-├── KnowledgePage.jsx    — Core RAG chat: orb, pill input, multi-turn history
-│   ├── ThinkingOrb.jsx  — Animated conic-gradient orb (21st.dev reference style)
-│   └── SourcePanel.jsx  — Expandable source evidence chips
-├── DocumentsPage.jsx    — Per-client document library with indexing status
-└── UploadPage.jsx       — Admin document upload form
+Pill input → queryRAG() ──POST {API_BASE}/query──▶ FastAPI src/rag_api.py
+  (VITE_API_URL or /api proxy;                       └─ guarded_generate()
+   30 s timeout, VITE_API_TIMEOUT_MS)                    ├─ FilteredRetriever (client_id filter, hybrid score)
+                                                         ├─ assess_retrieval (threshold 0.6)
+                                                         └─ answered | refused + sources
 ```
-
-### Backend Integration
-
-- **Endpoint:** `POST /query` (FastAPI, `src/rag_api.py`)
-- **Request:** `{ question, client_id, k }`
-- **Response:** `{ answer, status, sources[], total_sources, threshold_used, refusal_reason }`
-- **Timeout:** `AbortSignal.timeout(30000)` (30 s)
-- **CORS:** Allowlisted origins via `RAG_API_CORS_ORIGINS` env var
-- **Dev proxy:** Vite proxies `/api` → `http://localhost:8000` (no hardcoded URLs)
-
-### All UI States Implemented
-
-| State      | Trigger                              | UI                                              |
-|------------|--------------------------------------|-------------------------------------------------|
-| `idle`     | Page load, after clear               | Orb icon, prompt text, client-scope notice      |
-| `loading`  | Request in-flight                    | Animated thinking orb + stage labels            |
-| `answered` | `status: "answered"`                 | Answer bubble + expandable source chips         |
-| `refused`  | `status: "refused"`                  | Refusal message + amber refusal-reason panel    |
-| `error`    | HTTP error / network failure         | Red error panel + ↻ Retry + Ask new question    |
-
-### Accessibility
-
-- `aria-live="polite"` on conversation area
-- `aria-label` on all interactive elements
-- `aria-current="page"` on active nav link
-- `aria-expanded` on expandable source chips
-- Keyboard: Enter to submit, Space/Enter on chips
-- `prefers-reduced-motion` respected via global CSS
-- Skip-to-content link
-- Visible focus rings on all interactive elements
-
----
-
-## Checks Run
-
-| Check                     | Result                                                      |
-|---------------------------|-------------------------------------------------------------|
-| `npm run build` (Vite)    | ✅ 39 modules, 0 errors, 0 warnings — 168 kB JS / 21 kB CSS |
-| Python tests (`pytest`)   | ✅ 142 tests passing (pre-existing suite, no regression)     |
-| CORS middleware           | ✅ Added with allowlist (not wildcard)                       |
-| Backend API shape         | ✅ Matches `QueryResponse` schema in `rag_api.py`            |
-| No hardcoded URLs         | ✅ `VITE_API_URL` env var + Vite `/api` proxy                |
-| No mock data in UI        | ✅ `queryRAG()` calls real `/query` endpoint                 |
-| Refusal preserving        | ✅ `refusal_reason` displayed verbatim from backend          |
-
----
-
-## Running Locally
-
-```bash
-# 1. Start the backend
-source .venv/bin/activate   # or: pip install -r requirements.txt
-uvicorn src.rag_api:app --reload --port 8000
-
-# 2. Start the frontend (proxies /api → localhost:8000)
-cd chat-ui
-npm install
-npm run dev         # → http://localhost:3000
-
-# 3. Open http://localhost:3000
-#    Select a client → Knowledge Search → Ask a question
-```
-
-> **Note:** Set `RAG_API_FORCE_MOCK=false` and `OPENAI_API_KEY=<key>` in `.env` for live RAG responses with real embeddings and ChromaDB retrieval.

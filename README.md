@@ -525,6 +525,29 @@ Tokens Used: 92 (Prompt: 38, Completion: 54)
 
 ---
 
+## RAG Chat UI (Knowledge Search)
+
+React 18 + Vite + Tailwind app in `chat-ui/`, backed by the FastAPI RAG API (`src/rag_api.py`, `POST /query`).
+
+```bash
+# Terminal 1 — backend (http://localhost:8000)
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn src.rag_api:app --port 8000
+
+# Terminal 2 — frontend (http://localhost:3000, proxies /api → :8000)
+cd chat-ui
+npm install
+npm run dev
+
+# Production build / API tests
+npm --prefix chat-ui run build
+python -m unittest tests.test_rag_api
+```
+
+Config: `RAG_API_*` in `.env`; `VITE_API_URL` / `VITE_API_TIMEOUT_MS` for the UI (see `.env.example`).
+Sample interaction and screenshots: [`docs/CHAT_UI_SAMPLE_INTERACTION.md`](docs/CHAT_UI_SAMPLE_INTERACTION.md).
+
 ## Security & Secrets Policy
 
 1. **No Secret Leaks:** `.env`, API credentials, and certificates are strictly excluded by `.gitignore`.

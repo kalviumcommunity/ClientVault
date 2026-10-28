@@ -81,31 +81,25 @@ reduction ≥30%.
 
 ## 3. How to run the project
 
-Fill these in as the project is built (currently the artifact is the Mock
-UX at `mock-ux.html`, plus repo-constitution files; the app under
-`src/` is not yet created):
+Real commands for what exists today (Python 3.12 `.venv`; Node for `chat-ui/`):
 
 ```bash
 # Foundation verification & environment health check
 source .venv/bin/activate
 python src/main.py
 
-# UI (Next.js / React) — once the app lands
-npm install
-npm run dev
+# Chat UI (React 18 + Vite + Tailwind) — http://localhost:3000, proxies /api → :8000
+npm --prefix chat-ui install
+npm --prefix chat-ui run dev
+npm --prefix chat-ui run build
 
-# Backend API (FastAPI) — once the app lands
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+# Backend RAG API (FastAPI) — http://localhost:8000
+python -m uvicorn src.rag_api:app --port 8000
 
-# Tests / lint / typecheck / build — one stable interface
-make dev
-make test
-make lint
-make typecheck
-make build
-make check       # lint + typecheck + test + build
+# Python tests
+python -m unittest discover -s tests
+
+# Planned (no Makefile yet): make dev | test | lint | typecheck | build | check
 ```
 
 Replace placeholders with real commands as the stack lands. Never ship
@@ -226,15 +220,21 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Built premium RAG chat UI (`feat/rag-chat-ui`, commit `212c714`): multi-page React SPA (Dashboard, Clients, Knowledge Search, Documents, Upload), animated thinking orb, real backend integration via `POST /query`, multi-turn conversation history, all UI states (idle/loading/answered/refused/error), expandable source panels, accessibility (aria, skip-link, reduced-motion), CORSMiddleware on FastAPI with env-controlled allowlist, and sample interaction documentation. Vite build: ✅ 39 modules, 0 errors. 57 Python tests passing (6 pre-existing failures in token_cost_estimator unrelated to this change).
+**Last change:** Hardened and verified the RAG chat UI on `feat/rag-chat-ui` (not yet pushed; no PR yet). Fixed real bugs found in review and browser testing: the client timeout never fired; FastAPI 422 `detail` arrays rendered as "[object Object]"; any non-`refused` status (including unknown/missing) was shown as a success; refusals labelled below-threshold candidates as "Sources"; the orb claimed "Retrieve/Re-rank/Ground" stages the API does not report; conversation history was lost on page navigation. History now lives in `App.jsx` keyed per client. Added `tests/test_rag_api.py` (9 tests), declared missing `fastapi`/`uvicorn`/`httpx` in `requirements.txt`, replaced the hand-written (non-real) sample interaction with real captured API output + 5 browser screenshots, added README run steps and `VITE_*` vars to `.env.example`, and merged three stacked state headers in this section into one.
 
-**Date / iteration:** Bug Fix & Main Integration Sprint.
+**Checks (2026-10-28, Python 3.12 `.venv`):** full suite 151 tests, 1 failure — `test_corpus_embedder.test_environment_config_loading` passes alone but fails in the full run (test-order env leakage; pre-existing, unrelated). `tests.test_rag_api` 9/9 OK. `npm --prefix chat-ui run build` OK. No frontend lint/typecheck/unit tests are configured. Browser verification of every UI state is recorded in `docs/CHAT_UI_SAMPLE_INTERACTION.md`; `prefers-reduced-motion` could not be emulated.
 
-**Current phase (workflow doc):** Production Readiness & Main Integration.
+**Date / iteration:** RAG Chat UI, API Integration & Submission.
 
-**Current branch:** `main`
+**Current phase (workflow doc):** Chat UI verification & PR submission.
+
+**Current branch:** `feat/rag-chat-ui`
 
 **What exists right now:**
+- `chat-ui/` — React 18 + Vite + Tailwind SPA (top nav per mock UX: Dashboard, Clients, Knowledge Search, Documents, Upload). `App.jsx` holds active page, active client and per-client conversation threads. `components/KnowledgePage.jsx` is the RAG chat: `queryRAG()` → `POST {VITE_API_URL or /api}/query`, 30 s timeout (`VITE_API_TIMEOUT_MS`), strict response validation (status must be `answered`/`refused`), retry in place, cancel on navigate-away/clear. `ThinkingOrb.jsx` (21st.dev-inspired, CSS only), `SourcePanel.jsx` (expandable chips; only API-returned fields). Dev proxy `/api` → `:8000` in `vite.config.js`.
+- `src/rag_api.py` — FastAPI app: `GET /health`, `POST /query` (`question` 1–1000 chars, optional `client_id`, `k` 1–20) → `{answer, status, sources[{marker, chunk_id, document_id, section, page, score}], total_sources, threshold_used, refusal_reason}`; runs `src/hallucination_guardrails.guarded_generate`; safe 500s; CORS allowlist from `RAG_API_CORS_ORIGINS`. Run: `python -m uvicorn src.rag_api:app --port 8000`.
+- `tests/test_rag_api.py` — 9 tests: health, grounded answer + citation markers, account isolation, refusal, 422s, safe 500, CORS allow/deny.
+- `docs/CHAT_UI_SAMPLE_INTERACTION.md`, `docs/screenshots/01–05*.jpg`, `docs/evidence/rag_api_live_responses.txt` — real captured interaction evidence (offline/`RAG_API_FORCE_MOCK=true` mode).
 - `src/reranker.py` — Production two-stage candidate retrieval and re-ranking engine:
   - Task 1: Coarse candidate retrieval pulling larger pool ($K_{\text{initial}}=10$) from ChromaDB to maximize initial recall.
   - Task 2: Cross-scoring re-ranker evaluating token co-occurrence ($S_{\text{cross}}$), exact phrase / technical codes ($S_{\text{phrase}}$), procedural action density ($S_{\text{action}}$), and vector baseline ($S_{\text{vector}}$).
@@ -267,33 +267,6 @@ Update durable records:
 - `tests/test_ingestion_pipeline.py` — Automated `unittest` suite (8 tests) testing full pipeline run, client/format breakdown, mathematical reconciliation, skipped file audit, sample chunk inspection, and dropped file detection.
 - `ingestion_summary.log` — Verifiable terminal report recording full corpus ingestion metrics, client account tables, failure logs, and sample chunk inspections.
 - `src/chunker.py` — Multi-strategy document chunking, token-aware chunker, metadata provenance engine.
-**Last change:** Enhanced `DocumentLoader` (`src/document_loader.py`) with zero-dependency PDF stream extraction (`BT...ET` and `Tj` operator parsing), added `acme_emergency.pdf` to `data/sample_corpus/`, expanded unit test suite (`tests/test_document_loader.py`) to 11 passing tests, generated updated intake confirmation report in `document_intake_output.log`, and resolved macOS base directory path matching.
-
-**Date / iteration:** Multi-Format Document Loader & Intake Sprint.
-
-**Current phase (workflow doc):** Phase 13 — Multi-Format Document Loader & Intake Confirmation.
-
-**Current branch:** `feat/multi-format-document-loader`
-
-**What exists right now:**
-- `src/document_loader.py` — Multi-format loader with extractors for Markdown, Plain Text, HTML, and PDF, non-crashing skip handling for corrupt/missing files, character count reporting, snippet previews, and metadata/source preservation.
-- `data/sample_corpus/` — Mixed format test corpus:
-  - `acme_onboarding.md` (Markdown procedure runbook)
-  - `nexus_sla.txt` (Plain text SLA matrix)
-  - `vertex_dr.html` (HTML disaster recovery runbook)
-  - `acme_emergency.pdf` (Standard uncompressed PDF format protocol)
-  - `corrupt_unsupported.bin` (Corrupted/unsupported file for resilience validation)
-- `tests/test_document_loader.py` — Automated `unittest` suite (11 tests) validating single file loading across formats, source identity preservation, directory batch intake, and non-crashing skip behavior.
-- `document_intake_output.log` — Terminal execution capture of corpus intake verification and skipped file reports.
-**Last change:** Implemented metadata-scoped filtered retrieval and hybrid lexical-semantic search engine (`src/filtered_retriever.py`), added strongly-typed `MetadataFilter` converting to ChromaDB where clauses (`client_id`, `document_id`, `section`, `page`), implemented BM25/lexical term overlap and technical identifier matching (e.g. ticket queue `SEC-ONB`, SOP IDs), demonstrated side-by-side comparison of unfiltered vs. filtered vs. hybrid retrieval proving +33.3% precision gain and 100% account isolation compliance, persisted audit logs (`sample_filtered_search_output.log`) and structured JSON (`sample_filtered_search_results.json`), and added 8 automated unit tests (`tests/test_filtered_retriever.py`).
-
-**Date / iteration:** Scoped Filtered Retrieval & Hybrid Search Sprint.
-
-**Current phase (workflow doc):** Phase 26 — Scoped Filtered Retrieval and Hybrid Lexical Search.
-
-**Current branch:** `feat/filtered-retrieval-and-hybrid-search`
-
-**What exists right now:**
 - `src/filtered_retriever.py` — Production metadata-scoped and hybrid retrieval engine:
   - Task 1: `MetadataFilter` dataclass converting to ChromaDB `$and` where-clauses for account isolation (`client_id`), document scoping (`document_id`), section scoping (`section`), and page boundaries.
   - Task 2: Comparative evaluation engine (`compare_filtered_and_unfiltered()`) proving filtered retrieval eliminates cross-client contamination and noise chunks.
@@ -456,8 +429,10 @@ Update durable records:
 - `AGENTS.md` — Live AI contract and single source of truth.
 
 **What does NOT yet exist (next work):**
-- Application full stack under `src/` or `backend/` (FastAPI endpoints, ingestion chunker, Qdrant/Chroma client integration, RAG pipeline, Next.js UI).
-- Synthetic 3-client corpus (15 documents) and 30 evaluation questions.
+- Live-model run of the chat UI (needs `OPENAI_API_KEY` + `RAG_API_FORCE_MOCK=false`); current evidence is offline mode, where the "answer" is a list of passages that cleared the threshold.
+- Frontend lint/typecheck/unit tests (none configured in `chat-ui/`).
+- Fix for order-dependent `test_corpus_embedder.test_environment_config_loading`.
+- 30-question evaluation set.
 - Remaining Phase 5 baseline files: `CONTRIBUTING.md`, `SECURITY.md`, `.editorconfig`, `.gitattributes`, `.github/` templates, `docs/agent/STATE.md`.
 
 **Known decisions / gotchas:**
@@ -484,4 +459,4 @@ Update durable records:
 - Dashboard surfaces v1.2 quantified KPI targets.
 - Corpus is synthetic: 3 clients × 5 docs (2 onboarding, 1 SLA, 2 runbooks each); PDF/DOCX (+ TXT edge cases); 30-question eval set.
 
-**Next action (if continuing):** Open PR for `feat/text-cleaning-and-normalization`, merge to `main`, then proceed to semantic/fixed chunking pipeline.
+**Next action (if continuing):** With the user's authorization, push `feat/rag-chat-ui`, open a PR to `main`, confirm the team repo is public, and verify the PR URL. Do not claim a PR exists until its URL is verified.
