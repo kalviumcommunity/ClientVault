@@ -12,6 +12,13 @@ pydantic>=2.0.0
 
 # Tokenizer & Cost Measurement
 tiktoken>=0.7.0
-fastapi>=0.100.0
-uvicorn>=0.24.0
+
+# RAG API (src/rag_api.py)
+fastapi>=0.110.0
+uvicorn>=0.29.0
+
+# Test client for API tests (fastapi.testclient)
+httpx>=0.27.0
+
+# Multipart form parsing for POST /documents uploads (src/document_upload.py)
 python-multipart>=0.0.30

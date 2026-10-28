@@ -1,100 +1,111 @@
-"""Tests for the RAG API (src/rag_api.py)."""
-import json
+"""
+Tests for the RAG API (src/rag_api.py) — the contract the chat UI depends on.
+
+Runs the real guardrail pipeline in deterministic offline mode (no API key
+needed). Only the server-error case patches the pipeline.
+"""
+
+import os
+import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+os.environ.setdefault("RAG_API_FORCE_MOCK", "true")
+
 from fastapi.testclient import TestClient
-from src.rag_api import app
 
-client = TestClient(app)
+from src import rag_api
+from src.hallucination_guardrails import REFUSAL_MESSAGE
 
-
-class TestHealth(unittest.TestCase):
-    def test_health_endpoint(self):
-        resp = client.get("/health")
-        self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertEqual(data["status"], "healthy")
+SOURCE_FIELDS = {"marker", "chunk_id", "document_id", "section", "page", "score"}
 
 
-class TestQueryValidation(unittest.TestCase):
-    def test_empty_question(self):
-        resp = client.post("/query", json={"question": ""})
-        self.assertEqual(resp.status_code, 422)
+class TestRagApi(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.client = TestClient(rag_api.app)
 
-    def test_missing_question(self):
-        resp = client.post("/query", json={})
-        self.assertEqual(resp.status_code, 422)
+    def test_health(self):
+        r = self.client.get("/health")
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["status"], "healthy")
 
-    def test_blank_question(self):
-        resp = client.post("/query", json={"question": "   "})
-        self.assertEqual(resp.status_code, 422)
-
-    def test_oversized_question(self):
-        resp = client.post("/query", json={"question": "x" * 2000})
-        self.assertEqual(resp.status_code, 422)
-
-    def test_valid_question(self):
-        resp = client.post("/query", json={"question": "What is the Sev-1 SLA?"})
-        self.assertEqual(resp.status_code, 200)
-
-
-class TestQueryResponse(unittest.TestCase):
-    def test_answer_field_present(self):
-        resp = client.post("/query", json={"question": "What is the Sev-1 SLA?"})
-        data = resp.json()
-        self.assertIn("answer", data)
-        self.assertIn("status", data)
-        self.assertIn("sources", data)
-
-    def test_answer_not_empty(self):
-        resp = client.post("/query", json={"question": "What is the Sev-1 SLA?"})
-        data = resp.json()
-        self.assertGreater(len(data["answer"]), 0)
-
-    def test_sources_serialized(self):
-        resp = client.post("/query", json={
-            "question": "Sev-1 response time?", "client_id": "NEXUS-002"
-        })
-        data = resp.json()
-        for src in data["sources"]:
-            self.assertIn("marker", src)
-            self.assertIn("chunk_id", src)
-            self.assertIn("document_id", src)
-            self.assertIn("score", src)
-
-    def test_status_is_valid(self):
-        resp = client.post("/query", json={"question": "Sev-1 response time?"})
-        data = resp.json()
-        self.assertIn(data["status"], ("answered", "refused", "error"))
-
-    def test_with_client_id(self):
-        resp = client.post("/query", json={
-            "question": "What is the Sev-1 SLA?",
+    def test_grounded_answer_returns_sources(self):
+        r = self.client.post("/query", json={
+            "question": "What is the escalation path for a P1 database outage?",
             "client_id": "NEXUS-002",
         })
-        self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertEqual(data["status"], "answered")
+        self.assertEqual(r.status_code, 200)
+        body = r.json()
+        self.assertEqual(body["status"], "answered")
+        self.assertIsNone(body["refusal_reason"])
+        self.assertTrue(body["answer"])
+        self.assertGreater(len(body["sources"]), 0)
+        self.assertEqual(body["total_sources"], len(body["sources"]))
+        for s in body["sources"]:
+            self.assertEqual(set(s), SOURCE_FIELDS)
+            # Citation markers in the answer map to returned sources
+            self.assertIn(s["marker"], body["answer"])
 
-    def test_refusal_status(self):
-        resp = client.post("/query", json={
-            "question": "What is the travel reimbursement policy?",
-            "client_id": "NONEXISTENT",
-            "k": 3,
+    def test_account_isolation(self):
+        r = self.client.post("/query", json={
+            "question": "What is the escalation path for a P1 database outage?",
+            "client_id": "NEXUS-002",
         })
-        data = resp.json()
-        # May be answered or refused depending on retrieval
-        self.assertIn(data["status"], ("answered", "refused"))
+        for s in r.json()["sources"]:
+            self.assertTrue(s["document_id"].startswith("nexus"), s["document_id"])
 
+    def test_out_of_domain_question_is_refused(self):
+        r = self.client.post("/query", json={
+            "question": "What is the best pizza topping in Naples?",
+            "client_id": "ACME-001",
+        })
+        self.assertEqual(r.status_code, 200)
+        body = r.json()
+        self.assertEqual(body["status"], "refused")
+        self.assertEqual(body["answer"], REFUSAL_MESSAGE)
+        self.assertTrue(body["refusal_reason"])
+        for s in body["sources"]:
+            self.assertLess(s["score"], body["threshold_used"])
 
-class TestPipelineErrorHandling(unittest.TestCase):
-    def test_k_out_of_range(self):
-        resp = client.post("/query", json={"question": "test", "k": 0})
-        self.assertEqual(resp.status_code, 422)
+    def test_blank_question_rejected(self):
+        r = self.client.post("/query", json={"question": "   "})
+        self.assertEqual(r.status_code, 422)
+        self.assertIsInstance(r.json()["detail"], list)
 
-    def test_k_too_large(self):
-        resp = client.post("/query", json={"question": "test", "k": 100})
-        self.assertEqual(resp.status_code, 422)
+    def test_missing_question_rejected(self):
+        r = self.client.post("/query", json={"client_id": "ACME-001"})
+        self.assertEqual(r.status_code, 422)
+
+    def test_overlong_question_rejected(self):
+        r = self.client.post("/query", json={"question": "x" * (rag_api.MAX_QUESTION_LENGTH + 1)})
+        self.assertEqual(r.status_code, 422)
+
+    def test_pipeline_failure_returns_safe_500(self):
+        with patch.object(rag_api, "guarded_generate", side_effect=RuntimeError("boom secret")):
+            r = self.client.post("/query", json={"question": "anything"})
+        self.assertEqual(r.status_code, 500)
+        self.assertEqual(r.json()["detail"], "Internal server error")
+        self.assertNotIn("secret", r.text)
+
+    def test_cors_allows_configured_origin_only(self):
+        allowed = rag_api.CORS_ORIGINS[0]
+        r = self.client.options("/query", headers={
+            "Origin": allowed,
+            "Access-Control-Request-Method": "POST",
+        })
+        self.assertEqual(r.headers.get("access-control-allow-origin"), allowed)
+
+        r = self.client.options("/query", headers={
+            "Origin": "https://evil.example.com",
+            "Access-Control-Request-Method": "POST",
+        })
+        self.assertIsNone(r.headers.get("access-control-allow-origin"))
 
 
 if __name__ == "__main__":
