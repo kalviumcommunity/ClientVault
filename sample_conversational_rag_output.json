@@ -1,0 +1,93 @@
+{
+  "history_limit": 600,
+  "turns": [
+    {
+      "turn_number": 1,
+      "original_question": "What is the initial response time for a Severity 1 critical outage?",
+      "rewritten_query": "What is the initial response time for a Severity 1 critical outage?",
+      "retrieved_chunks": [
+        {
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "score": 0.8816
+        },
+        {
+          "chunk_id": "nexus_service_level_agreement#tok_000",
+          "document_id": "nexus_service_level_agreement",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "score": 0.8719
+        },
+        {
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "section": "ESCALATION HIERARCHY",
+          "score": 0.7024
+        },
+        {
+          "chunk_id": "nexus_database_failover_runbook#tok_000",
+          "document_id": "nexus_database_failover_runbook",
+          "section": "Nexus Financial Technologies - Databa...",
+          "score": 0.6767
+        },
+        {
+          "chunk_id": "nexus_payment_gateway_runbook#tok_000",
+          "document_id": "nexus_payment_gateway_runbook",
+          "section": "Circuit Breaker Trigger Thresholds",
+          "score": 0.6755
+        }
+      ],
+      "answer": "Grounded Answer (Turn 1):\n\n[1] nexus_sla#tok_000 \u2014 [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Clie...\n[2] nexus_service_level_agreement#tok_000 \u2014 CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document ...\n[3] nexus_sla#tok_001 \u2014  operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS ...\n\n(+ 2 additional sources)\n\nThe above sources provide sufficient relevant context.",
+      "sources_used": [
+        "[1] nexus_sla#tok_000",
+        "[2] nexus_service_level_agreement#tok_000",
+        "[3] nexus_sla#tok_001"
+      ],
+      "refusal": false
+    },
+    {
+      "turn_number": 2,
+      "original_question": "What about escalation contacts?",
+      "rewritten_query": "What are the escalation contacts for initial response time severity 1 critical outage??",
+      "retrieved_chunks": [
+        {
+          "chunk_id": "nexus_sla#tok_000",
+          "document_id": "nexus_sla",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "score": 0.8666
+        },
+        {
+          "chunk_id": "nexus_service_level_agreement#tok_000",
+          "document_id": "nexus_service_level_agreement",
+          "section": "INCIDENT SEVERITY CLASSIFICATIONS",
+          "score": 0.8558
+        },
+        {
+          "chunk_id": "nexus_sla#tok_001",
+          "document_id": "nexus_sla",
+          "section": "ESCALATION HIERARCHY",
+          "score": 0.7201
+        },
+        {
+          "chunk_id": "nexus_database_failover_runbook#tok_000",
+          "document_id": "nexus_database_failover_runbook",
+          "section": "Nexus Financial Technologies - Databa...",
+          "score": 0.6628
+        },
+        {
+          "chunk_id": "nexus_payment_gateway_runbook#tok_000",
+          "document_id": "nexus_payment_gateway_runbook",
+          "section": "Circuit Breaker Trigger Thresholds",
+          "score": 0.662
+        }
+      ],
+      "answer": "Grounded Answer (Turn 2):\n\n[1] nexus_sla#tok_000 \u2014 [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Clie...\n[2] nexus_service_level_agreement#tok_000 \u2014 CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document ...\n[3] nexus_sla#tok_001 \u2014  operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS ...\n\n(+ 2 additional sources)\n\nThe above sources provide sufficient relevant context.",
+      "sources_used": [
+        "[1] nexus_sla#tok_000",
+        "[2] nexus_service_level_agreement#tok_000",
+        "[3] nexus_sla#tok_001"
+      ],
+      "refusal": false
+    }
+  ]
+}
