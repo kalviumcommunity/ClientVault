@@ -58,23 +58,10 @@ export default function ThinkingOrb() {
         ))}
       </div>
 
-      {/* Animated stage labels */}
-      <div className="flex flex-col items-center gap-1">
-        <p className="text-sm text-slate-500 font-medium animate-pulse">
-          Searching knowledge base…
-        </p>
-        <div className="flex gap-1 mt-1">
-          {['Retrieve', 'Re-rank', 'Ground'].map((stage, i) => (
-            <span
-              key={stage}
-              className="text-xs text-slate-400 px-2 py-0.5 bg-white rounded-full border border-slate-200"
-              style={{ animationDelay: `${i * 0.4}s`, animation: 'fadeIn 0.5s ease-out both' }}
-            >
-              {stage}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Visual feedback only — the API does not report pipeline stages */}
+      <p className="text-sm text-slate-500 font-medium animate-pulse">
+        Searching knowledge base…
+      </p>
     </div>
   )
 }

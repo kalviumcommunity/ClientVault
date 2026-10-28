@@ -5,7 +5,7 @@
  * Navigation is handled client-side without a router library (single-page).
  * Stack: React 18 + Vite + Tailwind CSS (PRD-prescribed).
  */
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import TopNav        from './components/TopNav'
 import DashboardPage from './components/DashboardPage'
 import ClientsPage   from './components/ClientsPage'
@@ -16,6 +16,13 @@ import UploadPage    from './components/UploadPage'
 export default function App() {
   const [activePage,   setActivePage]   = useState('dashboard')
   const [activeClient, setActiveClient] = useState(null) // e.g. 'NEXUS-002'
+
+  // Knowledge Search history, one thread per client: { [clientId|'']: turns[] }
+  const [conversations, setConversations] = useState({})
+  const updateTurns = useCallback((clientId, updater) => {
+    const key = clientId || ''
+    setConversations(prev => ({ ...prev, [key]: updater(prev[key] || []) }))
+  }, [])
 
   const navigate = (page) => setActivePage(page)
 
@@ -57,6 +64,8 @@ export default function App() {
           <KnowledgePage
             activeClient={activeClient}
             onNavigate={navigate}
+            turns={conversations[activeClient || ''] || []}
+            onTurnsChange={updateTurns}
           />
         )}
         {activePage === 'documents' && (

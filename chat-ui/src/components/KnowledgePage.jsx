@@ -14,6 +14,19 @@ import ThinkingOrb from './ThinkingOrb'
 import SourcePanel from './SourcePanel'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api'
+const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS) || 30000
+const KNOWN_STATUSES = ['answered', 'refused']
+
+/** Turn a FastAPI error body into a readable message. 422 `detail` is an array. */
+function errorMessageFrom(body, status) {
+  const detail = body?.detail
+  if (Array.isArray(detail)) {
+    const msgs = detail.map(d => d?.msg).filter(Boolean)
+    if (msgs.length) return `Invalid question: ${msgs.join('; ')}`
+  }
+  if (typeof detail === 'string' && detail) return `${detail} (HTTP ${status})`
+  return `The RAG API is unavailable or failed to respond (HTTP ${status}). Try again.`
+}
 
 /**
  * Call the backend RAG endpoint.
@@ -22,20 +35,26 @@ const API_BASE = import.meta.env.VITE_API_URL || '/api'
  * @param {AbortSignal} signal
  * @returns {Promise<object>} parsed response body
  */
-async function queryRAG(question, clientId, signal) {
-  const res = await fetch(`${API_BASE}/query`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, client_id: clientId || null, k: 5 }),
-    signal,
-  })
+export async function queryRAG(question, clientId, signal) {
+  let res
+  try {
+    res = await fetch(`${API_BASE}/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, client_id: clientId || null, k: 5 }),
+      signal,
+    })
+  } catch (err) {
+    if (err.name === 'AbortError' || err.name === 'TimeoutError') throw err
+    throw new Error('Network error — could not reach the RAG API. Check that the backend is running and try again.')
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
-    throw Object.assign(new Error(body.detail || `Server error (${res.status})`), { isAPIError: true, status: res.status })
+    throw Object.assign(new Error(errorMessageFrom(body, res.status)), { isAPIError: true, status: res.status })
   }
-  const data = await res.json()
-  if (!data || typeof data.answer !== 'string') {
-    throw new Error('Unexpected response format from server.')
+  const data = await res.json().catch(() => null)
+  if (!data || typeof data.answer !== 'string' || !KNOWN_STATUSES.includes(data.status) || !Array.isArray(data.sources)) {
+    throw new Error('The server returned an empty or malformed response.')
   }
   return data
 }
@@ -43,7 +62,7 @@ async function queryRAG(question, clientId, signal) {
 // ------------------------------------------------------------------ //
 // Single conversation turn displayed in the history list              //
 // ------------------------------------------------------------------ //
-function TurnCard({ turn, index, onRetry }) {
+function TurnCard({ turn, onRetry }) {
   const [expandedSource, setExpandedSource] = useState(null)
 
   const toggleSource = i => setExpandedSource(prev => prev === i ? null : i)
@@ -90,18 +109,24 @@ function TurnCard({ turn, index, onRetry }) {
             </div>
           )}
           <div className="max-w-[90%]">
-            <SourcePanel sources={turn.sources} expandedSource={expandedSource} onToggle={toggleSource} />
+            <SourcePanel
+              sources={turn.sources}
+              expandedSource={expandedSource}
+              onToggle={toggleSource}
+              title="Retrieved candidates — below relevance threshold, not used as evidence"
+              emptyText="No candidate passages were retrieved."
+            />
           </div>
         </div>
       )}
 
       {/* Error */}
       {turn.status === 'error' && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 max-w-[90%] text-sm text-red-700 flex items-start justify-between gap-3">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 max-w-[90%] text-sm text-red-700 flex items-start justify-between gap-3">
           <span>{turn.errorMsg}</span>
           <button
-            onClick={() => onRetry(index)}
-            className="shrink-0 text-xs font-semibold text-red-700 hover:text-red-900 underline underline-offset-2"
+            onClick={() => onRetry(turn.id)}
+            className="shrink-0 text-xs font-semibold text-red-700 hover:text-red-900 underline underline-offset-2 rounded focus-visible:outline-2 focus-visible:outline-red-500"
           >
             ↻ Retry
           </button>
@@ -114,39 +139,57 @@ function TurnCard({ turn, index, onRetry }) {
 // ------------------------------------------------------------------ //
 // Main page                                                            //
 // ------------------------------------------------------------------ //
-export default function KnowledgePage({ activeClient, onNavigate }) {
+const CLEARED = 'cleared' // abort reason for an explicit "Clear conversation"
+let nextTurnId = 1
+
+/**
+ * Conversation history lives in App (keyed by client) so it survives page
+ * navigation and never mixes evidence from different accounts.
+ */
+export default function KnowledgePage({ activeClient, onNavigate, turns, onTurnsChange }) {
   const [question, setQuestion]     = useState('')
-  const [turns,    setTurns]        = useState([])    // conversation history
   const [loading,  setLoading]      = useState(false)
   const inputRef  = useRef(null)
   const bottomRef = useRef(null)
   const abortRef  = useRef(null)
 
-  // Auto-focus input on mount
-  useEffect(() => { inputRef.current?.focus() }, [])
+  // Auto-focus input on mount; cancel an in-flight request on unmount
+  useEffect(() => {
+    inputRef.current?.focus()
+    return () => abortRef.current?.abort(
+      new DOMException('Request cancelled because you left Knowledge Search.', 'AbortError'),
+    )
+  }, [])
 
   // Scroll to bottom after each new turn
   useEffect(() => {
     if (turns.length > 0) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      bottomRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })
     }
   }, [turns, loading])
 
-  const doQuery = useCallback(async (q, retryIndex = null) => {
+  const doQuery = useCallback(async (q, retryId = null) => {
     if (!q.trim() || loading) return
 
-    // Cancel any in-flight request
-    abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
+    const timer = setTimeout(
+      () => controller.abort(new DOMException('Request timed out', 'TimeoutError')),
+      REQUEST_TIMEOUT_MS,
+    )
+
+    // Bind to the client at submit time so a late response lands in the right thread
+    const setTurns = updater => onTurnsChange(activeClient, updater)
+    const id = retryId ?? nextTurnId++
+    const replaceTurn = turn => setTurns(prev => prev.map(t => t.id === id ? { ...turn, id } : t))
 
     setLoading(true)
 
-    // For retry: replace the failed turn; for new question: add a pending turn
-    const pendingTurn = { question: q, status: 'loading', answer: '', sources: [], refusalReason: null, errorMsg: '' }
-
-    if (retryIndex !== null) {
-      setTurns(prev => prev.map((t, i) => i === retryIndex ? pendingTurn : t))
+    // For retry: replace the failed turn in place; for a new question: append a pending turn
+    const pendingTurn = { id, question: q, status: 'loading', answer: '', sources: [], refusalReason: null, errorMsg: '' }
+    if (retryId !== null) {
+      replaceTurn(pendingTurn)
     } else {
       setTurns(prev => [...prev, pendingTurn])
       setQuestion('')
@@ -154,24 +197,18 @@ export default function KnowledgePage({ activeClient, onNavigate }) {
 
     try {
       const data = await queryRAG(q, activeClient, controller.signal)
-      const completedTurn = {
+      replaceTurn({
         question: q,
-        status: data.status === 'refused' ? 'refused' : 'answered',
+        status: data.status,
         answer: data.answer || '',
-        sources: data.sources || [],
+        sources: data.sources,
         refusalReason: data.refusal_reason || null,
         errorMsg: '',
-      }
-
-      if (retryIndex !== null) {
-        setTurns(prev => prev.map((t, i) => i === retryIndex ? completedTurn : t))
-      } else {
-        setTurns(prev => [...prev.slice(0, -1), completedTurn])
-      }
+      })
     } catch (err) {
-      if (err.name === 'AbortError') return // cancelled — do nothing
+      if (controller.signal.reason === CLEARED) return // conversation was cleared
 
-      const errorTurn = {
+      replaceTurn({
         question: q,
         status: 'error',
         answer: '',
@@ -180,29 +217,25 @@ export default function KnowledgePage({ activeClient, onNavigate }) {
         errorMsg: err.name === 'TimeoutError'
           ? 'Request timed out. Check your connection and try again.'
           : err.message || 'Network error. Please try again.',
-      }
-      if (retryIndex !== null) {
-        setTurns(prev => prev.map((t, i) => i === retryIndex ? errorTurn : t))
-      } else {
-        setTurns(prev => [...prev.slice(0, -1), errorTurn])
-      }
+      })
     } finally {
+      clearTimeout(timer)
       setLoading(false)
       inputRef.current?.focus()
     }
-  }, [activeClient, loading])
+  }, [activeClient, loading, onTurnsChange])
 
   const handleSubmit = () => doQuery(question)
-  const handleRetry  = (index) => {
-    const failedQ = turns[index]?.question
-    if (failedQ) doQuery(failedQ, index)
+  const handleRetry  = (id) => {
+    const failedQ = turns.find(t => t.id === id)?.question
+    if (failedQ) doQuery(failedQ, id)
   }
   const handleKeyDown = e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit() }
   }
   const clearHistory = () => {
-    abortRef.current?.abort()
-    setTurns([])
+    abortRef.current?.abort(CLEARED)
+    onTurnsChange(activeClient, () => [])
     setLoading(false)
     setQuestion('')
     inputRef.current?.focus()
@@ -270,10 +303,10 @@ export default function KnowledgePage({ activeClient, onNavigate }) {
 
         {/* Conversation turns */}
         <div className="space-y-6">
-          {turns.map((turn, i) => (
+          {turns.map(turn => (
             turn.status === 'loading'
               ? (
-                <div key={i}>
+                <div key={turn.id}>
                   <div className="flex justify-end mb-3">
                     <div className="bg-fuchsia-500 text-white rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm shadow-sm">
                       {turn.question}
@@ -283,7 +316,7 @@ export default function KnowledgePage({ activeClient, onNavigate }) {
                 </div>
               )
               : (
-                <TurnCard key={i} turn={turn} index={i} onRetry={handleRetry} />
+                <TurnCard key={turn.id} turn={turn} onRetry={handleRetry} />
               )
           ))}
         </div>
