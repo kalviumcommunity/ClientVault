@@ -14,7 +14,7 @@ export default function SourcePanel({
 }) {
   if (!sources || sources.length === 0) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-700 content-fade">
+      <div className="bg-warning/10 border border-warning/30 rounded-lg p-3 text-xs text-warning content-fade">
         {emptyText}
       </div>
     )
@@ -22,7 +22,7 @@ export default function SourcePanel({
 
   return (
     <div className="content-fade">
-      <p className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">
+      <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
         {title} ({sources.length})
       </p>
       <div className="flex flex-wrap items-start gap-2">
@@ -46,8 +46,8 @@ export default function SourcePanel({
             >
               {/* Chip header row */}
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-semibold text-fuchsia-600">{s.marker}</span>
-                <span className="text-slate-700 font-medium">{docName}</span>
+                <span className="font-medium text-violet-300">{s.marker}</span>
+                <span className="text-foreground font-medium">{docName}</span>
                 {pct != null && (
                   <span className="score ml-auto">
                     {pct}%
@@ -57,11 +57,11 @@ export default function SourcePanel({
 
               {/* Expanded detail */}
               {isOpen && (
-                <div className="mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600 space-y-1 content-fade">
-                  {s.chunk_id  && <div><span className="font-medium text-slate-500">Chunk:</span> {s.chunk_id}</div>}
-                  {s.section   && <div><span className="font-medium text-slate-500">Section:</span> {s.section}</div>}
-                  {s.page != null && <div><span className="font-medium text-slate-500">Page:</span> {s.page}</div>}
-                  {s.score != null && <div><span className="font-medium text-slate-500">Score:</span> {s.score.toFixed(4)}</div>}
+                <div className="mt-2 pt-2 border-t border-border text-xs text-muted-foreground space-y-1 content-fade break-all">
+                  {s.chunk_id  && <div><span className="font-medium text-foreground/70">Chunk:</span> {s.chunk_id}</div>}
+                  {s.section   && <div><span className="font-medium text-foreground/70">Section:</span> {s.section}</div>}
+                  {s.page != null && <div><span className="font-medium text-foreground/70">Page:</span> {s.page}</div>}
+                  {s.score != null && <div><span className="font-medium text-foreground/70">Score:</span> {s.score.toFixed(4)}</div>}
                 </div>
               )}
             </div>

@@ -2,6 +2,7 @@
  * DocumentsPage — Document Library (mock-ux.html §4. Document Library).
  * Shows per-client corpus documents and indexing status.
  */
+import { CheckCircle2, Loader2, XCircle } from 'lucide-react'
 
 const CORPUS = {
   'ACME-001': [
@@ -34,9 +35,9 @@ const CLIENT_NAMES = {
 }
 
 const STATUS_STYLE = {
-  indexed:    { bg: '#e9f6ef', border: '#3fa36b', text: '#1f6b43', label: '✓ Indexed' },
-  reindexing: { bg: '#fdf4e6', border: '#e8a03c', text: '#8a5a12', label: '⏳ Re-indexing' },
-  failed:     { bg: '#fdeef0', border: '#d9534f', text: '#9c2f2b', label: '✕ Failed' },
+  indexed:    { cls: 'border-success/40 bg-success/10 text-success',             label: 'Indexed',     Icon: CheckCircle2 },
+  reindexing: { cls: 'border-warning/40 bg-warning/10 text-warning',             label: 'Re-indexing', Icon: Loader2 },
+  failed:     { cls: 'border-destructive/40 bg-destructive/10 text-destructive', label: 'Failed',      Icon: XCircle },
 }
 
 export default function DocumentsPage({ activeClient, onSelectClient }) {
@@ -48,8 +49,8 @@ export default function DocumentsPage({ activeClient, onSelectClient }) {
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 content-fade">
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Document Library</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-xl font-semibold">Document Library</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             {clientName} · {selectedClient} · {docs.length} documents
           </p>
         </div>
@@ -60,10 +61,10 @@ export default function DocumentsPage({ activeClient, onSelectClient }) {
               key={cid}
               onClick={() => onSelectClient(cid)}
               className={[
-                'text-xs px-3 py-1.5 rounded-full border font-semibold transition-colors',
+                'text-xs px-3 py-1.5 rounded-full border font-mono transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 cid === selectedClient
-                  ? 'bg-fuchsia-500 text-white border-fuchsia-500'
-                  : 'bg-white text-slate-600 border-slate-300 hover:border-fuchsia-400',
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-transparent text-muted-foreground border-border hover:text-foreground hover:border-iri-violet/50',
               ].join(' ')}
             >
               {cid}
@@ -78,17 +79,15 @@ export default function DocumentsPage({ activeClient, onSelectClient }) {
           return (
             <div
               key={i}
-              className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center justify-between shadow-sm"
+              className="bg-card border border-border rounded-xl px-4 py-3 flex items-center justify-between gap-3"
             >
               <div>
-                <p className="font-mono text-sm font-medium text-slate-800">{doc.name}</p>
-                <p className="text-xs text-slate-500 mt-0.5">{doc.type} · {doc.chunks} chunks</p>
+                <p className="font-mono text-sm font-medium break-all">{doc.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{doc.type} · {doc.chunks} chunks</p>
               </div>
-              <span
-                className="text-xs font-semibold px-2.5 py-1 rounded-full border shrink-0"
-                style={{ background: st.bg, borderColor: st.border, color: st.text }}
-              >
-                {st.label} {doc.chunks ? `· ${doc.chunks} chunks` : ''}
+              <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border shrink-0 ${st.cls}`}>
+                <st.Icon className="size-3.5" aria-hidden="true" />
+                {st.label}
               </span>
             </div>
           )

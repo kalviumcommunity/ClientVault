@@ -31,7 +31,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <TopNav
         activePage={activePage}
         onNavigate={navigate}
@@ -41,7 +41,7 @@ export default function App() {
       {/* Skip-to-content link for keyboard / AT users */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-14 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-fuchsia-600 focus:font-semibold"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-14 focus:left-4 focus:z-50 focus:bg-card focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:text-foreground focus:font-medium focus:ring-2 focus:ring-ring"
       >
         Skip to main content
       </a>

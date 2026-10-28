@@ -4,6 +4,8 @@
  * No actual upload backend is connected; shows the PRD-specified UI states.
  */
 import { useState } from 'react'
+import { UploadCloud } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const CLIENTS   = ['ACME-001', 'NEXUS-002', 'VERTEX-003']
 const DOC_TYPES = ['Onboarding', 'SLA', 'Runbook', 'Policy', 'Compliance']
@@ -27,21 +29,21 @@ export default function UploadPage({ activeClient }) {
   return (
     <div className="max-w-xl mx-auto px-4 py-8 content-fade">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-slate-800">Document Upload &amp; Indexing</h1>
-        <p className="text-sm text-slate-500 mt-1">Admin workflow — add or re-index corpus documents (FR-12, FR-13).</p>
+        <h1 className="text-xl font-semibold">Document Upload &amp; Indexing</h1>
+        <p className="text-sm text-muted-foreground mt-1">Admin workflow — add or re-index corpus documents (FR-12, FR-13).</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-card border border-border rounded-2xl p-6">
         {/* Client selector */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1" htmlFor="upload-client">
-            Client account <span className="text-red-500">*</span>
+          <label className="block text-xs font-medium text-muted-foreground mb-1" htmlFor="upload-client">
+            Client account <span className="text-destructive">*</span>
           </label>
           <select
             id="upload-client"
             value={client}
             onChange={e => setClient(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
+            className="w-full border border-input bg-input/30 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
             {CLIENTS.map(c => <option key={c}>{c}</option>)}
           </select>
@@ -49,14 +51,14 @@ export default function UploadPage({ activeClient }) {
 
         {/* Doc type */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1" htmlFor="upload-doctype">
+          <label className="block text-xs font-medium text-muted-foreground mb-1" htmlFor="upload-doctype">
             Document type
           </label>
           <select
             id="upload-doctype"
             value={docType}
             onChange={e => setDocType(e.target.value)}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
+            className="w-full border border-input bg-input/30 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
           >
             {DOC_TYPES.map(t => <option key={t}>{t}</option>)}
           </select>
@@ -64,10 +66,10 @@ export default function UploadPage({ activeClient }) {
 
         {/* File dropzone */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1" htmlFor="upload-file">
-            File <span className="text-red-500">*</span> <span className="text-slate-400 font-normal">(PDF · DOCX · TXT · MD · HTML)</span>
+          <label className="block text-xs font-medium text-muted-foreground mb-1" htmlFor="upload-file">
+            File <span className="text-destructive">*</span> <span className="text-muted-foreground font-normal">(PDF · DOCX · TXT · MD · HTML)</span>
           </label>
-          <div className="relative border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-fuchsia-400 transition-colors">
+          <div className="relative border-2 border-dashed border-input rounded-xl p-6 text-center hover:border-iri-violet/60 focus-within:ring-2 focus-within:ring-ring transition-colors">
             <input
               id="upload-file"
               type="file"
@@ -76,27 +78,24 @@ export default function UploadPage({ activeClient }) {
               onChange={e => { setFile(e.target.files?.[0] || null); setNotice(null) }}
             />
             {file
-              ? <p className="text-sm font-medium text-fuchsia-600">{file.name}</p>
-              : <p className="text-sm text-slate-400">⬆ Click or drag a file here</p>
+              ? <p className="text-sm font-medium text-violet-300 break-all">{file.name}</p>
+              : <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><UploadCloud className="size-4" aria-hidden="true" /> Click or drag a file here</p>
             }
           </div>
         </div>
 
         {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-fuchsia-500 hover:bg-fuchsia-600 disabled:bg-slate-300 text-white font-semibold py-2.5 rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-fuchsia-400"
-        >
+        <Button type="submit" size="lg" className="w-full rounded-xl">
           Upload &amp; Index
-        </button>
+        </Button>
 
         {/* Notice */}
         {notice && (
           <div className={[
             'rounded-lg p-3 text-sm content-fade',
             notice.type === 'success'
-              ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border border-red-200 text-red-700',
+              ? 'bg-success/10 border border-success/30 text-success'
+              : 'bg-destructive/10 border border-destructive/30 text-destructive',
           ].join(' ')}>
             {notice.type === 'success' && <strong>Queued: </strong>}
             {notice.msg}
@@ -104,7 +103,7 @@ export default function UploadPage({ activeClient }) {
         )}
       </form>
 
-      <p className="text-xs text-slate-400 mt-4 text-center">
+      <p className="text-xs text-muted-foreground mt-4 text-center">
         Pipeline: extraction → cleaning → chunking → embedding → indexing → validation (FR-13)
       </p>
     </div>

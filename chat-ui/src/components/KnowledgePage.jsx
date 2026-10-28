@@ -2,15 +2,17 @@
  * KnowledgePage — Core RAG chat interface (mock-ux.html §3. Knowledge Search).
  *
  * Features:
- * - Premium animated thinking orb (21st.dev reference visual style)
- * - Pill-shaped input with sticky bottom placement
- * - Multi-turn conversation history
+ * - MorphOrb composer (21st.dev reference): the pill morphs into a thinking orb
+ *   while the real /query request runs; Escape cancels it
+ * - Multi-turn conversation history (kept in App, one thread per client)
  * - Grounded answer display with expandable source evidence
  * - All UI states: idle, loading, answered, refused, error
- * - Keyboard accessible; respects prefers-reduced-motion via CSS
+ * - Keyboard accessible; respects prefers-reduced-motion
  */
 import { useState, useRef, useEffect, useCallback } from 'react'
-import ThinkingOrb from './ThinkingOrb'
+import { AlertTriangle, Loader2, Lock, RotateCcw, Search, X } from 'lucide-react'
+import MorphOrb from '@/components/ui/ai-thiking-orb-and-input'
+import { Button } from '@/components/ui/button'
 import SourcePanel from './SourcePanel'
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api'
@@ -62,6 +64,9 @@ export async function queryRAG(question, clientId, signal) {
 // ------------------------------------------------------------------ //
 // Single conversation turn displayed in the history list              //
 // ------------------------------------------------------------------ //
+const QUESTION_BUBBLE = 'bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm'
+const ANSWER_CARD = 'bg-card border border-border rounded-2xl rounded-tl-sm px-5 py-4 max-w-[90%] text-sm leading-relaxed whitespace-pre-wrap'
+
 function TurnCard({ turn, onRetry }) {
   const [expandedSource, setExpandedSource] = useState(null)
 
@@ -71,19 +76,21 @@ function TurnCard({ turn, onRetry }) {
     <div className="space-y-3 answer-fade">
       {/* Question bubble */}
       <div className="flex justify-end">
-        <div className="bg-fuchsia-500 text-white rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm shadow-sm">
-          {turn.question}
-        </div>
+        <div className={QUESTION_BUBBLE}>{turn.question}</div>
       </div>
+
+      {/* Pending (the orb overlay animates; this marks the turn in the thread) */}
+      {turn.status === 'loading' && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          Searching knowledge base…
+        </div>
+      )}
 
       {/* Answer bubble */}
       {turn.status === 'answered' && turn.answer && (
         <div className="flex flex-col gap-2">
-          <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm max-w-[90%]">
-            <div className="prose prose-slate max-w-none text-sm leading-relaxed whitespace-pre-wrap">
-              {turn.answer}
-            </div>
-          </div>
+          <div className={ANSWER_CARD}>{turn.answer}</div>
           {/* Sources */}
           <div className="max-w-[90%]">
             <SourcePanel
@@ -99,13 +106,12 @@ function TurnCard({ turn, onRetry }) {
       {turn.status === 'refused' && (
         <div className="flex flex-col gap-2">
           {turn.answer && (
-            <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm max-w-[90%] text-sm leading-relaxed whitespace-pre-wrap text-slate-700">
-              {turn.answer}
-            </div>
+            <div className={`${ANSWER_CARD} text-muted-foreground`}>{turn.answer}</div>
           )}
           {turn.refusalReason && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800 max-w-[90%]">
-              <strong>Refusal reason:</strong> {turn.refusalReason}
+            <div className="flex gap-2 bg-warning/10 border border-warning/30 rounded-lg p-3 text-xs text-warning max-w-[90%]">
+              <AlertTriangle className="size-3.5 shrink-0 mt-px" aria-hidden="true" />
+              <p><strong className="font-medium">Refusal reason:</strong> {turn.refusalReason}</p>
             </div>
           )}
           <div className="max-w-[90%]">
@@ -122,14 +128,11 @@ function TurnCard({ turn, onRetry }) {
 
       {/* Error */}
       {turn.status === 'error' && (
-        <div role="alert" className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 max-w-[90%] text-sm text-red-700 flex items-start justify-between gap-3">
+        <div role="alert" className="bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-3 max-w-[90%] text-sm text-destructive flex items-start justify-between gap-3">
           <span>{turn.errorMsg}</span>
-          <button
-            onClick={() => onRetry(turn.id)}
-            className="shrink-0 text-xs font-semibold text-red-700 hover:text-red-900 underline underline-offset-2 rounded focus-visible:outline-2 focus-visible:outline-red-500"
-          >
-            ↻ Retry
-          </button>
+          <Button variant="destructive" size="xs" onClick={() => onRetry(turn.id)}>
+            <RotateCcw data-icon="inline-start" /> Retry
+          </Button>
         </div>
       )}
     </div>
@@ -147,19 +150,15 @@ let nextTurnId = 1
  * navigation and never mixes evidence from different accounts.
  */
 export default function KnowledgePage({ activeClient, onNavigate, turns, onTurnsChange }) {
-  const [question, setQuestion]     = useState('')
   const [loading,  setLoading]      = useState(false)
-  const inputRef  = useRef(null)
+  const loadingRef = useRef(false)
   const bottomRef = useRef(null)
   const abortRef  = useRef(null)
 
-  // Auto-focus input on mount; cancel an in-flight request on unmount
-  useEffect(() => {
-    inputRef.current?.focus()
-    return () => abortRef.current?.abort(
-      new DOMException('Request cancelled because you left Knowledge Search.', 'AbortError'),
-    )
-  }, [])
+  // Cancel an in-flight request on unmount
+  useEffect(() => () => abortRef.current?.abort(
+    new DOMException('Request cancelled because you left Knowledge Search.', 'AbortError'),
+  ), [])
 
   // Scroll to bottom after each new turn
   useEffect(() => {
@@ -169,8 +168,9 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
     }
   }, [turns, loading])
 
+  /** Runs one query and records it in the thread. Resolves with the outcome for the orb. */
   const doQuery = useCallback(async (q, retryId = null) => {
-    if (!q.trim() || loading) return
+    if (!q.trim() || loadingRef.current) return 'cancelled'
 
     const controller = new AbortController()
     abortRef.current = controller
@@ -184,6 +184,7 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
     const id = retryId ?? nextTurnId++
     const replaceTurn = turn => setTurns(prev => prev.map(t => t.id === id ? { ...turn, id } : t))
 
+    loadingRef.current = true
     setLoading(true)
 
     // For retry: replace the failed turn in place; for a new question: append a pending turn
@@ -192,7 +193,6 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
       replaceTurn(pendingTurn)
     } else {
       setTurns(prev => [...prev, pendingTurn])
-      setQuestion('')
     }
 
     try {
@@ -205,8 +205,9 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
         refusalReason: data.refusal_reason || null,
         errorMsg: '',
       })
+      return data.status
     } catch (err) {
-      if (controller.signal.reason === CLEARED) return // conversation was cleared
+      if (controller.signal.reason === CLEARED) return 'cancelled' // conversation was cleared
 
       replaceTurn({
         question: q,
@@ -218,84 +219,71 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
           ? 'Request timed out. Check your connection and try again.'
           : err.message || 'Network error. Please try again.',
       })
+      return err.name === 'AbortError' ? 'cancelled' : 'error'
     } finally {
       clearTimeout(timer)
+      loadingRef.current = false
       setLoading(false)
-      inputRef.current?.focus()
     }
-  }, [activeClient, loading, onTurnsChange])
+  }, [activeClient, onTurnsChange])
 
-  const handleSubmit = () => doQuery(question)
   const handleRetry  = (id) => {
     const failedQ = turns.find(t => t.id === id)?.question
     if (failedQ) doQuery(failedQ, id)
   }
-  const handleKeyDown = e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit() }
-  }
+  const cancelQuery = () => abortRef.current?.abort(new DOMException('Request cancelled.', 'AbortError'))
   const clearHistory = () => {
     abortRef.current?.abort(CLEARED)
     onTurnsChange(activeClient, () => [])
-    setLoading(false)
-    setQuestion('')
-    inputRef.current?.focus()
   }
 
   const hasHistory = turns.length > 0
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-48px)]">
+    <div className="flex flex-col min-h-[calc(100vh-49px)]">
       {/* ---- Page header ---- */}
       <div className="px-4 pt-6 pb-2 max-w-3xl mx-auto w-full">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
-            <h1 className="text-lg font-bold text-slate-800">Knowledge Search</h1>
-            <p className="text-xs text-slate-500">
+            <h1 className="text-lg font-semibold">Knowledge Search</h1>
+            <p className="text-xs text-muted-foreground">
               {activeClient
-                ? <>Account-locked: <span className="font-mono font-semibold text-fuchsia-600">{activeClient}</span></>
-                : <>No client selected — <button onClick={() => onNavigate('clients')} className="text-fuchsia-600 underline">select one</button></>
+                ? <>Account-locked: <span className="font-mono font-medium text-violet-300">{activeClient}</span></>
+                : <>No client selected — <button onClick={() => onNavigate('clients')} className="text-violet-300 underline underline-offset-2">select one</button></>
               }
             </p>
           </div>
           {hasHistory && (
-            <button
-              onClick={clearHistory}
-              className="text-xs text-slate-500 hover:text-slate-700 border border-slate-300 rounded-full px-3 py-1 transition-colors"
-            >
-              ✕ Clear conversation
-            </button>
+            <Button variant="outline" size="sm" className="rounded-full" onClick={clearHistory}>
+              <X data-icon="inline-start" /> Clear conversation
+            </Button>
           )}
         </div>
       </div>
 
       {/* ---- Conversation area ---- */}
       <main
-        className="flex-1 overflow-y-auto px-4 pb-32 pt-4 max-w-3xl mx-auto w-full"
+        className="flex-1 px-4 pb-56 pt-4 max-w-3xl mx-auto w-full"
         id="conversation"
         aria-live="polite"
         aria-label="Conversation"
       >
         {/* Empty / idle state */}
-        {!hasHistory && !loading && (
+        {!hasHistory && (
           <div className="flex flex-col items-center justify-center min-h-[300px] text-center content-fade">
-            <div
-              className="w-14 h-14 rounded-full mb-5 flex items-center justify-center"
-              style={{ background: 'conic-gradient(from 0deg, #d946ef, #a78bfa, #d946ef)', opacity: 0.85 }}
-              aria-hidden="true"
-            >
-              <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
-                <span className="text-lg">🔍</span>
-              </div>
+            <div className="size-12 rounded-full mb-5 grid place-items-center border border-border bg-card" aria-hidden="true">
+              <Search className="size-5 text-muted-foreground" />
             </div>
-            <h2 className="text-xl font-bold text-slate-700 mb-2">What would you like to know?</h2>
-            <p className="text-slate-400 text-sm max-w-sm">
+            <h2 className="text-xl font-semibold mb-2">What would you like to know?</h2>
+            <p className="text-muted-foreground text-sm max-w-sm">
               Ask about procedures, SLAs, runbooks, or client policies.
-              {activeClient && <> Results are scoped to <strong className="text-fuchsia-600">{activeClient}</strong>.</>}
+              {activeClient && <> Results are scoped to <strong className="font-medium text-violet-300">{activeClient}</strong>.</>}
             </p>
             {!activeClient && (
-              <p className="text-xs text-amber-600 mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                ⚠ No client selected. Results will be unfiltered.{' '}
-                <button onClick={() => onNavigate('clients')} className="underline font-semibold">Select a client →</button>
+              <p className="flex items-center gap-1.5 text-xs text-warning mt-3 bg-warning/10 border border-warning/30 rounded-lg px-3 py-2">
+                <AlertTriangle className="size-3.5" aria-hidden="true" />
+                No client selected. Results will be unfiltered.
+                <button onClick={() => onNavigate('clients')} className="underline underline-offset-2 font-medium">Select a client →</button>
               </p>
             )}
           </div>
@@ -304,87 +292,25 @@ export default function KnowledgePage({ activeClient, onNavigate, turns, onTurns
         {/* Conversation turns */}
         <div className="space-y-6">
           {turns.map(turn => (
-            turn.status === 'loading'
-              ? (
-                <div key={turn.id}>
-                  <div className="flex justify-end mb-3">
-                    <div className="bg-fuchsia-500 text-white rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] text-sm shadow-sm">
-                      {turn.question}
-                    </div>
-                  </div>
-                  <ThinkingOrb />
-                </div>
-              )
-              : (
-                <TurnCard key={turn.id} turn={turn} onRetry={handleRetry} />
-              )
+            <TurnCard key={turn.id} turn={turn} onRetry={handleRetry} />
           ))}
         </div>
         <div ref={bottomRef} />
       </main>
 
-      {/* ---- Sticky pill input ---- */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-slate-50 via-slate-50/98 to-transparent pt-10 pb-4 px-4 pointer-events-none">
-        <div className="max-w-2xl mx-auto pointer-events-auto">
-          {/* Active client hint strip */}
-          {activeClient && (
-            <div className="flex justify-center mb-2">
-              <span className="text-xs text-slate-500 bg-white border border-slate-200 rounded-full px-3 py-0.5 shadow-sm">
-                🔒 Scoped to <strong className="text-fuchsia-600">{activeClient}</strong>
-              </span>
-            </div>
-          )}
-
-          <div
-            className={[
-              'flex items-center gap-2 bg-white border rounded-full shadow-lg px-4 py-2 transition-all duration-200',
-              'focus-within:ring-2 focus-within:ring-fuchsia-400 focus-within:border-fuchsia-300',
-              loading ? 'border-fuchsia-300 ring-2 ring-fuchsia-100' : 'border-slate-200',
-            ].join(' ')}
-            role="search"
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={question}
-              onChange={e => setQuestion(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={loading ? 'Searching…' : 'Ask about a procedure, SLA, or runbook…'}
-              className="flex-1 outline-none text-sm bg-transparent py-2 placeholder-slate-400"
-              disabled={loading}
-              aria-label="Question input"
-              aria-describedby={activeClient ? 'client-scope-hint' : undefined}
-              maxLength={1000}
-            />
-            {/* Character count when approaching limit */}
-            {question.length > 800 && (
-              <span className="text-xs text-slate-400 shrink-0">{1000 - question.length}</span>
-            )}
-            <button
-              onClick={handleSubmit}
-              disabled={loading || !question.trim()}
-              className={[
-                'shrink-0 rounded-full px-5 py-1.5 text-sm font-semibold transition-all duration-150',
-                'focus-visible:outline-2 focus-visible:outline-fuchsia-400',
-                loading || !question.trim()
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                  : 'bg-fuchsia-500 hover:bg-fuchsia-600 active:scale-95 text-white shadow-sm',
-              ].join(' ')}
-              aria-label={loading ? 'Request in progress' : 'Submit question'}
-            >
-              {loading ? (
-                <span className="flex items-center gap-1.5">
-                  <span className="inline-block w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                  …
-                </span>
-              ) : 'Ask'}
-            </button>
-          </div>
-          <p className="text-center text-xs text-slate-400 mt-2">
-            Answers are grounded in retrieved documents only. Unverifiable questions return an explicit refusal.
-          </p>
+      {/* ---- Composer: fade + scope chip + disclaimer around the MorphOrb pill ---- */}
+      <div className="fixed inset-x-0 bottom-0 h-48 bg-linear-to-t from-background via-background/95 to-transparent pointer-events-none z-10" aria-hidden="true" />
+      {activeClient && (
+        <div className="fixed inset-x-0 bottom-[138px] flex justify-center pointer-events-none z-20">
+          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-card border border-border rounded-full px-3 py-0.5">
+            <Lock className="size-3" aria-hidden="true" /> Scoped to <strong className="font-medium text-violet-300">{activeClient}</strong>
+          </span>
         </div>
-      </div>
+      )}
+      <p className="fixed inset-x-0 bottom-5 px-4 text-center text-xs text-muted-foreground z-20 pointer-events-none">
+        Answers are grounded in retrieved documents only. Unverifiable questions return an explicit refusal.
+      </p>
+      <MorphOrb onSubmit={doQuery} onCancel={cancelQuery} maxLength={1000} />
     </div>
   )
 }
