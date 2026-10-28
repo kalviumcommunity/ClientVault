@@ -1,10 +1,11 @@
 /**
  * UploadPage — Document Upload & Indexing (mock-ux.html §5).
  * Admin screen — accepts file + client + doc type metadata.
- * No actual upload backend is connected; shows the PRD-specified UI states.
+ * No upload backend exists yet (the RAG API only serves /health and /query), so
+ * this screen validates the form and says plainly that nothing was uploaded.
  */
 import { useState } from 'react'
-import { UploadCloud } from 'lucide-react'
+import { Info, UploadCloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const CLIENTS   = ['ACME-001', 'NEXUS-002', 'VERTEX-003']
@@ -14,15 +15,15 @@ export default function UploadPage({ activeClient }) {
   const [client,  setClient]  = useState(activeClient || CLIENTS[0])
   const [docType, setDocType] = useState(DOC_TYPES[0])
   const [file,    setFile]    = useState(null)
-  const [notice,  setNotice]  = useState(null)  // { type: 'success'|'error', msg }
+  const [notice,  setNotice]  = useState(null)  // { type: 'info'|'error', msg }
 
   const handleSubmit = e => {
     e.preventDefault()
     if (!file) { setNotice({ type: 'error', msg: 'Please select a file to upload.' }); return }
-    // Simulate: in production, POST multipart to /ingest
+    // No ingest endpoint exists; never report a queued/uploaded state.
     setNotice({
-      type: 'success',
-      msg: `${file.name} — queued for extraction → cleaning → chunking → embedding → indexing for ${client}.`,
+      type: 'info',
+      msg: `${file.name} (${docType}, ${client}) — there is no upload endpoint yet, so nothing was queued or indexed.`,
     })
   }
 
@@ -31,6 +32,15 @@ export default function UploadPage({ activeClient }) {
       <div className="mb-6">
         <h1 className="text-xl font-semibold">Document Upload &amp; Indexing</h1>
         <p className="text-sm text-muted-foreground mt-1">Admin workflow — add or re-index corpus documents (FR-12, FR-13).</p>
+      </div>
+
+      <div className="flex gap-2.5 mb-4 bg-warning/10 border border-warning/30 rounded-lg px-4 py-3 text-sm text-warning">
+        <Info className="size-4 shrink-0 mt-0.5" aria-hidden="true" />
+        <p>
+          <strong className="font-medium">Preview only — upload is not connected.</strong>{' '}
+          Submitting this form does not upload or index anything. Corpus documents are currently
+          ingested offline by the Python pipeline from <code className="font-mono text-xs">data/corpus/</code>.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 bg-card border border-border rounded-2xl p-6">
@@ -91,13 +101,16 @@ export default function UploadPage({ activeClient }) {
 
         {/* Notice */}
         {notice && (
-          <div className={[
-            'rounded-lg p-3 text-sm content-fade',
-            notice.type === 'success'
-              ? 'bg-success/10 border border-success/30 text-success'
-              : 'bg-destructive/10 border border-destructive/30 text-destructive',
-          ].join(' ')}>
-            {notice.type === 'success' && <strong>Queued: </strong>}
+          <div
+            role={notice.type === 'error' ? 'alert' : 'status'}
+            className={[
+              'rounded-lg p-3 text-sm content-fade',
+              notice.type === 'info'
+                ? 'bg-warning/10 border border-warning/30 text-warning'
+                : 'bg-destructive/10 border border-destructive/30 text-destructive',
+            ].join(' ')}
+          >
+            {notice.type === 'info' && <strong className="font-medium">Not uploaded: </strong>}
             {notice.msg}
           </div>
         )}

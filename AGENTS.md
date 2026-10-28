@@ -223,6 +223,8 @@ Update durable records:
 
 **Last change:** Retheme + stack upgrade of `chat-ui/` on `feat/rag-chat-ui` (not pushed; no PR yet), per user decision: TypeScript enabled (`tsconfig*.json`, `vite.config.ts`, `@/` → `src`), Tailwind 3 → 4 (`@tailwindcss/vite`; `tailwind.config.js`/`postcss.config.js` removed), shadcn/ui initialised (`components.json`, style radix-nova, base neutral, lucide; `src/lib/utils.ts`, `src/components/ui/button.tsx`). App switched to a dark theme (`<html class="dark">`; shadcn `.dark` tokens set to the 21st.dev reference palette) across all pages with lucide icons. The 21st.dev "ai-thiking-orb-and-input" component lives at `src/components/ui/ai-thiking-orb-and-input.tsx` and is the Knowledge Search composer, adapted: request starts on submit, real outcome drives the ending (answered → green "Answer ready", refused → "Insufficient evidence", error → "Request failed"), no placeholder answer, single generic status label, Escape cancels the request. Full `.mo-*` CSS (extracted from the live 21st.dev demo; the pasted snippet only had keyframes) is in `src/index.css`. `ThinkingOrb.jsx` removed. Docs screenshots retaken on the new theme.
 
+Follow-up fix: `UploadPage.jsx` no longer reports a fake "Queued" success. It shows a "Preview only — upload is not connected" banner and, on submit, a "Not uploaded" notice (no ingest endpoint exists; the RAG API serves only `/health` and `/query`). Browser-verified.
+
 Previous change on this branch: hardened the chat UI (timeout, 422 messages, strict status validation, refusal-candidate labelling, per-client history in `App.jsx`), added `tests/test_rag_api.py`, real captured sample interaction.
 
 **Checks (2026-10-28):** `npm --prefix chat-ui run typecheck` OK; `npm --prefix chat-ui run build` OK; `tests.test_rag_api` 9/9 OK; full Python suite 151 tests, 1 pre-existing order-dependent failure (`test_corpus_embedder.test_environment_config_loading`). Browser-verified: answered / refused / backend-down / Escape-cancel / retry / mobile 375 px / navigation. `prefers-reduced-motion` not emulated. No frontend lint or unit tests configured.
@@ -441,6 +443,7 @@ Previous change on this branch: hardened the chat UI (timeout, 422 messages, str
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
 - `chat-ui` theme: dark only; use shadcn semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `text-success`/`text-warning`/`text-destructive`, `iri-violet`) — no hard-coded slate/fuchsia. New shadcn components go to `src/components/ui/` via `npx shadcn@latest add <name>` (run in `chat-ui/`).
+- The Upload page is a UI preview with no backend; it must not claim a file was uploaded, queued or indexed until a real ingest endpoint exists.
 - MorphOrb must never show a fabricated answer or claim pipeline stages; its outcome label comes from the real `/query` status.
 - Text cleaning is applied uniformly across all formats before chunking/embedding, reducing noise tokens by 15–30%.
 - Document loader converts all incoming formats (`.md`, `.txt`, `.html`, `.pdf`) into unified `Document` objects with mandatory `source_id` and `file_path` for citation traceability.
