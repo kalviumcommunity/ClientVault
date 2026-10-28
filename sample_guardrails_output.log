@@ -1,0 +1,28 @@
+================================================================================
+  ClientVault — Hallucination Guardrails Report
+================================================================================
+  Query:                   What is the Sev-1 response time?
+  Client ID:               NEXUS-002
+  Threshold:               0.6
+  Chunks retrieved:        5
+  Chunks above threshold:  3
+  Highest score:           0.9719
+  Lowest score:            0.5675
+  Guard passed:            False
+  Refusal reason:          Only 3/5 chunks above threshold 0.6 (highest: 0.9719)
+
+--------------------------------------------------------------------------------
+  Sources:
+--------------------------------------------------------------------------------
+  [1] nexus_service_level_agreement#tok_000  (§INCIDENT SEVERITY CLASSIFICATIONS, p.1) score=0.9719
+  [2] nexus_sla#tok_001  (§ESCALATION HIERARCHY, p.1) score=0.9693
+  [3] nexus_sla#tok_000  (§INCIDENT SEVERITY CLASSIFICATIONS, p.1) score=0.8257
+  [4] nexus_compliance_guide#tok_000  (§Nexus Financial Technologies - Regula..., p.1) score=0.5844
+  [5] nexus_partner_onboarding#tok_000  (§INSTITUTIONAL INTAKE VERIFICATION, p.1) score=0.5675
+
+--------------------------------------------------------------------------------
+  REFUSAL:
+--------------------------------------------------------------------------------
+  I don't have enough reliable context to answer that. The retrieved evidence does not contain sufficient relevant information to provide a grounded answer.
+
+================================================================================

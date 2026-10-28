@@ -1,0 +1,85 @@
+================================================================================
+  ClientVault — Source Citation & Attribution Report
+================================================================================
+  Query:                     What is the initial response time for a Severity 1 critical outage?
+  Client ID:                 NEXUS-002
+  Total sources:             5
+  Insufficient evidence:     False
+  Fabricated markers:        []
+
+--------------------------------------------------------------------------------
+  Citation Map (marker → source):
+--------------------------------------------------------------------------------
+  [1]
+       Chunk ID:    nexus_sla#tok_000
+       Document:    nexus_sla
+       Section:     INCIDENT SEVERITY CLASSIFICATIONS
+       Page:        1
+       Client:      NEXUS-002
+       Score:       0.8816
+       Snippet:     [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Clie...
+
+  [2]
+       Chunk ID:    nexus_service_level_agreement#tok_000
+       Document:    nexus_service_level_agreement
+       Section:     INCIDENT SEVERITY CLASSIFICATIONS
+       Page:        1
+       Client:      NEXUS-002
+       Score:       0.8719
+       Snippet:     CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Technologies) Document ...
+
+  [3]
+       Chunk ID:    nexus_sla#tok_001
+       Document:    nexus_sla
+       Section:     ESCALATION HIERARCHY
+       Page:        1
+       Client:      NEXUS-002
+       Score:       0.7024
+       Snippet:      operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Page 1 of 2 --- NEXUS ...
+
+  [4]
+       Chunk ID:    nexus_database_failover_runbook#tok_000
+       Document:    nexus_database_failover_runbook
+       Section:     Nexus Financial Technologies - Databa...
+       Page:        1
+       Client:      NEXUS-002
+       Score:       0.6767
+       Snippet:     # Nexus Financial Technologies - Database High Availability & Failover Protocol Document ID: SOP-DR-004 | Revision: 4.2 ...
+
+  [5]
+       Chunk ID:    nexus_payment_gateway_runbook#tok_000
+       Document:    nexus_payment_gateway_runbook
+       Section:     Circuit Breaker Trigger Thresholds
+       Page:        1
+       Client:      NEXUS-002
+       Score:       0.6755
+       Snippet:     Nexus Financial - Payment Gateway Runbook  Nexus Payment Gateway Operations & Circuit Breaker Runbook  Document ID: SOP-...
+
+--------------------------------------------------------------------------------
+  Source Verification:
+--------------------------------------------------------------------------------
+  [1]: ✓ VERIFIED
+  [2]: ✓ VERIFIED
+  [3]: ✓ VERIFIED
+  [4]: ✓ VERIFIED
+  [5]: ✓ VERIFIED
+
+--------------------------------------------------------------------------------
+  Answer with Citations:
+--------------------------------------------------------------------------------
+  Grounded Answer for What is the initial response time for a Severity 1 critical outage?
+
+Based on [1]: nexus_sla, Section INCIDENT SEVERITY CLASSIFICATIONS — [NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIENT SERVICE LEVEL AGREEMENT & ES...
+Based on [2]: nexus_service_level_agreement, Section INCIDENT SEVERITY CLASSIFICATIONS — CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: NEXUS-002 (Nexus Financial Tec...
+Based on [3]: nexus_sla, Section ESCALATION HIERARCHY —  operational questions or administrative tasks.   Initial response time <= 4 business hours.  --- Pa...
+Based on [4]: nexus_database_failover_runbook, Section Nexus Financial Technologies - Databa... — # Nexus Financial Technologies - Database High Availability & Failover Protocol Document ID: SOP-DR-...
+Based on [5]: nexus_payment_gateway_runbook, Section Circuit Breaker Trigger Thresholds — Nexus Financial - Payment Gateway Runbook  Nexus Payment Gateway Operations & Circuit Breaker Runboo...
+
+See sources below for the complete procedure.
+
+--------------------------------------------------------------------------------
+  No-Source Fallback (when retrieval is empty):
+--------------------------------------------------------------------------------
+  INSUFFICIENT EVIDENCE: No approved source in this client's knowledge base supports this procedure. Please escalate to the Account Lead or consult the designated runbook.
+
+================================================================================
