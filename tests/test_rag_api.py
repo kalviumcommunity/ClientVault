@@ -22,7 +22,7 @@ from fastapi.testclient import TestClient
 from src import rag_api
 from src.hallucination_guardrails import REFUSAL_MESSAGE
 
-SOURCE_FIELDS = {"marker", "chunk_id", "document_id", "section", "page", "score"}
+SOURCE_FIELDS = {"marker", "chunk_id", "document_id", "section", "page", "score", "text"}
 
 
 class TestRagApi(unittest.TestCase):

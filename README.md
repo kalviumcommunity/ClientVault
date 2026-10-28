@@ -545,11 +545,17 @@ npm run dev
 # Typecheck / production build / API tests
 npm --prefix chat-ui run typecheck
 npm --prefix chat-ui run build
-python -m unittest tests.test_rag_api
+python -m unittest tests.test_rag_api tests.test_rag_stream
 ```
 
-Config: `RAG_API_*` in `.env`; `VITE_API_URL` / `VITE_API_TIMEOUT_MS` for the UI (see `.env.example`).
-Sample interaction and screenshots: [`docs/CHAT_UI_SAMPLE_INTERACTION.md`](docs/CHAT_UI_SAMPLE_INTERACTION.md).
+Answers stream from `POST /query/stream` (server-sent events: `citations`, `token`, `refusal`, `done`, `error`);
+`POST /query` still returns the whole answer as JSON. Citation markers in an answer open the matching source
+card, which shows the retrieved chunk text.
+
+Config: `RAG_API_*` in `.env` (incl. `RAG_API_STREAM_DELAY_MS` for offline pacing); `VITE_API_URL` /
+`VITE_STREAM_IDLE_TIMEOUT_MS` for the UI (see `.env.example`).
+Sample interactions and screenshots: [`docs/STREAMING_SAMPLE_INTERACTION.md`](docs/STREAMING_SAMPLE_INTERACTION.md),
+[`docs/CHAT_UI_SAMPLE_INTERACTION.md`](docs/CHAT_UI_SAMPLE_INTERACTION.md).
 
 ## Security & Secrets Policy
 

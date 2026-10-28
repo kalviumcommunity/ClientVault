@@ -139,6 +139,7 @@ def guarded_generate(
             "section": c.section,
             "page": c.page,
             "score": round(c.hybrid_score, 4),
+            "text": c.content,
         }
         for i, c in enumerate(chunks, 1)
     ]

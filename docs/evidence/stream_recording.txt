@@ -1,0 +1,81 @@
+# Recorded 2026-10-28T12:51:21+0530 from live uvicorn src.rag_api:app
+# Offline mode (RAG_API_FORCE_MOCK=true, no OPENAI_API_KEY): real retrieval + guardrail; the answer is the
+# guardrail's grounded summary emitted word by word with RAG_API_STREAM_DELAY_MS=40. Timestamps = arrival at client.
+# Citation chunk text is abridged to 70 chars in this log only; the stream carries the full text.
+
+### POST /query/stream {"question": "What is the escalation path for a P1 database outage?", "client_id": "NEXUS-002", "k": 5}
+HTTP 200  content-type: text/event-stream; charset=utf-8
++    102 ms  {"type": "citations", "sources": [{"marker": "[1]", "chunk_id": "nexus_database_failover_runbook#tok_000", "document_id": "nexus_database_failover_runbook", "section": "Nexus Financial Technologies - Databa...", "page": 1, "score": 0.7395, "text": "# Nexus Financial Technologies - Database High Availability & Failover\u2026"}, {"marker": "[2]", "chunk_id": "nexus_payment_gateway_runbook#tok_000", "document_id": "nexus_payment_gateway_runbook", "section": "Circuit Breaker Trigger Thresholds", "page": 1, "score": 0.6913, "text": "Nexus Financial - Payment Gateway Runbook  Nexus Payment Gateway Opera\u2026"}, {"marker": "[3]", "chunk_id": "nexus_sla#tok_000", "document_id": "nexus_sla", "section": "INCIDENT SEVERITY CLASSIFICATIONS", "page": 1, "score": 0.691, "text": "[NAVIGATION: Knowledge Base / SLAs / Financial Tier / NEXUS-002] CLIEN\u2026"}, {"marker": "[4]", "chunk_id": "nexus_service_level_agreement#tok_000", "document_id": "nexus_service_level_agreement", "section": "INCIDENT SEVERITY CLASSIFICATIONS", "page": 1, "score": 0.6854, "text": "CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX Client Identifier: \u2026"}, {"marker": "[5]", "chunk_id": "nexus_compliance_guide#tok_000", "document_id": "nexus_compliance_guide", "section": "Nexus Financial Technologies - Regula...", "page": 1, "score": 0.6447, "text": "# Nexus Financial Technologies - Regulatory Compliance & PCI-DSS Guide\u2026"}], "threshold": 0.6}
++    148 ms  {"type": "token", "text": "Grounded "}
++    193 ms  {"type": "token", "text": "Answer "}
++    238 ms  {"type": "token", "text": "(Sufficient "}
++    283 ms  {"type": "token", "text": "Evidence):\n\n"}
++    329 ms  {"type": "token", "text": "- "}
++    375 ms  {"type": "token", "text": "Source "}
++    418 ms  {"type": "token", "text": "[1]: "}
++    461 ms  {"type": "token", "text": "nexus_database_failover_runbook, "}
++    505 ms  {"type": "token", "text": "Section "}
++    548 ms  {"type": "token", "text": "Nexus "}
++    590 ms  {"type": "token", "text": "Financial "}
++    635 ms  {"type": "token", "text": "Technologies "}
++    681 ms  {"type": "token", "text": "- "}
++    726 ms  {"type": "token", "text": "Databa... "}
++    771 ms  {"type": "token", "text": "(score: "}
++    816 ms  {"type": "token", "text": "0.7395)\n"}
++    862 ms  {"type": "token", "text": "- "}
++    907 ms  {"type": "token", "text": "Source "}
++    952 ms  {"type": "token", "text": "[2]: "}
++    993 ms  {"type": "token", "text": "nexus_payment_gateway_runbook, "}
++   1038 ms  {"type": "token", "text": "Section "}
++   1084 ms  {"type": "token", "text": "Circuit "}
++   1129 ms  {"type": "token", "text": "Breaker "}
++   1175 ms  {"type": "token", "text": "Trigger "}
++   1221 ms  {"type": "token", "text": "Thresholds "}
++   1266 ms  {"type": "token", "text": "(score: "}
++   1306 ms  {"type": "token", "text": "0.6913)\n"}
++   1352 ms  {"type": "token", "text": "- "}
++   1397 ms  {"type": "token", "text": "Source "}
++   1443 ms  {"type": "token", "text": "[3]: "}
++   1488 ms  {"type": "token", "text": "nexus_sla, "}
++   1533 ms  {"type": "token", "text": "Section "}
++   1579 ms  {"type": "token", "text": "INCIDENT "}
++   1624 ms  {"type": "token", "text": "SEVERITY "}
++   1667 ms  {"type": "token", "text": "CLASSIFICATIONS "}
++   1712 ms  {"type": "token", "text": "(score: "}
++   1757 ms  {"type": "token", "text": "0.6910)\n"}
++   1803 ms  {"type": "token", "text": "- "}
++   1848 ms  {"type": "token", "text": "Source "}
++   1891 ms  {"type": "token", "text": "[4]: "}
++   1936 ms  {"type": "token", "text": "nexus_service_level_agreement, "}
++   1982 ms  {"type": "token", "text": "Section "}
++   2027 ms  {"type": "token", "text": "INCIDENT "}
++   2072 ms  {"type": "token", "text": "SEVERITY "}
++   2117 ms  {"type": "token", "text": "CLASSIFICATIONS "}
++   2163 ms  {"type": "token", "text": "(score: "}
++   2208 ms  {"type": "token", "text": "0.6854)\n"}
++   2254 ms  {"type": "token", "text": "- "}
++   2299 ms  {"type": "token", "text": "Source "}
++   2344 ms  {"type": "token", "text": "[5]: "}
++   2390 ms  {"type": "token", "text": "nexus_compliance_guide, "}
++   2435 ms  {"type": "token", "text": "Section "}
++   2481 ms  {"type": "token", "text": "Nexus "}
++   2526 ms  {"type": "token", "text": "Financial "}
++   2572 ms  {"type": "token", "text": "Technologies "}
++   2617 ms  {"type": "token", "text": "- "}
++   2662 ms  {"type": "token", "text": "Regula... "}
++   2708 ms  {"type": "token", "text": "(score: "}
++   2753 ms  {"type": "token", "text": "0.6447)\n\n"}
++   2798 ms  {"type": "token", "text": "The "}
++   2844 ms  {"type": "token", "text": "above "}
++   2885 ms  {"type": "token", "text": "sources "}
++   2930 ms  {"type": "token", "text": "provide "}
++   2971 ms  {"type": "token", "text": "sufficient "}
++   3017 ms  {"type": "token", "text": "relevant "}
++   3062 ms  {"type": "token", "text": "context."}
++   3062 ms  {"type": "done", "status": "answered", "mode": "offline"}
+
+### POST /query/stream {"question": "What is the best pizza topping in Naples?", "client_id": "NEXUS-002", "k": 5}
+HTTP 200  content-type: text/event-stream; charset=utf-8
++     27 ms  {"type": "refusal", "message": "I don't have enough reliable context to answer that. The retrieved evidence does not contain sufficient relevant information to provide a grounded answer.", "reason": "Only 0/5 chunks above threshold 0.6 (highest: 0.3831); No chunks meet minimum score threshold 0.6", "threshold": 0.6, "candidates": [{"marker": "[1]", "chunk_id": "nexus_partner_onboarding#tok_000", "document_id": "nexus_partner_onboarding", "section": "INSTITUTIONAL INTAKE VERIFICATION", "page": 1, "score": 0.3831, "text": "NEXUS FINANCIAL TECHNOLOGIES - INSTITUTIONAL PARTNER ONBOARDING GUIDE\nClient Identifier: NEXUS-002 (Nexus Financial Technologies)\nDocument Code: KB-NEX-001 | Revision: 5.1\n\n1. INSTITUTIONAL INTAKE VERIFICATION\nBefore granting programmatic access to the Nexus clearing ledger, financial institution partners must complete identity verification:\n1. Valid Legal Entity Identifier (LEI) registered with the Global LEI Foundation.\n2. Verified SWIFT / BIC institutional routing profile.\n3. Written sign-off from designated Compliance Officer approving AML/KYC profile.\n\n2. ENVIRONMENT PROVISIONING PHASES\n- Phase 1: Staging Sandbox Simulation. Partners execute 500 test micro-settlements across all currency pairs.\n- Phase 2: Dual Cryptographic Key Exchange. Mutual TLS 1.3 certificates and mTLS client certs signed by approved CA.\n- Phase 3: Controlled Production Ramp. Initial 30-day transaction volume capped at $250,000 USD daily clearing value.\n\n3. ADMINISTRATIVE CONTROLS\nProgrammatic API credentials must be rotated every 90 calendar days. Failure to rotate triggers automated account throttling to 10% baseline"}, {"marker": "[2]", "chunk_id": "nexus_database_failover_runbook#tok_001", "document_id": "nexus_database_failover_runbook", "section": "Step 3.2: Standby Promotion Command", "page": 2, "score": 0.3796, "text": "`\nPromotion is strictly prohibited if Write-Ahead Log (WAL) byte lag exceeds 1024 bytes.\n\n### Step 3.2: Standby Promotion Command\nOnce replication parity is verified, execute:\n```bash\nnexus-db-admin promote --node db-standby-02 --force-authoritative\n```\n\n### Step 3.3: DNS Service Discovery Update\nRoute53 internal record `ledger-primary.nexus.internal` will automatically re-point within 5 seconds.\nVerify application connection pools have drained and reconnected without dropped isolation transactions."}, {"marker": "[3]", "chunk_id": "nexus_compliance_guide#tok_000", "document_id": "nexus_compliance_guide", "section": "Nexus Financial Technologies - Regula...", "page": 1, "score": 0.372, "text": "# Nexus Financial Technologies - Regulatory Compliance & PCI-DSS Guide\nDocument ID: KB-CMP-002 | Revision: 3.0\nClient Identifier: NEXUS-002 | Classification: Strictly Confidential\n\n## 1. Compliance Architecture Overview\nNexus Financial Technologies operates within Tier-1 PCI-DSS and SOC2 Type II regulatory boundaries.\nAll cardholder data (CHD) and sensitive authentication data (SAD) must be isolated from general compute clusters.\n\n## 2. Cardholder Data Tokenization\n1. Plaintext primary account numbers (PAN) must never enter persistent storage or log sinks.\n2. The Nexus Tokenization Vault ingests raw card data directly from certified hardware payment terminals.\n3. Applications receive non-reversible surrogate tokens formatted as UUIDv4 references with Luhn check preservation.\n\n## 3. Cryptographic Storage & Encryption\n### Step 3.1: Data at Rest\nAll database partitions storing financial transaction records must utilize AES-256 GCM encryption.\nEncryption keys are managed inside certified Cloud HSM modules and rotated bi-annually.\n\n### Step 3.2: Data in Transit\nAll network communications must enforce TLS 1.3 with strict cipher suites.\nInsecure TLS versions"}, {"marker": "[4]", "chunk_id": "nexus_service_level_agreement#tok_000", "document_id": "nexus_service_level_agreement", "section": "INCIDENT SEVERITY CLASSIFICATIONS", "page": 1, "score": 0.3718, "text": "CLIENT SERVICE LEVEL AGREEMENT & ESCALATION MATRIX\nClient Identifier: NEXUS-002 (Nexus Financial Technologies)\nDocument Code: SLA-NEX-2026 | Effective Date: 2026-01-01\n\n1. INCIDENT SEVERITY CLASSIFICATIONS\n- Severity 1 (Critical Outage): Core transaction settlement system down.\nInitial response time <= 15 minutes. Update cadence every 30 minutes.\n- Severity 2 (Major Degradation): Non-critical service unavailable or redundant pipeline degraded.\nInitial response time <= 1 hour.\n- Severity 3 (Minor Defect / General Inquiry): Standard operational questions or administrative tasks.\nInitial response time <= 4 business hours.\n\n2. ESCALATION HIERARCHY\nLevel 1: Tier-1 Service Desk Operations (Desk-Nexus@clientvault.internal)\nLevel 2: Designated Client Reliability Engineer (Lead On-Call via PagerDuty)\nLevel 3: VP of Technical Operations & Account Lead\n\n3. COMPLIANCE & PENALTIES\nFailure to meet Sev-1 response commitments incurs a 5% monthly service credit deduction per SLA Schedule B."}, {"marker": "[5]", "chunk_id": "nexus_sla#tok_001", "document_id": "nexus_sla", "section": "ESCALATION HIERARCHY", "page": 1, "score": 0.3715, "text": " operational questions or administrative tasks.\n  Initial response time <= 4 business hours.\n\n--- Page 1 of 2 --- NEXUS FINANCIAL TECH ---\n\n2. ESCALATION HIERARCHY\nLevel 1: Tier-1 Service Desk Operations (Desk-Nexus@clientvault.internal)\nLevel 2: Designated Client Reliability Engineer (Lead On-Call via PagerDuty)\nLevel 3: VP of Technical Operations & Account Lead\n\n3. COMPLIANCE & PENALTIES\nFailure to meet Sev-1 response commitments incurs a 5% monthly service credit deduction per SLA Schedule B.\n\n--- Page 2 of 2 --- All rights reserved. NEXUS TECH (c) 2026 ---"}]}
++     27 ms  {"type": "done", "status": "refused"}
+

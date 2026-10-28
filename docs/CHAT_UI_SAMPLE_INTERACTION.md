@@ -8,6 +8,9 @@
 > the passages that cleared the threshold), not LLM prose. With a key and `RAG_API_FORCE_MOCK=false` the same UI
 > renders live-model answers unchanged.
 
+> **Note:** this records the non-streaming UI (`POST /query`). The chat now streams from
+> `POST /query/stream`; see [`STREAMING_SAMPLE_INTERACTION.md`](STREAMING_SAMPLE_INTERACTION.md).
+
 Every response and screenshot below comes from a real run. Raw HTTP captures are in
 [`docs/evidence/rag_api_live_responses.txt`](evidence/rag_api_live_responses.txt).
 

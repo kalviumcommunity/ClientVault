@@ -4,6 +4,9 @@ ClientVault — Backend API for the RAG Service (FastAPI)
 POST /query — accepts a question and optional client_id, returns grounded
 answer with sources, status, and citation metadata. Runs the existing RAG
 pipeline through hallucination guardrails and citation verification.
+
+POST /query/stream — same request; streams server-sent events (citations,
+token, refusal, done, error) so the UI can render the answer progressively.
 """
 
 import json
@@ -19,6 +22,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator
 
 from dotenv import load_dotenv
@@ -28,6 +32,7 @@ from src.hallucination_guardrails import (
     REFUSAL_MESSAGE,
     DEFAULT_RELEVANCE_THRESHOLD,
 )
+from src.rag_stream import stream_rag_events
 
 load_dotenv(PROJECT_ROOT / ".env")
 
@@ -67,6 +72,9 @@ DEFAULT_PORT = int(os.getenv("RAG_API_PORT", "8000"))
 MAX_QUESTION_LENGTH = int(os.getenv("RAG_API_MAX_QUESTION_LENGTH", "1000"))
 FORCE_MOCK = os.getenv("RAG_API_FORCE_MOCK", "true").lower() in ("true", "1", "yes")
 THRESHOLD = float(os.getenv("RAG_API_THRESHOLD", str(DEFAULT_RELEVANCE_THRESHOLD)))
+# Offline mode only: pause between streamed words (live mode streams at model speed).
+STREAM_TOKEN_DELAY_MS = int(os.getenv("RAG_API_STREAM_DELAY_MS", "40"))
+STREAM_ERROR_MESSAGE = "The answer stopped streaming. Please retry."
 
 
 # ---------------------------------------------------------------------------
@@ -95,6 +103,7 @@ class SourceItem(BaseModel):
     section: str
     page: int
     score: float
+    text: Optional[str] = None
 
 
 class QueryResponse(BaseModel):
@@ -135,6 +144,7 @@ async def query_endpoint(req: QueryRequest) -> QueryResponse:
                 section=s["section"],
                 page=s["page"],
                 score=s["score"],
+                text=s.get("text"),
             )
             for s in result.sources
         ]
@@ -153,6 +163,36 @@ async def query_endpoint(req: QueryRequest) -> QueryResponse:
     except Exception as e:
         logger.exception("Internal error processing query")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+def _sse(event: Dict[str, Any]) -> str:
+    return f"data: {json.dumps(event)}\n\n"
+
+
+@app.post("/query/stream", tags=["rag"])
+def query_stream_endpoint(req: QueryRequest) -> StreamingResponse:
+    """Streaming RAG query (server-sent events). Validation errors still return 422."""
+
+    def events():
+        try:
+            for event in stream_rag_events(
+                question=req.question,
+                client_id=req.client_id,
+                k=req.k,
+                threshold=THRESHOLD,
+                force_mock=FORCE_MOCK,
+                token_delay_s=STREAM_TOKEN_DELAY_MS / 1000,
+            ):
+                yield _sse(event)
+        except Exception:
+            logger.exception("Streaming query failed")
+            yield _sse({"type": "error", "message": STREAM_ERROR_MESSAGE})
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 # ---------------------------------------------------------------------------
