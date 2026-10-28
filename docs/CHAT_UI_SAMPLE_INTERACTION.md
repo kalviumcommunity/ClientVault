@@ -1,6 +1,6 @@
 # ClientVault Chat UI — Sample Interaction & Evidence
 
-> **Captured:** 2026-10-28 · **Branch:** `feat/rag-chat-ui`
+> **Captured:** 2026-10-28 · **Branch:** `feat/rag-chat-ui` · **Theme:** shadcn dark tokens + MorphOrb composer (21st.dev reference)
 > **Backend:** live `uvicorn src.rag_api:app` on `:8000`, called by the Vite dev UI on `:3000` through the `/api` proxy.
 > **Mode:** `RAG_API_FORCE_MOCK=true` (the default) with no `OPENAI_API_KEY`. Retrieval, hybrid scoring,
 > account filtering and the relevance guardrail all run for real over the indexed corpus; embeddings use the
@@ -68,26 +68,37 @@ supporting evidence. The previous turn stays in the history.
 
 ![Backend down error with retry](screenshots/03-backend-down-error-retry.jpg)
 
-The API server was stopped and a question submitted. The Vite proxy returned HTTP 500 and the turn showed an
-error with **↻ Retry**. (This screenshot predates the message wording change; the current text is
-"The RAG API is unavailable or failed to respond (HTTP 500). Try again.") After restarting the API, Retry
-replaced the failed turn in place with the real response: a refusal, because the best match scored 0.5261,
-below the 0.6 threshold.
+The API server was stopped and a question submitted. The orb showed **Request failed**, the Vite proxy
+returned HTTP 500, and the turn shows "The RAG API is unavailable or failed to respond (HTTP 500). Try again."
+with **Retry**. Retry re-runs the same question and replaces the failed turn in place (verified after
+restarting the API: the real response was a refusal, best match 0.5261 < 0.6).
 
-## 4. Loading state
+## 4. Loading state — MorphOrb
 
+![Composer idle](screenshots/06-composer-idle.jpg)
 ![Thinking orb](screenshots/04-loading-thinking-orb.jpg)
 
-To hold the loading state long enough to screenshot, `window.fetch` was wrapped in the browser to wait
-4 s before making the **real** request. The orb, the disabled input ("Searching…") and the disabled Ask button
-are shown, and `role="status"` announces "Searching knowledge base". The orb label is visual feedback only; the
-UI does not claim specific backend stages.
+On submit the pill morphs into the dotted orb over a dimmed page while the **real** request runs (captured
+without any artificial delay). The request starts on submit, in parallel with the ~2.3 s animation. The input
+is `inert` while busy; the status reads "Searching knowledge base" (visual feedback only — the API reports no
+stages) with "Esc to cancel", announced via `role="status"`. The ending reflects the real outcome:
+**Answer ready** (green resolve) for `answered`, **Insufficient evidence** for `refused`, **Request failed**
+for errors; then it returns to the pill and the full result is in the thread.
 
 ## 5. Mobile (375 px)
 
 ![Mobile layout](screenshots/05-mobile-375px.jpg)
 
-No horizontal scroll (`scrollWidth == clientWidth == 375`); the top nav wraps and the pill input stays docked.
+No horizontal scroll (`scrollWidth == clientWidth == 375`); the top nav wraps and the pill keeps 16 px gutters
+(343 px wide, docked 66 px above the bottom).
+
+## 6. Dark theme across the app
+
+![Dashboard](screenshots/07-dashboard-dark.jpg)
+
+All pages use shadcn semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `text-success`, …)
+with the dark palette from the reference (`#0e0e10` background, `#161617` cards, `#ececec` text, violet focus
+ring) and lucide icons.
 
 ---
 
@@ -96,11 +107,13 @@ No horizontal scroll (`scrollWidth == clientWidth == 375`); the top nav wraps an
 | State | How it was produced | Result |
 |---|---|---|
 | Idle / blank input | Empty input | Ask button disabled; blank never submitted |
-| Loading | Real request, delayed 4 s in-browser | Orb + `role=status`; input and button disabled |
+| Loading | Real request | Pill → orb overlay, "Searching knowledge base", input `inert` |
+| Orb outcome labels | Real answered / refused; stubbed 500 | "Answer ready" / "Insufficient evidence" / "Request failed" |
+| Escape mid-request | Request delayed 8 s in-browser, Esc pressed | Request aborted; turn "Request cancelled." + Retry; pill restored |
 | Answered with citations | Real API | Answer + 5 expandable source chips |
 | Refused | Real API, out-of-domain question | Verbatim refusal + reason; candidates labelled below-threshold |
 | Validation error | Real API, `"   "` sent via `queryRAG` | "Invalid question: Value error, question must be a non-empty string" |
-| Server / backend down | API process stopped | Error turn + Retry; Retry succeeded after restart |
+| Server / backend down | API process stopped | Orb "Request failed"; error turn + Retry |
 | Network failure | `fetch` rejected with `TypeError` in-browser | "Network error — could not reach the RAG API…" |
 | Timeout | Response delayed 40 s in-browser | Aborted at 30 s: "Request timed out…" + Retry; input re-enabled |
 | Malformed / empty / unknown `status` | Stubbed responses in-browser | "The server returned an empty or malformed response." (never shown as success) |
@@ -109,14 +122,14 @@ No horizontal scroll (`scrollWidth == clientWidth == 375`); the top nav wraps an
 | Per-client threads | Switched NEXUS-002 → ACME-001 → back | Separate threads; no cross-account evidence |
 | Clear conversation | Clicked Clear | Thread emptied; in-flight request cancelled silently |
 
-**Not verified in a browser:** `prefers-reduced-motion` could not be emulated in the test browser. The global
-CSS rule in `chat-ui/src/index.css` (present in the production bundle) neutralises all animations, and
-auto-scroll switches to `behavior: 'auto'` under that preference.
+**Not verified in a browser:** `prefers-reduced-motion` could not be emulated in the test browser. MorphOrb
+switches to its cross-fade-only timeline under that preference, the `.mo-*` reduced-motion rules and the global
+CSS rule in `chat-ui/src/index.css` disable looping animations, and auto-scroll switches to `behavior: 'auto'`.
 
 ## Request flow
 
 ```
-Pill input → queryRAG() ──POST {API_BASE}/query──▶ FastAPI src/rag_api.py
+MorphOrb → queryRAG() ──POST {API_BASE}/query──▶ FastAPI src/rag_api.py
   (VITE_API_URL or /api proxy;                       └─ guarded_generate()
    30 s timeout, VITE_API_TIMEOUT_MS)                    ├─ FilteredRetriever (client_id filter, hybrid score)
                                                          ├─ assess_retrieval (threshold 0.6)

@@ -527,7 +527,9 @@ Tokens Used: 92 (Prompt: 38, Completion: 54)
 
 ## RAG Chat UI (Knowledge Search)
 
-React 18 + Vite + Tailwind app in `chat-ui/`, backed by the FastAPI RAG API (`src/rag_api.py`, `POST /query`).
+React 18 + Vite + Tailwind CSS 4 + shadcn/ui (TypeScript-enabled, dark theme) in `chat-ui/`, backed by the
+FastAPI RAG API (`src/rag_api.py`, `POST /query`). shadcn components live in `chat-ui/src/components/ui/`
+(`@/` → `chat-ui/src`); the Knowledge Search composer is `components/ui/ai-thiking-orb-and-input.tsx`.
 
 ```bash
 # Terminal 1 — backend (http://localhost:8000)
@@ -540,7 +542,8 @@ cd chat-ui
 npm install
 npm run dev
 
-# Production build / API tests
+# Typecheck / production build / API tests
+npm --prefix chat-ui run typecheck
 npm --prefix chat-ui run build
 python -m unittest tests.test_rag_api
 ```

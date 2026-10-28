@@ -91,6 +91,7 @@ python src/main.py
 # Chat UI (React 18 + Vite + Tailwind) — http://localhost:3000, proxies /api → :8000
 npm --prefix chat-ui install
 npm --prefix chat-ui run dev
+npm --prefix chat-ui run typecheck
 npm --prefix chat-ui run build
 
 # Backend RAG API (FastAPI) — http://localhost:8000
@@ -220,9 +221,11 @@ Update durable records:
 > **Every change ends by updating this section.** The next agent reads
 > this to continue without issue.
 
-**Last change:** Hardened and verified the RAG chat UI on `feat/rag-chat-ui` (not yet pushed; no PR yet). Fixed real bugs found in review and browser testing: the client timeout never fired; FastAPI 422 `detail` arrays rendered as "[object Object]"; any non-`refused` status (including unknown/missing) was shown as a success; refusals labelled below-threshold candidates as "Sources"; the orb claimed "Retrieve/Re-rank/Ground" stages the API does not report; conversation history was lost on page navigation. History now lives in `App.jsx` keyed per client. Added `tests/test_rag_api.py` (9 tests), declared missing `fastapi`/`uvicorn`/`httpx` in `requirements.txt`, replaced the hand-written (non-real) sample interaction with real captured API output + 5 browser screenshots, added README run steps and `VITE_*` vars to `.env.example`, and merged three stacked state headers in this section into one.
+**Last change:** Retheme + stack upgrade of `chat-ui/` on `feat/rag-chat-ui` (not pushed; no PR yet), per user decision: TypeScript enabled (`tsconfig*.json`, `vite.config.ts`, `@/` → `src`), Tailwind 3 → 4 (`@tailwindcss/vite`; `tailwind.config.js`/`postcss.config.js` removed), shadcn/ui initialised (`components.json`, style radix-nova, base neutral, lucide; `src/lib/utils.ts`, `src/components/ui/button.tsx`). App switched to a dark theme (`<html class="dark">`; shadcn `.dark` tokens set to the 21st.dev reference palette) across all pages with lucide icons. The 21st.dev "ai-thiking-orb-and-input" component lives at `src/components/ui/ai-thiking-orb-and-input.tsx` and is the Knowledge Search composer, adapted: request starts on submit, real outcome drives the ending (answered → green "Answer ready", refused → "Insufficient evidence", error → "Request failed"), no placeholder answer, single generic status label, Escape cancels the request. Full `.mo-*` CSS (extracted from the live 21st.dev demo; the pasted snippet only had keyframes) is in `src/index.css`. `ThinkingOrb.jsx` removed. Docs screenshots retaken on the new theme.
 
-**Checks (2026-10-28, Python 3.12 `.venv`):** full suite 151 tests, 1 failure — `test_corpus_embedder.test_environment_config_loading` passes alone but fails in the full run (test-order env leakage; pre-existing, unrelated). `tests.test_rag_api` 9/9 OK. `npm --prefix chat-ui run build` OK. No frontend lint/typecheck/unit tests are configured. Browser verification of every UI state is recorded in `docs/CHAT_UI_SAMPLE_INTERACTION.md`; `prefers-reduced-motion` could not be emulated.
+Previous change on this branch: hardened the chat UI (timeout, 422 messages, strict status validation, refusal-candidate labelling, per-client history in `App.jsx`), added `tests/test_rag_api.py`, real captured sample interaction.
+
+**Checks (2026-10-28):** `npm --prefix chat-ui run typecheck` OK; `npm --prefix chat-ui run build` OK; `tests.test_rag_api` 9/9 OK; full Python suite 151 tests, 1 pre-existing order-dependent failure (`test_corpus_embedder.test_environment_config_loading`). Browser-verified: answered / refused / backend-down / Escape-cancel / retry / mobile 375 px / navigation. `prefers-reduced-motion` not emulated. No frontend lint or unit tests configured.
 
 **Date / iteration:** RAG Chat UI, API Integration & Submission.
 
@@ -231,7 +234,7 @@ Update durable records:
 **Current branch:** `feat/rag-chat-ui`
 
 **What exists right now:**
-- `chat-ui/` — React 18 + Vite + Tailwind SPA (top nav per mock UX: Dashboard, Clients, Knowledge Search, Documents, Upload). `App.jsx` holds active page, active client and per-client conversation threads. `components/KnowledgePage.jsx` is the RAG chat: `queryRAG()` → `POST {VITE_API_URL or /api}/query`, 30 s timeout (`VITE_API_TIMEOUT_MS`), strict response validation (status must be `answered`/`refused`), retry in place, cancel on navigate-away/clear. `ThinkingOrb.jsx` (21st.dev-inspired, CSS only), `SourcePanel.jsx` (expandable chips; only API-returned fields). Dev proxy `/api` → `:8000` in `vite.config.js`.
+- `chat-ui/` — React 18 + Vite + Tailwind 4 + shadcn/ui (TS enabled, `.jsx` pages + `.tsx` ui components, dark theme) SPA (top nav per mock UX: Dashboard, Clients, Knowledge Search, Documents, Upload). `App.jsx` holds active page, active client and per-client conversation threads. `components/KnowledgePage.jsx` is the RAG chat: `queryRAG()` → `POST {VITE_API_URL or /api}/query`, 30 s timeout (`VITE_API_TIMEOUT_MS`), strict response validation (status must be `answered`/`refused`), retry in place, cancel on navigate-away/clear. `components/ui/ai-thiking-orb-and-input.tsx` (MorphOrb composer, canvas orb; styles `.mo-*` in `index.css`), `components/ui/button.tsx` (shadcn), `SourcePanel.jsx` (expandable chips; only API-returned fields). Dev proxy `/api` → `:8000` in `vite.config.js`.
 - `src/rag_api.py` — FastAPI app: `GET /health`, `POST /query` (`question` 1–1000 chars, optional `client_id`, `k` 1–20) → `{answer, status, sources[{marker, chunk_id, document_id, section, page, score}], total_sources, threshold_used, refusal_reason}`; runs `src/hallucination_guardrails.guarded_generate`; safe 500s; CORS allowlist from `RAG_API_CORS_ORIGINS`. Run: `python -m uvicorn src.rag_api:app --port 8000`.
 - `tests/test_rag_api.py` — 9 tests: health, grounded answer + citation markers, account isolation, refusal, 422s, safe 500, CORS allow/deny.
 - `docs/CHAT_UI_SAMPLE_INTERACTION.md`, `docs/screenshots/01–05*.jpg`, `docs/evidence/rag_api_live_responses.txt` — real captured interaction evidence (offline/`RAG_API_FORCE_MOCK=true` mode).
@@ -437,6 +440,8 @@ Update durable records:
 
 **Known decisions / gotchas:**
 - Product is account-isolated retrieval; no generic chatbot page.
+- `chat-ui` theme: dark only; use shadcn semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, `text-success`/`text-warning`/`text-destructive`, `iri-violet`) — no hard-coded slate/fuchsia. New shadcn components go to `src/components/ui/` via `npx shadcn@latest add <name>` (run in `chat-ui/`).
+- MorphOrb must never show a fabricated answer or claim pipeline stages; its outcome label comes from the real `/query` status.
 - Text cleaning is applied uniformly across all formats before chunking/embedding, reducing noise tokens by 15–30%.
 - Document loader converts all incoming formats (`.md`, `.txt`, `.html`, `.pdf`) into unified `Document` objects with mandatory `source_id` and `file_path` for citation traceability.
 - Corrupted, missing, empty, or unsupported files are skipped non-destructively with explicit warnings instead of throwing unhandled exceptions.
