@@ -1,0 +1,126 @@
+{
+  "window": {
+    "first": "2026-10-28T08:30:28.510Z",
+    "last": "2026-10-28T08:33:35.537Z"
+  },
+  "total_requests": 32,
+  "by_endpoint": {
+    "/query/stream": 26,
+    "/query": 6
+  },
+  "by_status": {
+    "answered": 23,
+    "refused": 5,
+    "rejected": 2,
+    "client_disconnected": 2
+  },
+  "cache": {
+    "lookups": 30,
+    "hits": 14,
+    "misses": 16,
+    "hit_rate": 0.467,
+    "saved_estimated_cost_usd": 0.0035376
+  },
+  "tokens": {
+    "input": 15003,
+    "output": 1406,
+    "embedding": 128,
+    "sources": {
+      "tiktoken-estimate": 14,
+      "cache": 14,
+      "none": 4
+    }
+  },
+  "cost": {
+    "estimated_cost_usd": 0.00309661,
+    "billed_cost_usd": 0.0,
+    "llm_calls": 0
+  },
+  "latency_ms": {
+    "avg": 934.59,
+    "p50": 18.36,
+    "p95": 3328.5,
+    "avg_cache_hit": 8.58,
+    "avg_cache_miss": 1744.84
+  },
+  "errors": {
+    "count": 2,
+    "recent": [
+      {
+        "timestamp": "2026-10-28T08:30:38.130Z",
+        "request_id": "42694d470e5f43d4a7b38b855a33297e",
+        "endpoint": "/query",
+        "status": "rejected",
+        "error": "Value error, question must be a non-empty string"
+      },
+      {
+        "timestamp": "2026-10-28T08:33:27.386Z",
+        "request_id": "9d627409646146a7911f61a823b7c108",
+        "endpoint": "/query",
+        "status": "rejected",
+        "error": "Value error, question must be a non-empty string"
+      }
+    ]
+  },
+  "bucket": "minute",
+  "over_time": [
+    {
+      "period": "2026-10-28T08:30",
+      "requests": 14,
+      "cache_hits": 6,
+      "estimated_cost_usd": 0.00139941,
+      "billed_cost_usd": 0.0,
+      "avg_latency_ms": 958.1,
+      "errors": 1
+    },
+    {
+      "period": "2026-10-28T08:31",
+      "requests": 2,
+      "cache_hits": 1,
+      "estimated_cost_usd": 0.00035649,
+      "billed_cost_usd": 0.0,
+      "avg_latency_ms": 1726.21,
+      "errors": 0
+    },
+    {
+      "period": "2026-10-28T08:32",
+      "requests": 2,
+      "cache_hits": 0,
+      "estimated_cost_usd": 0.00029779,
+      "billed_cost_usd": 0.0,
+      "avg_latency_ms": 1459.3,
+      "errors": 0
+    },
+    {
+      "period": "2026-10-28T08:33",
+      "requests": 14,
+      "cache_hits": 7,
+      "estimated_cost_usd": 0.00104292,
+      "billed_cost_usd": 0.0,
+      "avg_latency_ms": 708.57,
+      "errors": 1
+    }
+  ],
+  "top_questions": [
+    {
+      "question": "What is the escalation path for a P1 database outage?",
+      "requests": 10
+    },
+    {
+      "question": "What are the P1 incident severity response times?",
+      "requests": 8
+    },
+    {
+      "question": "How do we fail over the Nexus primary database?",
+      "requests": 6
+    },
+    {
+      "question": "What is the best pizza topping in Naples?",
+      "requests": 4
+    },
+    {
+      "question": "hi",
+      "requests": 2
+    }
+  ]
+}
